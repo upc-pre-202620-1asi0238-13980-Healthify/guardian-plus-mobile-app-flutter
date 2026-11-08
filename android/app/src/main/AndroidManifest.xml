@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Every screen reads the platform's API -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="guardian_plus_app"
         android:name="${applicationName}"
