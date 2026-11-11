@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class LoginState {
     const new({
         this.isPasswordHidden = true,
@@ -15,7 +13,7 @@ class LoginState {
     LoginState copyWith({
         bool? isPasswordHidden,
         bool? isLoading,
-        String? errorMessag
+        String? errorMessage
     }) {
         return LoginState(
             isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
