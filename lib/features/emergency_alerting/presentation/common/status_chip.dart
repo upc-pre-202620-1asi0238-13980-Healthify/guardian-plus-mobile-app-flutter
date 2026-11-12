@@ -17,16 +17,21 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final label = Text(text, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: content));
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: container, borderRadius: BorderRadius.circular(20)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (showCheck) ...[Icon(Icons.check, size: 12, color: content), const SizedBox(width: 4)],
-          Text(text, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: content)),
-        ],
-      ),
+      // Without the check it stays a plain text, which wraps when the chip is narrow
+      child: showCheck
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check, size: 12, color: content),
+                const SizedBox(width: 4),
+                Flexible(child: label),
+              ],
+            )
+          : label,
     );
   }
 }

@@ -36,7 +36,7 @@ class AlertHeroCard extends StatelessWidget {
       _ when calm => (scheme.primary, scheme.onPrimary),
       Severity.critical => (scheme.error, scheme.onError),
       Severity.high => (scheme.tertiary, scheme.onTertiary),
-      Severity.medium => (GuardianColors.pastelYellow, GuardianColors.pastelYellowText),
+      Severity.medium => (GuardianColors.noticeContainer, GuardianColors.onNoticeContainer),
     };
     final isActiveSos = alert.sourceType == AlertSourceType.sosTriggered && !calm;
     final tag = isActiveSos ? 'Máxima prioridad' : '${alert.sourceType.tag} · ${alert.severity.label}';

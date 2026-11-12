@@ -14,13 +14,13 @@ class EscalationNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: GuardianColors.pastelYellow,
+        color: GuardianColors.noticeContainer,
         borderRadius: BorderRadius.circular(GuardianRadius.medium),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 16, color: GuardianColors.pastelYellowText),
+          const Icon(Icons.info_outline, size: 16, color: GuardianColors.onNoticeContainer),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -29,7 +29,7 @@ class EscalationNotice extends StatelessWidget {
                 Text(
                   'Si nadie reconoce una alerta crítica en $ackTimeoutSec s, se enviará automáticamente a tus '
                   'contactos secundarios.',
-                  style: text.bodySmall?.copyWith(color: GuardianColors.pastelYellowText),
+                  style: text.bodySmall?.copyWith(color: GuardianColors.onNoticeContainer),
                 ),
                 TextButton(
                   onPressed: onManageContacts,

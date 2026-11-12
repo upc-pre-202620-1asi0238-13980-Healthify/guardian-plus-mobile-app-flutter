@@ -14,15 +14,15 @@ extension SeverityColors on Severity {
   ToneColors colors(ColorScheme scheme) => switch (this) {
     Severity.critical => (container: scheme.errorContainer, content: scheme.onErrorContainer),
     Severity.high => (container: scheme.tertiaryContainer, content: scheme.tertiary),
-    Severity.medium => (container: GuardianColors.pastelYellow, content: GuardianColors.pastelYellowText),
+    Severity.medium => (container: GuardianColors.noticeContainer, content: GuardianColors.onNoticeContainer),
   };
 }
 
 extension AlertStatusColors on AlertStatus {
   ToneColors colors(ColorScheme scheme) => switch (this) {
     AlertStatus.pendingConfirmation => (
-      container: GuardianColors.pastelYellow,
-      content: GuardianColors.pastelYellowText,
+      container: GuardianColors.noticeContainer,
+      content: GuardianColors.onNoticeContainer,
     ),
     AlertStatus.triggered ||
     AlertStatus.escalated => (container: scheme.errorContainer, content: scheme.onErrorContainer),

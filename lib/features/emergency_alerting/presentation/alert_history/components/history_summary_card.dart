@@ -55,7 +55,7 @@ class _Figure extends StatelessWidget {
           Text(
             value,
             maxLines: 1,
-            style: dataLabelStyle.copyWith(fontSize: 24, height: 26 / 24, color: color),
+            style: dataMetricStyle.copyWith(color: color),
           ),
           const SizedBox(height: 2),
           Text(
