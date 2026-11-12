@@ -81,6 +81,25 @@ void main() {
     expect(find.text('Pulsera conectada'), findsOneWidget);
   });
 
+  testWidgets('the linked wristband opens its details', (tester) async {
+    platform.wearables.add({
+      'id': 'w1',
+      'careRecipientProfileId': careRecipientId,
+      'serialNumber': 'GP-ESP32-S3-0100',
+      'deviceType': 'WRISTBAND',
+      'linkedAt': '2026-10-06T07:00:36Z',
+    });
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pulsera conectada'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Guardian+ Band'), findsNWidgets(2));
+    expect(find.text('GP-ESP32-S3-0100'), findsOneWidget);
+    expect(find.text('Vinculada a Elena Rojas'), findsOneWidget);
+  });
+
   testWidgets('a platform that cannot be reached offers to try again', (tester) async {
     platform.platformDown = true;
     await tester.pumpWidget(app());
