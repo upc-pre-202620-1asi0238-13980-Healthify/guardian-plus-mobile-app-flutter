@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
+import 'package:guardian_plus_app/features/main/main_page.dart';
 
 class LoginPage extends StatelessWidget {
     final LoginViewmodel viewModel;
@@ -237,7 +238,13 @@ class _LoginSheetState extends State<_LoginSheet> {
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  onPressed: state.isLoading ? null : () {},
+                  // Until the sign-in talks to IAM, it goes straight to the app with the demo care context
+                  onPressed: state.isLoading
+                      ? null
+                      : () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MainPage()),
+                          ),
                   child: state.isLoading
                       ? const SizedBox(
                           width: 18,
