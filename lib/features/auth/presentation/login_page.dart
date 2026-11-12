@@ -315,6 +315,37 @@ class _LoginSheetState extends State<_LoginSheet> {
                   ),
                 ),
               ),
+              const SizedBox(height: 32),
+              Center(
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const Text.rich(
+                    TextSpan(
+                      style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                      children: [
+                        TextSpan(text: '¿No tienes cuenta? '),
+                        TextSpan(
+                          text: 'Crear cuenta',
+                          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  'Al ingresar, aceptas los Términos de uso y la Política de privacidad',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: AppFonts.mono,
+                    fontFamilyFallback: AppFonts.monoFallback,
+                    fontSize: 10,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ),
             ],
           ),
         );
