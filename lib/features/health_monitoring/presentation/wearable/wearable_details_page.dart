@@ -29,6 +29,13 @@ class _WearableDetailsPageState extends State<WearableDetailsPage> {
     super.dispose();
   }
 
+  // Unlinking is only built in the Kotlin app for now, so here the button announces it
+  void _showComingSoon() {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(const SnackBar(content: Text('Próximamente')));
+  }
+
   Future<void> _link() async {
     final linked = await showLinkWearableSheet(
       context,
@@ -60,7 +67,11 @@ class _WearableDetailsPageState extends State<WearableDetailsPage> {
                     _ErrorCard(message: message, onRetry: _viewModel.load),
                   ],
                   _ when wearable == null => [_EmptyWearableCard(careRecipientName: state.careRecipientName, onLink: _link)],
-                  _ => _linkedSections(context, wearable, state.careRecipientName),
+                  _ => [
+                    ..._linkedSections(context, wearable, state.careRecipientName),
+                    const SizedBox(height: 24),
+                    _UnlinkButton(onTap: _showComingSoon),
+                  ],
                 },
               ],
             );
@@ -114,6 +125,28 @@ class _WearableDetailsPageState extends State<WearableDetailsPage> {
         ),
       ),
     ];
+  }
+}
+
+/// "Desvincular pulsera": outlined, in the destructive red the app keeps for actions that remove something.
+class _UnlinkButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const new({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(52),
+        foregroundColor: colors.error,
+        side: BorderSide(color: colors.outline),
+      ),
+      icon: const Icon(Icons.link_off, size: 18),
+      label: const Text('Desvincular pulsera'),
+    );
   }
 }
 
