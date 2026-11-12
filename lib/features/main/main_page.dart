@@ -8,11 +8,12 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/health
 import 'package:guardian_plus_app/features/health_monitoring/presentation/home/home_page.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/live_vitals/live_vitals_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/vital_history/vital_history_view_model.dart';
+import 'package:guardian_plus_app/features/main/guardian_bottom_bar.dart';
+import 'package:guardian_plus_app/features/main/placeholder_page.dart';
+import 'package:guardian_plus_app/features/main/top_level_destination.dart';
 
-/// Tabs of the bottom bar, in the order of the team prototype. Location joins once it is built.
-enum _Tab { home, health, alerts, routines }
-
-/// App shell behind the sign-in: one tab per bounded context, starting on "Inicio".
+/// App shell behind the sign-in: one tab per bounded context, starting on "Inicio". The pages follow the
+/// order of [TopLevelDestination].
 class MainPage extends StatefulWidget {
   const new({super.key});
 
@@ -21,16 +22,16 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  _Tab _selected = _Tab.home;
+  TopLevelDestination _selected = TopLevelDestination.home;
 
-  void _open(_Tab tab) => setState(() => _selected = tab);
+  void _open(TopLevelDestination tab) => setState(() => _selected = tab);
 
   // Created once: each page owns its view model and disposes it, so the tabs must not be rebuilt on every switch
   late final List<Widget> _pages = [
     HomePage(
       viewModel: getIt<LiveVitalsViewModel>(),
-      onSeeVitalsTap: () => _open(_Tab.health),
-      onAlertsTap: () => _open(_Tab.alerts),
+      onSeeVitalsTap: () => _open(TopLevelDestination.health),
+      onAlertsTap: () => _open(TopLevelDestination.alerts),
     ),
     HealthPage(
       liveVitalsViewModel: getIt<LiveVitalsViewModel>(),
@@ -38,6 +39,8 @@ class _MainPageState extends State<MainPage> {
     ),
     AlertSettingsPage(viewModel: getIt<AlertSettingsViewModel>()),
     RoutinesPage(viewModel: getIt<RoutinesViewModel>()),
+    // Mobility & Geofencing is not built in this app yet
+    PlaceholderPage(title: TopLevelDestination.location.label),
   ];
 
   @override
@@ -45,28 +48,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       // Keeps every tab alive, with its scroll position and loaded data
       body: IndexedStack(index: _selected.index, children: _pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selected.index,
-        onDestinationSelected: (index) => _open(_Tab.values[index]),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Inicio'),
-          NavigationDestination(
-            icon: Icon(Icons.monitor_heart_outlined),
-            selectedIcon: Icon(Icons.monitor_heart),
-            label: 'Salud',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications_outlined),
-            selectedIcon: Icon(Icons.notifications),
-            label: 'Alertas',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.event_note_outlined),
-            selectedIcon: Icon(Icons.event_note),
-            label: 'Rutinas',
-          ),
-        ],
-      ),
+      bottomNavigationBar: GuardianBottomBar(selected: _selected, onDestinationTap: _open),
     );
   }
 }
