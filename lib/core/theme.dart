@@ -38,6 +38,9 @@ abstract final class GuardianColors {
   static const pastelOrange = Color(0xFFFFE6CC);
   static const pastelOrangeText = Color(0xFFB25900);
   static const pastelOrangeDeep = Color(0xFF7A3E00);
+  // Notice roles (medium severity, waiting states): Material 3 has no slot for a second warning level
+  static const pastelYellow = Color(0xFFFFF4CC);
+  static const pastelYellowText = Color(0xFF806600);
 }
 
 /// Radius tokens (report, section 3.1.1.1 D): subtle 6, default 12, large 20.

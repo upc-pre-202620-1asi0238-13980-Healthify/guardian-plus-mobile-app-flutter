@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// Top bar of the screens opened from another one: back button, title and subtitle.
-/// [onBackPressed] is null when there is nowhere to go back to, and the button is not drawn.
+/// Top bar of the screens opened from another one: back button, title, subtitle and an optional [trailing]
+/// widget such as a state chip. [onBackPressed] is null when there is nowhere to go back to, and the button
+/// is not drawn.
 class DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onBackPressed;
+  final Widget? trailing;
 
-  const new({super.key, required this.title, required this.subtitle, this.onBackPressed});
+  const new({super.key, required this.title, required this.subtitle, this.onBackPressed, this.trailing});
 
   // Vertical padding (2 × 14) + back button touch target (48) + divider (1)
   @override
@@ -42,11 +44,23 @@ class DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: text.titleLarge?.copyWith(color: colors.onSurface)),
-                        Text(subtitle, style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant)),
+                        // One line each: the bar has a fixed height
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.titleLarge?.copyWith(color: colors.onSurface),
+                        ),
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+                        ),
                       ],
                     ),
                   ),
+                  if (trailing != null) ...[const SizedBox(width: 8), trailing!],
                 ],
               ),
             ),
