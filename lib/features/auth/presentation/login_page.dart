@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
         return Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: AppColors.hero,
             body: CustomScrollView(
                 slivers: [
                     SliverToBoxAdapter(child: _Hero()),
@@ -29,30 +29,61 @@ class _Hero extends StatelessWidget {
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
+              spacing: 12,
               children: [
-                Icon(Icons.verified_user_outlined, color: Colors.white, size: 40),
-                SizedBox(width: 12),
-                Text('Guardian+', style: TextStyle(fontSize: 22, color: Colors.white)),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(38),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.verified_user_outlined, color: Colors.white, size: 20),
+                ),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'PLATAFORMA DE SALUD',
+                      style: TextStyle(
+                        fontFamily: AppFonts.mono,
+                        fontFamilyFallback: AppFonts.monoFallback,
+                        fontSize: 9,
+                        letterSpacing: 2.5,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    Text(
+                      'Guardian+',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                  ],
+                ),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 36),
             const Text(
               'Cuidado\nconectado.',
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                fontSize: 36,
+                height: 1.1,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             const Text(
-              'Monitoreo en tiempo real para quienes más importan.',
-              style: TextStyle(color: Colors.white70),
+              'Monitoreo en tiempo real para quienes importan',
+              style: TextStyle(fontSize: 13, color: Colors.white70),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             Row(
-              spacing: 32,
+              spacing: 24,
               children: [
                 _stat('24/7', 'Monitoreo'),
                 _stat('5s', 'Actualización'),
@@ -68,12 +99,26 @@ class _Hero extends StatelessWidget {
   Widget _stat(String value, String label) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 6,
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontFamily: AppFonts.mono,
+            fontFamilyFallback: AppFonts.monoFallback,
+            fontSize: 18,
+            color: Colors.white,
+          ),
         ),
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.white70)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: AppFonts.mono,
+            fontFamilyFallback: AppFonts.monoFallback,
+            fontSize: 10,
+            color: Colors.white70,
+          ),
+        ),
       ],
     );
   }
