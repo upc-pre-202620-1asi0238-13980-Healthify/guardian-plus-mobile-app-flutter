@@ -16,12 +16,13 @@ void main() {
 
   tearDown(() => getIt.reset());
 
-  Widget app({VoidCallback? onSeeVitals}) => MaterialApp(
+  Widget app({VoidCallback? onSeeVitals, VoidCallback? onLogout}) => MaterialApp(
     theme: GuardianTheme.light(),
     home: HomePage(
       viewModel: getIt<LiveVitalsViewModel>(),
       onSeeVitalsTap: onSeeVitals ?? () {},
       onAlertsTap: () {},
+      onLogout: onLogout ?? () {},
     ),
   );
 
@@ -98,6 +99,26 @@ void main() {
     expect(find.text('Guardian+ Band'), findsNWidgets(2));
     expect(find.text('GP-ESP32-S3-0100'), findsOneWidget);
     expect(find.text('Vinculada a Elena Rojas'), findsOneWidget);
+  });
+
+  testWidgets('the avatar signs out after confirming', (tester) async {
+    var logouts = 0;
+    await tester.pumpWidget(app(onLogout: () => logouts++));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Cuenta'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Dejarás de ver la información de Elena'), findsOneWidget);
+
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+    expect(logouts, 0);
+
+    await tester.tap(find.byTooltip('Cuenta'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Cerrar sesión'));
+    await tester.pumpAndSettle();
+    expect(logouts, 1);
   });
 
   testWidgets('a platform that cannot be reached offers to try again', (tester) async {
