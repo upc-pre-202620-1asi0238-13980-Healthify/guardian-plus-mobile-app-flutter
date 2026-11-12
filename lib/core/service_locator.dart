@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:guardian_plus_app/core/network/api_client.dart';
 import 'package:guardian_plus_app/core/session/care_context_store.dart';
+import 'package:guardian_plus_app/features/care_routines_wellness/care_routines_wellness_dependencies.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/add_emergency_contact_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/configure_alert_channel_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_channel_settings_use_case.dart';
@@ -28,6 +29,7 @@ final getIt = GetIt.instance;
 void setupDependencies() {
   _setupCore();
   _setupEmergencyAlerting();
+  setupCareRoutinesWellness(getIt);
 }
 
 void _setupCore() {

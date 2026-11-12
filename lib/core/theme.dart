@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 
+/// Colors of the sign-in screens (login hero and sheet).
+class AppColors {
+  static const primary = Color(0xFF3A7862);
+  static const hero = Color(0xFF23806A);
+  static const primaryLight = Color(0xFF4F8C76);
+  static const mint = Color(0xFFDDF5EE);
+  static const sheet = Color(0xFFF7F9F7);
+  static const textDark = Color(0xFF1B2420);
+  static const textMuted = Color(0xFF5E6B66);
+  static const border = Color(0xFFD9DFDC);
+}
+
+/// Monospaced text of the sign-in screens: the brand's data font, with the system ones as fallback.
+class AppFonts {
+  static const mono = GuardianFonts.data;
+  static const monoFallback = ['Menlo', 'Courier', 'monospace'];
+}
+
 /// Guardian+ palette (report, section 3.1.1.1 B).
 abstract final class GuardianColors {
   static const primary = Color(0xFF167A62);

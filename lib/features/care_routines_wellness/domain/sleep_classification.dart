@@ -1,0 +1,1 @@
+enum SleepClassification { regular, fragmented }
