@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:guardian_plus_app/core/network/api_client.dart';
 import 'package:guardian_plus_app/core/session/care_context_store.dart';
+import 'package:guardian_plus_app/core/time/server_clock.dart';
 import 'package:guardian_plus_app/features/auth/auth_dependencies.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/care_routines_wellness_dependencies.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/emergency_alerting_dependencies.dart';
@@ -21,7 +22,11 @@ void setupDependencies() {
 void _setupCore() {
   getIt.registerLazySingleton<http.Client>(() => http.Client());
 
-  getIt.registerLazySingleton<ApiClient>(() => ApiClient(client: getIt<http.Client>()));
+  getIt.registerLazySingleton<ServerClock>(() => ServerClock());
+
+  getIt.registerLazySingleton<ApiClient>(
+    () => ApiClient(client: getIt<http.Client>(), serverClock: getIt<ServerClock>()),
+  );
 
   getIt.registerLazySingleton<CareContextStore>(() => CareContextStore());
 }

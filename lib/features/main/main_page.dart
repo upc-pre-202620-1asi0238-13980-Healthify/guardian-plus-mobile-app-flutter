@@ -5,8 +5,9 @@ import 'package:guardian_plus_app/features/auth/presentation/login_page.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_page.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_view_model.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_page.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/active_alerts_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/alert_history_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alerts/alerts_page.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/health/health_page.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/home/home_page.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/live_vitals/live_vitals_view_model.dart';
@@ -51,7 +52,10 @@ class _MainPageState extends State<MainPage> {
       liveVitalsViewModel: getIt<LiveVitalsViewModel>(),
       vitalHistoryViewModel: getIt<VitalHistoryViewModel>(),
     ),
-    AlertSettingsPage(viewModel: getIt<AlertSettingsViewModel>()),
+    AlertsPage(
+      activeAlertsViewModel: getIt<ActiveAlertsViewModel>(),
+      alertHistoryViewModel: getIt<AlertHistoryViewModel>(),
+    ),
     RoutinesPage(viewModel: getIt<RoutinesViewModel>()),
     // Mobility & Geofencing is not built in this app yet
     PlaceholderPage(title: TopLevelDestination.location.label),

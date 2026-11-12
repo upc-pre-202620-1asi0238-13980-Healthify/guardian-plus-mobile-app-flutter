@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:guardian_plus_app/core/network/api_exception.dart';
+import 'package:guardian_plus_app/core/time/server_clock.dart';
 import 'package:http/http.dart' as http;
 
 /// Platform's base URL. The default is the deployed API; a local backend is chosen at run time with
@@ -19,8 +20,10 @@ const apiBaseUrl = String.fromEnvironment(
 class ApiClient {
   final http.Client client;
   final String baseUrl;
+  // Learns the platform's time from each answer, for the escalation countdowns
+  final ServerClock? serverClock;
 
-  const new({required this.client, this.baseUrl = apiBaseUrl});
+  const new({required this.client, this.baseUrl = apiBaseUrl, this.serverClock});
 
   // The deployed API sleeps when idle, and its first answer takes a while
   static const _timeout = Duration(seconds: 30);
@@ -55,6 +58,8 @@ class ApiClient {
       throw const ApiException('El servidor tardó demasiado en responder. Inténtalo de nuevo.');
     }
 
+    _syncClock(response.headers['date']);
+
     // Decoded as UTF-8 explicitly: names and messages carry accents
     final text = utf8.decode(response.bodyBytes);
     if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -64,6 +69,15 @@ class ApiClient {
       throw const ApiException('El servidor no devolvió datos');
     }
     return jsonDecode(text);
+  }
+
+  void _syncClock(String? dateHeader) {
+    if (serverClock == null || dateHeader == null) return;
+    try {
+      serverClock!.sync(HttpDate.parse(dateHeader));
+    } on HttpException {
+      // A malformed header only means the countdowns keep the previous offset
+    }
   }
 
   /// The platform's error body (ErrorResource) carries a localized message; it says why the action was rejected.
