@@ -58,9 +58,11 @@ class ReadingItem extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(valueText, style: dataLabelStyle.copyWith(fontSize: 16, color: colors.onSurface)),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(valueText, style: dataLabelStyle.copyWith(fontSize: 16, color: colors.onSurface)),
+            ),
           ),
           ReadingBadge(withinRange: withinRange),
         ],

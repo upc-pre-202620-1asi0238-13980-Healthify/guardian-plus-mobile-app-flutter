@@ -54,26 +54,33 @@ class PeriodAverageCard extends StatelessWidget {
                     if (average != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            // One decimal even for whole-number signs: 76.3 lpm says more than 76 over a period
-                            Text(
-                              average!.toStringAsFixed(1),
-                              style: dataMetricStyle.copyWith(fontSize: 36, height: 40 / 36, color: colors.onSurface),
-                            ),
-                            Text(
-                              ' ${type.displayUnit}',
-                              style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-                            ),
-                          ],
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              // One decimal even for whole-number signs: 76.3 lpm says more than 76 over a period
+                              Text(
+                                average!.toStringAsFixed(1),
+                                style: dataMetricStyle.copyWith(fontSize: 36, height: 40 / 36, color: colors.onSurface),
+                              ),
+                              Text(
+                                ' ${type.displayUnit}',
+                                style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     else
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Text(period.emptyLabel, style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant)),
+                        child: Text(
+                          period.emptyLabel,
+                          style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+                        ),
                       ),
                   ],
                 ),
@@ -125,9 +132,13 @@ class _MinMax extends StatelessWidget {
 
 // Every day for a week; a few evenly spread marks for a day (hours) or a month (dates), or they would not fit
 List<String> _axisLabels(HistoryPeriod period, List<DateTime> days) => switch (period) {
-  HistoryPeriod.day => [for (final hour in [0, 6, 12, 18, 23]) '${hour}h'],
+  HistoryPeriod.day => [
+    for (final hour in [0, 6, 12, 18, 23]) '${hour}h',
+  ],
   HistoryPeriod.week => [for (final day in days) _weekdayLetter(day.weekday)],
-  HistoryPeriod.month => [for (final index in [0, 7, 14, 22, days.length - 1]) '${days[index].day}'],
+  HistoryPeriod.month => [
+    for (final index in [0, 7, 14, 22, days.length - 1]) '${days[index].day}',
+  ],
 };
 
 // Spanish weekday initials; Wednesday is "X" so it is not confused with Tuesday's "M"

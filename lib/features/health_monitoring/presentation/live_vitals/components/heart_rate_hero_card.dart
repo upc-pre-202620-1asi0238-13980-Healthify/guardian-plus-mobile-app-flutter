@@ -55,13 +55,18 @@ class HeartRateHeroCard extends StatelessWidget {
                             title.toUpperCase(),
                             style: text.labelSmall?.copyWith(letterSpacing: 1, color: onCard.withValues(alpha: 0.8)),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(valueText, style: dataMetricStyle.copyWith(fontSize: 56, height: 64 / 56, color: onCard)),
-                              Text(' $unit', style: text.bodyLarge?.copyWith(color: onCard.withValues(alpha: 0.75))),
-                            ],
+                          // Shrinks rather than overflows on a narrow phone
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(valueText, style: dataMetricStyle.copyWith(fontSize: 56, height: 64 / 56, color: onCard)),
+                                Text(' $unit', style: text.bodyLarge?.copyWith(color: onCard.withValues(alpha: 0.75))),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -99,8 +104,14 @@ class HeartRateHeroCard extends StatelessWidget {
               children: [
                 Icon(Icons.watch_outlined, size: 16, color: onCard.withValues(alpha: 0.75)),
                 const SizedBox(width: 8),
-                Text(wristbandText, style: text.bodySmall?.copyWith(color: onCard.withValues(alpha: 0.75))),
-                const Spacer(),
+                Expanded(
+                  child: Text(
+                    wristbandText,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.bodySmall?.copyWith(color: onCard.withValues(alpha: 0.75)),
+                  ),
+                ),
                 if (maxMinText != null)
                   Text(maxMinText!, style: dataLabelStyle.copyWith(color: onCard.withValues(alpha: 0.6))),
               ],

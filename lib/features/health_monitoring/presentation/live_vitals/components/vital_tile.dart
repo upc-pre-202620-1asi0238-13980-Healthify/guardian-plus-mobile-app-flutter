@@ -49,34 +49,30 @@ class VitalTile extends StatelessWidget {
                   ),
                 ),
               ),
-              if (valueText != null) ...[const SizedBox(width: 6), ReadingBadge(withinRange: withinRange)],
+              if (valueText != null) ...[const SizedBox(width: 6), Flexible(child: ReadingBadge(withinRange: withinRange))],
             ],
           ),
           const Spacer(),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                valueText ?? '--',
-                maxLines: 1,
-                softWrap: false,
-                style: dataMetricStyle.copyWith(
-                  fontSize: 26,
-                  height: 30 / 26,
-                  color: withinRange ? colors.onSurface : colors.tertiary,
+          // Shrinks rather than overflows when the tile is narrow
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  valueText ?? '--',
+                  style: dataMetricStyle.copyWith(
+                    fontSize: 26,
+                    height: 30 / 26,
+                    color: withinRange ? colors.onSurface : colors.tertiary,
+                  ),
                 ),
-              ),
-              Flexible(
-                child: Text(
-                  ' $unit',
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                  style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant),
-                ),
-              ),
-            ],
+                Text(' $unit', style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant)),
+              ],
+            ),
           ),
           if (marker != null) ...[const SizedBox(height: 12), RangeBar(marker: marker!, withinRange: withinRange)],
           if (caption != null) ...[
