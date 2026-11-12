@@ -38,6 +38,9 @@ abstract final class GuardianColors {
   static const pastelOrange = Color(0xFFFFE6CC);
   static const pastelOrangeText = Color(0xFFB25900);
   static const pastelOrangeDeep = Color(0xFF7A3E00);
+  // Yellow of "En observación" and of what is coming next
+  static const noticeContainer = Color(0xFFFFF4CC);
+  static const onNoticeContainer = Color(0xFF806600);
 }
 
 /// Radius tokens (report, section 3.1.1.1 D): subtle 6, default 12, large 20.
@@ -60,6 +63,14 @@ const dataLabelStyle = TextStyle(
   fontWeight: FontWeight.w500,
   fontSize: 13,
   height: 18 / 13,
+);
+
+/// Readings of the vital signs ("78 lpm", "36.6 °C"); the larger ones copy it with their own size.
+const dataMetricStyle = TextStyle(
+  fontFamily: GuardianFonts.data,
+  fontWeight: FontWeight.w500,
+  fontSize: 24,
+  height: 26 / 24,
 );
 
 /// The report defines a single light palette ("a calm home, not a hospital"), so there is no dark theme yet.
