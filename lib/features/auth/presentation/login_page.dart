@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/core/session/care_context_store.dart';
+import 'package:guardian_plus_app/core/session/demo_care_context.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
 import 'package:guardian_plus_app/features/main/main_page.dart';
@@ -238,13 +241,14 @@ class _LoginSheetState extends State<_LoginSheet> {
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  // Until the sign-in talks to IAM, it goes straight to the app with the demo care context
+                  // Until the sign-in talks to IAM, it goes straight to the app with the demo care context, saved
+                  // on every sign-in since signing out clears it
                   onPressed: state.isLoading
                       ? null
-                      : () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MainPage()),
-                          ),
+                      : () {
+                          getIt<CareContextStore>().save(demoCareContext);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                        },
                   child: state.isLoading
                       ? const SizedBox(
                           width: 18,
