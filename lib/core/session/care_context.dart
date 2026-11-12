@@ -22,12 +22,16 @@ class CareContext {
 
   String get careRecipientFirstName => careRecipientName.split(' ').first;
 
-  CareContext copyWith({String? Function()? callNumber}) {
+  CareContext copyWith({
+    String? userFullName,
+    String? careRecipientName,
+    String? Function()? callNumber,
+  }) {
     return CareContext(
       userAccountId: userAccountId,
-      userFullName: userFullName,
+      userFullName: userFullName ?? this.userFullName,
       careRecipientProfileId: careRecipientProfileId,
-      careRecipientName: careRecipientName,
+      careRecipientName: careRecipientName ?? this.careRecipientName,
       callNumber: callNumber != null ? callNumber() : this.callNumber,
     );
   }
