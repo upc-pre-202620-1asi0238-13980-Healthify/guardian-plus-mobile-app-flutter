@@ -257,6 +257,64 @@ class _LoginSheetState extends State<_LoginSheet> {
                         ),
                 ),
               ),
+              const SizedBox(height: 24),
+              const Row(
+                spacing: 12,
+                children: [
+                  Expanded(child: Divider(color: AppColors.border)),
+                  Text('o continúa con', style: _monoMuted),
+                  Expanded(child: Divider(color: AppColors.border)),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.textDark,
+                    side: const BorderSide(color: AppColors.border),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 10,
+                    children: [
+                      _GoogleLogo(size: 15),
+                      Text(
+                        'Continuar con Google',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.mint,
+                    foregroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 10,
+                    children: [
+                      Icon(Icons.fingerprint, size: 18, color: AppColors.primary.withAlpha(140)),
+                      const Text(
+                        'Acceso biométrico',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -295,4 +353,51 @@ class _LoginSheetState extends State<_LoginSheet> {
       ),
     );
   }
+}
+
+class _GoogleLogo extends StatelessWidget {
+  const _GoogleLogo({required this.size});
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(size: Size.square(size), painter: _GoogleLogoPainter());
+  }
+}
+
+class _GoogleLogoPainter extends CustomPainter {
+  static const double _deg = 3.1415926535 / 180;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double stroke = size.width * 0.22;
+    final Rect rect = Rect.fromLTWH(
+      stroke / 2,
+      stroke / 2,
+      size.width - stroke,
+      size.height - stroke,
+    );
+
+    Paint arc(Color color) => Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke;
+
+    canvas.drawArc(rect, -140 * _deg, 100 * _deg, false, arc(const Color(0xFFEA4335)));
+    canvas.drawArc(rect, 140 * _deg, 80 * _deg, false, arc(const Color(0xFFFBBC05)));
+    canvas.drawArc(rect, 45 * _deg, 95 * _deg, false, arc(const Color(0xFF34A853)));
+    canvas.drawArc(rect, 0, 45 * _deg, false, arc(const Color(0xFF4285F4)));
+    canvas.drawRect(
+      Rect.fromLTRB(
+        size.width / 2,
+        size.height / 2 - stroke / 2,
+        size.width,
+        size.height / 2 + stroke / 2,
+      ),
+      Paint()..color = const Color(0xFF4285F4),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
