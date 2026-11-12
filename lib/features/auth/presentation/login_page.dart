@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
             )
         );
   }
-} 
+}
 
 class _Hero extends StatelessWidget {
   @override
@@ -136,6 +136,13 @@ class _LoginSheetState extends State<_LoginSheet> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
 
+  static const TextStyle _monoMuted = TextStyle(
+    fontFamily: AppFonts.mono,
+    fontFamilyFallback: AppFonts.monoFallback,
+    fontSize: 12,
+    color: AppColors.textMuted,
+  );
+
   @override
   void dispose() {
     email.dispose();
@@ -151,59 +158,103 @@ class _LoginSheetState extends State<_LoginSheet> {
         final state = widget.viewModel.state;
 
         return Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
           decoration: const BoxDecoration(
             color: AppColors.sheet,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
             children: [
-              const Text(
-                'Iniciar sesión',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textDark),
+              Center(
+                child: Container(
+                  width: 28,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
+              const SizedBox(height: 24),
               const Text(
-                'Ingresa tus credenciales para continuar.',
-                style: TextStyle(color: AppColors.textMuted),
+                'Iniciar Sesion',
+                style: TextStyle(fontSize: 15, color: AppColors.textMuted),
               ),
+              const SizedBox(height: 8),
+              const Text(
+                'Accede a tu cuenta de cuidador',
+                style: TextStyle(fontSize: 15, color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 4),
+              _label('CORREO ELECTRONICO', letterSpacing: 1.5),
+              const SizedBox(height: 12),
               TextField(
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: _inputDecoration('Correo electrónico', Icons.email_outlined),
+                decoration: _inputDecoration('nombre@correo.com'),
               ),
+              const SizedBox(height: 16),
+              _label('Password'),
+              const SizedBox(height: 12),
               TextField(
                 controller: password,
                 obscureText: state.isPasswordHidden,
-                decoration: _inputDecoration('Contraseña', Icons.lock_outline).copyWith(
+                decoration: _inputDecoration('Ingrese u contrasena aca').copyWith(
                   suffixIcon: IconButton(
                     onPressed: widget.viewModel.togglePasswordVisibility,
                     icon: Icon(
-                      state.isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                      state.isPasswordHidden
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
                       color: AppColors.textMuted,
                     ),
                   ),
                 ),
               ),
-              if (state.errorMessage != null)
-                Text(state.errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const Text('¿Olvidaste tu contraseña?', style: _monoMuted),
+                ),
+              ),
+              if (state.errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  state.errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ],
+              const SizedBox(height: 28),
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 40,
                 child: FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   onPressed: state.isLoading ? null : () {},
                   child: state.isLoading
                       ? const SizedBox(
-                          width: 20,
-                          height: 20,
+                          width: 18,
+                          height: 18,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('Ingresar', style: TextStyle(fontWeight: FontWeight.bold)),
+                      : const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            Icon(Icons.verified_user_outlined, size: 16),
+                            Text(
+                              'Ingresar de forma segura',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ],
@@ -213,19 +264,34 @@ class _LoginSheetState extends State<_LoginSheet> {
     );
   }
 
-  InputDecoration _inputDecoration(String hint, IconData icon) {
+  Widget _label(String text, {double letterSpacing = 0.5}) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        letterSpacing: letterSpacing,
+        color: AppColors.textMuted,
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: AppColors.border),
+    );
+
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(icon, color: AppColors.textMuted),
+      hintStyle: const TextStyle(fontSize: 14, color: AppColors.textMuted),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       filled: true,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.border),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.border),
+      border: border,
+      enabledBorder: border,
+      focusedBorder: border.copyWith(
+        borderSide: const BorderSide(color: AppColors.primary),
       ),
     );
   }
