@@ -99,6 +99,13 @@ void main() {
     expect(find.text('Guardian+ Band'), findsNWidgets(2));
     expect(find.text('GP-ESP32-S3-0100'), findsOneWidget);
     expect(find.text('Vinculada a Elena Rojas'), findsOneWidget);
+
+    // Unlinking is only announced for now: the device stays linked
+    await tester.ensureVisible(find.text('Desvincular pulsera'));
+    await tester.tap(find.text('Desvincular pulsera'));
+    await tester.pumpAndSettle();
+    expect(find.text('Próximamente'), findsOneWidget);
+    expect(platform.wearables, hasLength(1));
   });
 
   testWidgets('the avatar signs out after confirming', (tester) async {
