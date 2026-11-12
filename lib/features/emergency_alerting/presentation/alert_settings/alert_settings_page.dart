@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_plus_app/core/service_locator.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_settings.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/notification_channel.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_state.dart';
@@ -10,8 +9,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/components/settings_section.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/detail_top_bar.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_page.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/navigation/emergency_alerting_navigation.dart';
 
 class AlertSettingsPage extends StatefulWidget {
   final AlertSettingsViewModel viewModel;
@@ -47,12 +45,7 @@ class _AlertSettingsPageState extends State<AlertSettingsPage> {
   }
 
   Future<void> _openContacts() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EmergencyContactsPage(viewModel: getIt<EmergencyContactsViewModel>()),
-      ),
-    );
+    await openEmergencyContacts(context);
     // Coming back from the contacts screen, the summary may be out of date
     _viewModel.refreshContacts();
   }

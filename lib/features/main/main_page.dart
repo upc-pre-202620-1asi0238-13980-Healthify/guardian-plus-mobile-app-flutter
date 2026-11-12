@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/service_locator.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_page.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_view_model.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_page.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/active_alerts_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/alert_history_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alerts/alerts_page.dart';
 
 /// App shell behind the sign-in: one tab per bounded context. Home, Health and Location join as they are built.
 class MainPage extends StatefulWidget {
@@ -19,7 +20,10 @@ class _MainPageState extends State<MainPage> {
   // Created once: each page owns its view model and disposes it, so the tabs must not be rebuilt on every switch
   late final List<Widget> _pages = [
     RoutinesPage(viewModel: getIt<RoutinesViewModel>()),
-    AlertSettingsPage(viewModel: getIt<AlertSettingsViewModel>()),
+    AlertsPage(
+      activeAlertsViewModel: getIt<ActiveAlertsViewModel>(),
+      alertHistoryViewModel: getIt<AlertHistoryViewModel>(),
+    ),
   ];
 
   @override
