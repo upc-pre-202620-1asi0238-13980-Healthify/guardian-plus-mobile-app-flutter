@@ -13,6 +13,8 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/home/c
 import 'package:guardian_plus_app/features/health_monitoring/presentation/live_vitals/live_vitals_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/link_wearable_sheet.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/link_wearable_view_model.dart';
+import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/wearable_details_page.dart';
+import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/wearable_details_view_model.dart';
 
 /// "Inicio" tab: how the care recipient is doing right now. Only reads live vitals, so no view model of its own.
 class HomePage extends StatefulWidget {
@@ -53,6 +55,17 @@ class _HomePageState extends State<HomePage> {
     _viewModel.load();
   }
 
+  // A wristband linked or replaced there shows up here when coming back
+  Future<void> _openWristband() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) => WearableDetailsPage(viewModel: getIt<WearableDetailsViewModel>()),
+      ),
+    );
+    if (mounted) _viewModel.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +88,7 @@ class _HomePageState extends State<HomePage> {
                 onSeeVitalsTap: widget.onSeeVitalsTap,
                 onComingSoon: _showComingSoon,
                 onLinkWristbandTap: _linkWristband,
+                onWristbandTap: _openWristband,
               ),
             };
           },
@@ -90,6 +104,7 @@ class _HomeContent extends StatelessWidget {
   final VoidCallback onSeeVitalsTap;
   final VoidCallback onComingSoon;
   final VoidCallback onLinkWristbandTap;
+  final VoidCallback onWristbandTap;
 
   const new({
     required this.viewModel,
@@ -97,6 +112,7 @@ class _HomeContent extends StatelessWidget {
     required this.onSeeVitalsTap,
     required this.onComingSoon,
     required this.onLinkWristbandTap,
+    required this.onWristbandTap,
   });
 
   @override
@@ -131,6 +147,7 @@ class _HomeContent extends StatelessWidget {
           updatedText: relativeTime(vitals.retrievedAt, state.now),
           hasWristband: state.hasWristband,
           onLinkWristbandTap: onLinkWristbandTap,
+          onWristbandTap: onWristbandTap,
         ),
         gap,
         // The app has no dialer, video call or location yet

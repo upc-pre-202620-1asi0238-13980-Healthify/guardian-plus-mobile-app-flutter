@@ -9,6 +9,7 @@ class StatusHeroCard extends StatelessWidget {
   final String updatedText;
   final bool hasWristband;
   final VoidCallback onLinkWristbandTap;
+  final VoidCallback onWristbandTap;
 
   const new({
     super.key,
@@ -18,6 +19,7 @@ class StatusHeroCard extends StatelessWidget {
     required this.updatedText,
     required this.hasWristband,
     required this.onLinkWristbandTap,
+    required this.onWristbandTap,
   });
 
   @override
@@ -70,12 +72,13 @@ class StatusHeroCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Without a wristband the chip is where it gets linked
+          // Without a wristband the chip is where it gets linked; with one it opens its details (the Kotlin app
+          // opens them from Profile, which this app does not have yet)
           Material(
             color: translucent,
             borderRadius: radius,
             child: InkWell(
-              onTap: hasWristband ? null : onLinkWristbandTap,
+              onTap: hasWristband ? onWristbandTap : onLinkWristbandTap,
               borderRadius: radius,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -90,7 +93,10 @@ class StatusHeroCard extends StatelessWidget {
                         style: text.bodySmall?.copyWith(color: onContainer),
                       ),
                     ),
-                    if (!hasWristband) Text('Vincular', style: text.labelLarge?.copyWith(color: onContainer)),
+                    if (hasWristband)
+                      Icon(Icons.chevron_right, size: 16, color: onContainer)
+                    else
+                      Text('Vincular', style: text.labelLarge?.copyWith(color: onContainer)),
                   ],
                 ),
               ),
