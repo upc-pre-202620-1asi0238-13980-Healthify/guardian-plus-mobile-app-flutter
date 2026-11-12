@@ -14,6 +14,7 @@ import 'package:guardian_plus_app/features/health_monitoring/infrastructure/repo
 import 'package:guardian_plus_app/features/health_monitoring/presentation/live_vitals/live_vitals_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/vital_history/vital_history_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/link_wearable_view_model.dart';
+import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/wearable_details_view_model.dart';
 
 /// Registers Health Monitoring. It expects the core ones (ApiClient, CareContextStore) to be there,
 /// so core/service_locator.dart calls it after _setupCore().
@@ -67,6 +68,13 @@ void setupHealthMonitoring(GetIt getIt) {
   getIt.registerFactory<LinkWearableViewModel>(
     () => LinkWearableViewModel(
       linkWearableDevice: getIt<LinkWearableDeviceUseCase>(),
+      careContextStore: getIt<CareContextStore>(),
+    ),
+  );
+
+  getIt.registerFactory<WearableDetailsViewModel>(
+    () => WearableDetailsViewModel(
+      getWearableDevices: getIt<GetWearableDevicesUseCase>(),
       careContextStore: getIt<CareContextStore>(),
     ),
   );
