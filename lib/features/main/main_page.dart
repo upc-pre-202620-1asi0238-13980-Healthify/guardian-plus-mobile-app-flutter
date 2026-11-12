@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/features/auth/application/logout_use_case.dart';
+import 'package:guardian_plus_app/features/auth/presentation/login_page.dart';
+import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_page.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/routines/routines_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_page.dart';
@@ -26,12 +29,23 @@ class _MainPageState extends State<MainPage> {
 
   void _open(TopLevelDestination tab) => setState(() => _selected = tab);
 
+  // Back to the login with nothing left behind: the tabs and their view models go with this page
+  void _logout() {
+    getIt<LogoutUseCase>().execute();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage(viewModel: LoginViewmodel())),
+      (route) => false,
+    );
+  }
+
   // Created once: each page owns its view model and disposes it, so the tabs must not be rebuilt on every switch
   late final List<Widget> _pages = [
     HomePage(
       viewModel: getIt<LiveVitalsViewModel>(),
       onSeeVitalsTap: () => _open(TopLevelDestination.health),
       onAlertsTap: () => _open(TopLevelDestination.alerts),
+      onLogout: _logout,
     ),
     HealthPage(
       liveVitalsViewModel: getIt<LiveVitalsViewModel>(),

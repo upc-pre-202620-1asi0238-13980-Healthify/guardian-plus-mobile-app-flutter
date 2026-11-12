@@ -9,6 +9,7 @@ class HomeHeader extends StatelessWidget {
   final bool allWithinRange;
   final int hour;
   final VoidCallback onBellTap;
+  final VoidCallback onAvatarTap;
 
   const new({
     super.key,
@@ -18,6 +19,7 @@ class HomeHeader extends StatelessWidget {
     required this.allWithinRange,
     required this.hour,
     required this.onBellTap,
+    required this.onAvatarTap,
   });
 
   @override
@@ -32,12 +34,21 @@ class HomeHeader extends StatelessWidget {
 
     return Row(
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: colors.primary, borderRadius: BorderRadius.circular(GuardianRadius.medium)),
-          child: Text(userInitials, style: text.titleMedium?.copyWith(color: colors.onPrimary)),
+        // The member's initials open the account options, such as signing out
+        Tooltip(
+          message: 'Cuenta',
+          child: Material(
+            color: colors.primary,
+            borderRadius: BorderRadius.circular(GuardianRadius.medium),
+            child: InkWell(
+              onTap: onAvatarTap,
+              borderRadius: BorderRadius.circular(GuardianRadius.medium),
+              child: SizedBox.square(
+                dimension: 48,
+                child: Center(child: Text(userInitials, style: text.titleMedium?.copyWith(color: colors.onPrimary))),
+              ),
+            ),
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(

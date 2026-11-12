@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/features/auth/presentation/logout_dialog.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/presentation/common/routine_labels.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/common/error_state.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/common/live_vitals_state.dart';
@@ -21,8 +22,16 @@ class HomePage extends StatefulWidget {
   final LiveVitalsViewModel viewModel;
   final VoidCallback onSeeVitalsTap;
   final VoidCallback onAlertsTap;
+  // Signing out belongs to the shell, which goes back to the login
+  final VoidCallback onLogout;
 
-  const new({super.key, required this.viewModel, required this.onSeeVitalsTap, required this.onAlertsTap});
+  const new({
+    super.key,
+    required this.viewModel,
+    required this.onSeeVitalsTap,
+    required this.onAlertsTap,
+    required this.onLogout,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -55,6 +64,15 @@ class _HomePageState extends State<HomePage> {
     _viewModel.load();
   }
 
+  // The Kotlin app signs out from its Profile menu, which this app does not have yet, so the avatar asks directly
+  Future<void> _confirmLogout() async {
+    final confirmed = await showLogoutDialog(
+      context,
+      careRecipientFirstName: _viewModel.careContext.careRecipientFirstName,
+    );
+    if (confirmed) widget.onLogout();
+  }
+
   // A wristband linked or replaced there shows up here when coming back
   Future<void> _openWristband() async {
     await Navigator.push(
@@ -85,6 +103,7 @@ class _HomePageState extends State<HomePage> {
               _ => _HomeContent(
                 viewModel: _viewModel,
                 onBellTap: widget.onAlertsTap,
+                onAvatarTap: _confirmLogout,
                 onSeeVitalsTap: widget.onSeeVitalsTap,
                 onComingSoon: _showComingSoon,
                 onLinkWristbandTap: _linkWristband,
@@ -101,6 +120,7 @@ class _HomePageState extends State<HomePage> {
 class _HomeContent extends StatelessWidget {
   final LiveVitalsViewModel viewModel;
   final VoidCallback onBellTap;
+  final VoidCallback onAvatarTap;
   final VoidCallback onSeeVitalsTap;
   final VoidCallback onComingSoon;
   final VoidCallback onLinkWristbandTap;
@@ -109,6 +129,7 @@ class _HomeContent extends StatelessWidget {
   const new({
     required this.viewModel,
     required this.onBellTap,
+    required this.onAvatarTap,
     required this.onSeeVitalsTap,
     required this.onComingSoon,
     required this.onLinkWristbandTap,
@@ -132,6 +153,7 @@ class _HomeContent extends StatelessWidget {
           allWithinRange: state.allWithinRange,
           hour: state.now.toLocal().hour,
           onBellTap: onBellTap,
+          onAvatarTap: onAvatarTap,
         ),
         gap,
         CareRecipientCard(
