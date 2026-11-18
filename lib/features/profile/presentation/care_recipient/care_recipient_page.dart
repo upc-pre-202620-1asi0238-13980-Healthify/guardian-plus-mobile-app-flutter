@@ -56,6 +56,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
   @override
   void dispose() {
     widget.viewModel.removeListener(_handleChange);
+    widget.viewModel.dispose();
 
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -73,7 +74,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
       lastDate: now,
     );
 
-    if (selected != null) {
+    if (mounted && selected != null) {
       setState(() {
         _birthDate = selected;
       });
@@ -93,7 +94,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
       birthDate: birthDate,
     );
 
-    if (result != null) {
+    if (mounted && result != null) {
       widget.onCareRecipientUpdated?.call(result);
     }
   }

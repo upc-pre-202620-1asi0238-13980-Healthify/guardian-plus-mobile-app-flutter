@@ -3,6 +3,19 @@ import 'package:guardian_plus_app/features/profile/domain/profile_repository.dar
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 
 class LanguageViewModel extends ChangeNotifier {
+  bool _disposed = false;
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   final ProfileRepository repository;
   final String userId;
 

@@ -29,6 +29,19 @@ class CareCircleMember {
 }
 
 class CareCircleViewModel extends ChangeNotifier {
+  bool _disposed = false;
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   final ProfileRepository repository;
   final String careRecipientProfileId;
 

@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
   final VoidCallback onAlertsTap;
   // Signing out belongs to the shell, which goes back to the login
   final VoidCallback onLogout;
+  final Future<void> Function()? onProfileTap;
 
   const new({
     super.key,
@@ -31,6 +32,7 @@ class HomePage extends StatefulWidget {
     required this.onSeeVitalsTap,
     required this.onAlertsTap,
     required this.onLogout,
+    this.onProfileTap,
   });
 
   @override
@@ -60,11 +62,22 @@ class _HomePageState extends State<HomePage> {
       careRecipientFirstName: _viewModel.careContext.careRecipientFirstName,
     );
     if (!linked || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dispositivo vinculado')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Dispositivo vinculado')));
     _viewModel.load();
   }
 
-  // The Kotlin app signs out from its Profile menu, which this app does not have yet, so the avatar asks directly
+  Future<void> _openAccount() async {
+    final openProfile = widget.onProfileTap;
+    if (openProfile == null) {
+      await _confirmLogout();
+      return;
+    }
+    await openProfile();
+    if (mounted) _viewModel.load();
+  }
+
+  // Retained for callers that have not supplied a Profile entry point.
   Future<void> _confirmLogout() async {
     final confirmed = await showLogoutDialog(
       context,
@@ -78,7 +91,8 @@ class _HomePageState extends State<HomePage> {
     await Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (context) => WearableDetailsPage(viewModel: getIt<WearableDetailsViewModel>()),
+        builder: (context) =>
+            WearableDetailsPage(viewModel: getIt<WearableDetailsViewModel>()),
       ),
     );
     if (mounted) _viewModel.load();
@@ -89,28 +103,51 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: ListenableBuilder(
-          listenable: _viewModel,
-          builder: (context, child) {
-            final state = _viewModel.state;
-            return switch (state) {
-              // Old readings stay visible during refreshes; the spinner is only for the very first load
-              LiveVitalsState(vitals: null, isLoading: true) => const Center(child: CircularProgressIndicator()),
-              LiveVitalsState(vitals: null) => ErrorState(
-                message: state.errorMessage ?? 'La pulsera aún no envió lecturas',
-                onRetry: _viewModel.load,
+        child: Column(
+          children: [
+            if (widget.onProfileTap != null)
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, child) => _viewModel.state.vitals == null
+                    ? Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          onPressed: _openAccount,
+                          icon: const Icon(Icons.person_outline),
+                          label: const Text('Perfil'),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ),
-              _ => _HomeContent(
-                viewModel: _viewModel,
-                onBellTap: widget.onAlertsTap,
-                onAvatarTap: _confirmLogout,
-                onSeeVitalsTap: widget.onSeeVitalsTap,
-                onComingSoon: _showComingSoon,
-                onLinkWristbandTap: _linkWristband,
-                onWristbandTap: _openWristband,
+            Expanded(
+              child: ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, child) {
+                  final state = _viewModel.state;
+                  return switch (state) {
+                    // Old readings stay visible during refreshes; the spinner is only for the very first load
+                    LiveVitalsState(vitals: null, isLoading: true) =>
+                      const Center(child: CircularProgressIndicator()),
+                    LiveVitalsState(vitals: null) => ErrorState(
+                      message:
+                          state.errorMessage ??
+                          'La pulsera aún no envió lecturas',
+                      onRetry: _viewModel.load,
+                    ),
+                    _ => _HomeContent(
+                      viewModel: _viewModel,
+                      onBellTap: widget.onAlertsTap,
+                      onAvatarTap: _openAccount,
+                      onSeeVitalsTap: widget.onSeeVitalsTap,
+                      onComingSoon: _showComingSoon,
+                      onLinkWristbandTap: _linkWristband,
+                      onWristbandTap: _openWristband,
+                    ),
+                  };
+                },
               ),
-            };
-          },
+            ),
+          ],
         ),
       ),
     );
@@ -173,9 +210,17 @@ class _HomeContent extends StatelessWidget {
         ),
         gap,
         // The app has no dialer, video call or location yet
-        QuickActionsRow(onCallTap: onComingSoon, onVideoTap: onComingSoon, onLocationTap: onComingSoon),
+        QuickActionsRow(
+          onCallTap: onComingSoon,
+          onVideoTap: onComingSoon,
+          onLocationTap: onComingSoon,
+        ),
         gap,
-        SectionTitle(title: 'Signos vitales', action: 'Ver detalle', onActionTap: onSeeVitalsTap),
+        SectionTitle(
+          title: 'Signos vitales',
+          action: 'Ver detalle',
+          onActionTap: onSeeVitalsTap,
+        ),
         gap,
         VitalsSummaryCard(
           vitals: vitals,
@@ -184,7 +229,11 @@ class _HomeContent extends StatelessWidget {
           now: state.now,
         ),
         gap,
-        SectionTitle(title: 'Lo próximo', action: 'Ver agenda', onActionTap: onComingSoon),
+        SectionTitle(
+          title: 'Lo próximo',
+          action: 'Ver agenda',
+          onActionTap: onComingSoon,
+        ),
         gap,
         const UpcomingCard(),
       ],

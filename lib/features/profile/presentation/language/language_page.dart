@@ -35,6 +35,7 @@ class _LanguagePageState extends State<LanguagePage> {
   @override
   void dispose() {
     widget.viewModel.removeListener(_refresh);
+    widget.viewModel.dispose();
     super.dispose();
   }
 

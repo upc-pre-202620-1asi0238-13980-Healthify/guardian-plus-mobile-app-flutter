@@ -35,6 +35,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
   @override
   void dispose() {
     widget.viewModel.removeListener(_refresh);
+    widget.viewModel.dispose();
     super.dispose();
   }
 

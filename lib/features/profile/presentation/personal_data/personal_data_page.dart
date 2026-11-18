@@ -57,6 +57,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
   @override
   void dispose() {
     widget.viewModel.removeListener(_handleViewModelChange);
+    widget.viewModel.dispose();
 
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -72,7 +73,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
       phoneNumber: _phoneController.text,
     );
 
-    if (result != null) {
+    if (mounted && result != null) {
       widget.onProfileUpdated?.call(result);
     }
   }

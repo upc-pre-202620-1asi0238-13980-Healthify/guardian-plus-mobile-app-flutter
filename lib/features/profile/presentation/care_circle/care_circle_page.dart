@@ -34,6 +34,7 @@ class _CareCirclePageState extends State<CareCirclePage> {
   @override
   void dispose() {
     widget.viewModel.removeListener(_refresh);
+    widget.viewModel.dispose();
     super.dispose();
   }
 

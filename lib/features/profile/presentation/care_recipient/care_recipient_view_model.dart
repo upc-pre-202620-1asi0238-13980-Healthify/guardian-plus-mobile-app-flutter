@@ -3,6 +3,19 @@ import 'package:guardian_plus_app/features/profile/domain/care_recipient.dart';
 import 'package:guardian_plus_app/features/profile/domain/profile_repository.dart';
 
 class CareRecipientViewModel extends ChangeNotifier {
+  bool _disposed = false;
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   final ProfileRepository repository;
   final String careRecipientProfileId;
 
