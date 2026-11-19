@@ -54,6 +54,11 @@ abstract interface class ProfileRepository {
 
   Future<UserPreferences?> findUserPreferences(String userId);
 
+  Future<UserPreferences> updateApplicationPreferences({
+    required String userId,
+    required bool notificationsEnabled,
+  });
+
   Future<UserPreferences> updateLanguageAndAccessibilityPreferences({
     required String userId,
     required AppLanguage language,

@@ -19,6 +19,7 @@ import 'package:guardian_plus_app/features/profile/presentation/personal_data/pe
 import 'package:guardian_plus_app/features/profile/presentation/personal_data/personal_data_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/settings/settings_page.dart';
 import 'package:guardian_plus_app/features/profile/presentation/terms/terms_page.dart';
+import 'package:guardian_plus_app/features/profile/presentation/settings/settings_view_model.dart';
 
 Future<void> openProfile(
   BuildContext context, {
@@ -160,18 +161,28 @@ class _ProfileEntryState extends State<_ProfileEntry> {
   );
 }
 
-Future<void> _openSettings(BuildContext context) => Navigator.push<void>(
-  context,
-  MaterialPageRoute<void>(
-    builder: (pageContext) => SettingsPage(
-      onBack: () => Navigator.pop(pageContext),
-      onLanguage: () => _openLanguage(pageContext),
-      onAccessibility: () => _openAccessibility(pageContext),
-      onTerms: () => _openTerms(pageContext),
-      onAbout: () => _openAbout(pageContext),
+Future<void> _openSettings(BuildContext context) {
+  final userId = getIt<CareContextStore>().require().userAccountId;
+
+  final viewModel = SettingsViewModel(
+    repository: getIt<ProfileRepository>(),
+    userId: userId,
+  );
+
+  return Navigator.push<void>(
+    context,
+    MaterialPageRoute<void>(
+      builder: (pageContext) => SettingsPage(
+        viewModel: viewModel,
+        onBack: () => Navigator.pop(pageContext),
+        onLanguage: () => _openLanguage(pageContext),
+        onAccessibility: () => _openAccessibility(pageContext),
+        onTerms: () => _openTerms(pageContext),
+        onAbout: () => _openAbout(pageContext),
+      ),
     ),
-  ),
-);
+  );
+}
 
 Future<void> _openLanguage(BuildContext context) {
   final userId = getIt<CareContextStore>().require().userAccountId;

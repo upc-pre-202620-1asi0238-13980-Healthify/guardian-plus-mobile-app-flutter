@@ -173,6 +173,21 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
+  Future<UserPreferences> updateApplicationPreferences({
+    required String userId,
+    required bool notificationsEnabled,
+  }) async {
+    final dto = await api.updateApplicationPreferences(
+      userId: userId,
+      request: UpdateApplicationPreferencesRequestDto(
+        notificationsEnabled: notificationsEnabled,
+      ),
+    );
+
+    return dto.toDomain();
+  }
+
+  @override
   Future<UserPreferences> updateLanguageAndAccessibilityPreferences({
     required String userId,
     required AppLanguage language,

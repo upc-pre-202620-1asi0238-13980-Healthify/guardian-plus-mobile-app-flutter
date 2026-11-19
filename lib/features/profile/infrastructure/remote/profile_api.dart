@@ -121,6 +121,18 @@ class ProfileApi {
     return UserPreferencesDto.fromJson(json as Map<String, dynamic>);
   }
 
+  Future<UserPreferencesDto> updateApplicationPreferences({
+    required String userId,
+    required UpdateApplicationPreferencesRequestDto request,
+  }) async {
+    final json = await client.put(
+      'user-preferences/user/$userId/application',
+      body: request.toJson(),
+    );
+
+    return UserPreferencesDto.fromJson(json as Map<String, dynamic>);
+  }
+
   Future<UserPreferencesDto> updateLanguageAccessibilityPreferences({
     required String userId,
     required UpdateLanguageAccessibilityPreferencesRequestDto request,

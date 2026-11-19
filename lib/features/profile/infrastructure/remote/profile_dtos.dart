@@ -209,6 +209,18 @@ class UserPreferencesDto {
   }
 }
 
+class UpdateApplicationPreferencesRequestDto {
+  final bool notificationsEnabled;
+
+  const UpdateApplicationPreferencesRequestDto({
+    required this.notificationsEnabled,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'notificationsEnabled': notificationsEnabled,
+  };
+}
+
 class UpdateLanguageAccessibilityPreferencesRequestDto {
   final String language;
   final bool highContrastEnabled;
