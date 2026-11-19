@@ -8,6 +8,7 @@ import 'package:guardian_plus_app/features/profile/domain/profile_repository.dar
 import 'package:guardian_plus_app/features/profile/infrastructure/remote/profile_api.dart';
 import 'package:guardian_plus_app/features/profile/infrastructure/repositories/profile_repository_impl.dart';
 import 'package:guardian_plus_app/features/profile/presentation/onboarding/onboarding_viewmodel.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 
 void setupProfile(GetIt getIt) {
   getIt.registerLazySingleton<ProfileApi>(
@@ -37,5 +38,9 @@ void setupProfile(GetIt getIt) {
     () => OnboardingViewModel(
       completeOnboarding: getIt<CompleteOnboardingUseCase>(),
     ),
+  );
+
+  getIt.registerLazySingleton<ProfilePreferencesController>(
+    () => ProfilePreferencesController(repository: getIt<ProfileRepository>()),
   );
 }

@@ -5,6 +5,7 @@ import 'package:guardian_plus_app/features/main/main_page.dart';
 import 'package:guardian_plus_app/features/profile/application/care_context_load.dart';
 import 'package:guardian_plus_app/features/profile/application/load_care_context_use_case.dart';
 import 'package:guardian_plus_app/features/profile/presentation/onboarding/onboarding_page.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 
 class SessionStartPage extends StatefulWidget {
   const SessionStartPage({super.key});
@@ -41,6 +42,12 @@ class _SessionStartPageState extends State<SessionStartPage> {
       }
 
       if (result is CareContextReady) {
+        await getIt<ProfilePreferencesController>().load(
+          result.careContext.userAccountId,
+        );
+
+        if (!mounted) return;
+
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const MainPage()),
           (_) => false,
@@ -48,7 +55,6 @@ class _SessionStartPageState extends State<SessionStartPage> {
 
         return;
       }
-
       if (result is CareContextOnboardingRequired) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
