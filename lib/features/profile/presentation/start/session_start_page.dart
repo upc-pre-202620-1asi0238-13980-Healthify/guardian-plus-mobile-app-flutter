@@ -4,6 +4,7 @@ import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/main/main_page.dart';
 import 'package:guardian_plus_app/features/profile/application/care_context_load.dart';
 import 'package:guardian_plus_app/features/profile/application/load_care_context_use_case.dart';
+import 'package:guardian_plus_app/features/profile/presentation/onboarding/onboarding_page.dart';
 
 class SessionStartPage extends StatefulWidget {
   const SessionStartPage({super.key});
@@ -23,7 +24,9 @@ class _SessionStartPageState extends State<SessionStartPage> {
   }
 
   Future<void> _load() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       loading = true;
@@ -33,7 +36,9 @@ class _SessionStartPageState extends State<SessionStartPage> {
     try {
       final result = await getIt<LoadCareContextUseCase>().execute();
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       if (result is CareContextReady) {
         Navigator.of(context).pushAndRemoveUntil(
@@ -45,22 +50,16 @@ class _SessionStartPageState extends State<SessionStartPage> {
       }
 
       if (result is CareContextOnboardingRequired) {
-        final missing = <String>[];
-
-        if (result.needsUserProfile) {
-          missing.add('tu perfil personal');
-        }
-
-        if (result.needsCareRecipient) {
-          missing.add('la persona bajo cuidado');
-        }
-
-        setState(() {
-          loading = false;
-          errorMessage =
-              'La cuenta inició sesión correctamente, '
-              'pero todavía falta configurar ${missing.join(' y ')}.';
-        });
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => OnboardingPage(
+              userAccountId: result.userAccountId,
+              needsUserProfile: result.needsUserProfile,
+              needsCareRecipient: result.needsCareRecipient,
+              suggestedFullName: result.suggestedFullName,
+            ),
+          ),
+        );
 
         return;
       }
@@ -70,7 +69,9 @@ class _SessionStartPageState extends State<SessionStartPage> {
         errorMessage = 'No se pudo preparar tu cuenta.';
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       setState(() {
         loading = false;
@@ -100,7 +101,7 @@ class _SessionStartPageState extends State<SessionStartPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Icons.person_search_outlined,
+                        Icons.error_outline,
                         size: 52,
                         color: AppColors.primary,
                       ),
