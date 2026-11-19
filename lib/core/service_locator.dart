@@ -7,6 +7,7 @@ import 'package:guardian_plus_app/features/auth/domain/session_repository.dart';
 import 'package:guardian_plus_app/features/care_routines_wellness/care_routines_wellness_dependencies.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/emergency_alerting_dependencies.dart';
 import 'package:guardian_plus_app/features/health_monitoring/health_monitoring_dependencies.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/mobility_geofencing_dependencies.dart';
 import 'package:guardian_plus_app/features/profile/profile_dependencies.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,7 @@ void setupDependencies({required SharedPreferences preferences}) {
   setupEmergencyAlerting(getIt);
   setupCareRoutinesWellness(getIt);
   setupHealthMonitoring(getIt);
+  setupMobilityGeofencing(getIt);
   setupProfile(getIt);
 }
 
