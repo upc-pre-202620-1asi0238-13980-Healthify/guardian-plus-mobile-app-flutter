@@ -19,6 +19,25 @@ class AuthApi {
     return OtpChallengeDto.fromJson(Map<String, dynamic>.from(json as Map));
   }
 
+  Future<void> verifyEmail({
+    required String userAccountId,
+    required String code,
+  }) async {
+    await apiClient.post(
+      'auth/verify-email',
+      authenticated: false,
+      body: {'userAccountId': userAccountId, 'code': code},
+    );
+  }
+
+  Future<void> resendEmailVerification(String userAccountId) async {
+    await apiClient.post(
+      'auth/verify-email/resend',
+      authenticated: false,
+      body: {'userAccountId': userAccountId},
+    );
+  }
+
   Future<AuthenticatedSessionDto> verifyOtp({
     required String userAccountId,
     required String code,

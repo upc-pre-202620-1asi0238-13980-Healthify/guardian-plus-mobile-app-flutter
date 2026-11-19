@@ -19,14 +19,29 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return SecondFactorRequired(challenge.userAccountId);
     } on ApiException catch (error) {
+      final userAccountId = error.details;
+
       if (error.code == 'EMAIL_NOT_VERIFIED' &&
-          error.details != null &&
-          error.details!.isNotEmpty) {
-        return EmailVerificationRequired(error.details!);
+          userAccountId != null &&
+          userAccountId.trim().isNotEmpty) {
+        return EmailVerificationRequired(userAccountId);
       }
 
       rethrow;
     }
+  }
+
+  @override
+  Future<void> verifyEmail({
+    required String userAccountId,
+    required String code,
+  }) {
+    return api.verifyEmail(userAccountId: userAccountId, code: code);
+  }
+
+  @override
+  Future<void> resendEmailVerification(String userAccountId) {
+    return api.resendEmailVerification(userAccountId);
   }
 
   @override

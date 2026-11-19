@@ -1,0 +1,1 @@
+enum OtpPurpose { login, emailVerification }
