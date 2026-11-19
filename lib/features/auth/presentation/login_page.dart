@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_plus_app/core/service_locator.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_page.dart';
+import 'package:guardian_plus_app/features/auth/presentation/register/register_page.dart';
+import 'package:guardian_plus_app/features/auth/presentation/register/register_viewmodel.dart';
 
 class LoginPage extends StatelessWidget {
   final LoginViewmodel viewModel;
@@ -145,7 +148,6 @@ class _LoginSheet extends StatefulWidget {
 
 class _LoginSheetState extends State<_LoginSheet> {
   final TextEditingController email = TextEditingController();
-
   final TextEditingController password = TextEditingController();
 
   static const TextStyle _monoMuted = TextStyle(
@@ -160,6 +162,55 @@ class _LoginSheetState extends State<_LoginSheet> {
     email.dispose();
     password.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    final navigation = await widget.viewModel.login(
+      email: email.text,
+      password: password.text,
+    );
+
+    if (!mounted || navigation == null) {
+      return;
+    }
+
+    password.clear();
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OtpVerificationPage(
+          userAccountId: navigation.userAccountId,
+          email: navigation.email,
+          purpose: navigation.purpose,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openRegister() async {
+    final verified = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => RegisterPage(viewModel: getIt<RegisterViewmodel>()),
+      ),
+    );
+
+    if (!mounted || verified != true) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Cuenta verificada. Ya puedes iniciar sesión.'),
+      ),
+    );
+  }
+
+  void _googleSignIn() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Google Sign-In se conectará en el siguiente bloque.'),
+      ),
+    );
   }
 
   @override
@@ -190,7 +241,7 @@ class _LoginSheetState extends State<_LoginSheet> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Iniciar Sesion',
+                'Iniciar Sesión',
                 style: TextStyle(fontSize: 15, color: AppColors.textMuted),
               ),
               const SizedBox(height: 8),
@@ -198,44 +249,63 @@ class _LoginSheetState extends State<_LoginSheet> {
                 'Accede a tu cuenta de cuidador',
                 style: TextStyle(fontSize: 15, color: AppColors.textMuted),
               ),
-              const SizedBox(height: 4),
-              _label('CORREO ELECTRONICO', letterSpacing: 1.5),
+              const SizedBox(height: 20),
+
+              _label('CORREO ELECTRÓNICO', letterSpacing: 1.5),
+
               const SizedBox(height: 12),
+
               TextField(
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
                 decoration: _inputDecoration('nombre@correo.com'),
               ),
+
               const SizedBox(height: 16),
-              _label('Password'),
+
+              _label('CONTRASEÑA', letterSpacing: 1.5),
+
               const SizedBox(height: 12),
+
               TextField(
                 controller: password,
                 obscureText: state.isPasswordHidden,
-                decoration: _inputDecoration('Ingrese u contrasena aca')
-                    .copyWith(
-                      suffixIcon: IconButton(
-                        onPressed: widget.viewModel.togglePasswordVisibility,
-                        icon: Icon(
-                          state.isPasswordHidden
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) {
+                  if (!state.isLoading) {
+                    _login();
+                  }
+                },
+                decoration: _inputDecoration('Ingresa tu contraseña').copyWith(
+                  suffixIcon: IconButton(
+                    onPressed: widget.viewModel.togglePasswordVisibility,
+                    icon: Icon(
+                      state.isPasswordHidden
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: AppColors.textMuted,
                     ),
+                  ),
+                ),
               ),
+
               const SizedBox(height: 12),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // Password reset se conectará
+                    // en su bloque correspondiente.
+                  },
                   child: const Text(
                     '¿Olvidaste tu contraseña?',
                     style: _monoMuted,
                   ),
                 ),
               ),
+
               if (state.errorMessage != null) ...[
                 const SizedBox(height: 12),
                 Text(
@@ -243,7 +313,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
+
               const SizedBox(height: 28),
+
               SizedBox(
                 width: double.infinity,
                 height: 40,
@@ -255,30 +327,7 @@ class _LoginSheetState extends State<_LoginSheet> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  onPressed: state.isLoading
-                      ? null
-                      : () async {
-                          final navigation = await widget.viewModel.login(
-                            email: email.text,
-                            password: password.text,
-                          );
-
-                          if (!mounted || navigation == null) {
-                            return;
-                          }
-
-                          password.clear();
-
-                          await Navigator.of(this.context).push(
-                            MaterialPageRoute(
-                              builder: (_) => OtpVerificationPage(
-                                userAccountId: navigation.userAccountId,
-                                email: navigation.email,
-                                purpose: navigation.purpose,
-                              ),
-                            ),
-                          );
-                        },
+                  onPressed: state.isLoading ? null : _login,
                   child: state.isLoading
                       ? const SizedBox(
                           width: 18,
@@ -304,7 +353,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                         ),
                 ),
               ),
+
               const SizedBox(height: 24),
+
               const Row(
                 spacing: 12,
                 children: [
@@ -313,7 +364,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                   Expanded(child: Divider(color: AppColors.border)),
                 ],
               ),
+
               const SizedBox(height: 24),
+
               SizedBox(
                 width: double.infinity,
                 height: 40,
@@ -326,7 +379,7 @@ class _LoginSheetState extends State<_LoginSheet> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: _googleSignIn,
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 10,
@@ -343,10 +396,12 @@ class _LoginSheetState extends State<_LoginSheet> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 32),
+
               Center(
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: _openRegister,
                   child: const Text.rich(
                     TextSpan(
                       style: TextStyle(
@@ -367,7 +422,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
+
               const Center(
                 child: Text(
                   'Al ingresar, aceptas los Términos de uso y la Política de privacidad',

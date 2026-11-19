@@ -26,7 +26,7 @@ class OtpVerificationPage extends StatefulWidget {
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
   late final OtpVerificationViewModel viewModel;
 
-  final codeController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
 
   @override
   void initState() {
@@ -62,15 +62,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Correo verificado correctamente. Ya puedes iniciar sesión.',
-        ),
-      ),
-    );
-
-    Navigator.of(context).pop();
+    // Para EMAIL_VERIFICATION:
+    // devolvemos true a RegisterPage.
+    Navigator.of(context).pop(true);
   }
 
   Future<void> _resend() async {
@@ -93,58 +87,80 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
         if (actionMessage != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
+            if (!mounted) {
+              return;
+            }
 
-            ScaffoldMessenger.of(context)
+            ScaffoldMessenger.of(this.context)
                 .showSnackBar(SnackBar(content: Text(actionMessage)));
 
             viewModel.clearActionMessage();
           });
         }
 
+        final isEmailVerification =
+            widget.purpose == OtpPurpose.emailVerification;
+
         return Scaffold(
           backgroundColor: AppColors.sheet,
           appBar: AppBar(
             backgroundColor: AppColors.sheet,
-            title: const Text('Verificación'),
+            title: Text(
+              isEmailVerification ? 'Verifica tu correo' : 'Verificación',
+            ),
           ),
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
                 const SizedBox(height: 28),
+
                 const Icon(
                   Icons.mark_email_read_outlined,
                   size: 56,
                   color: AppColors.primary,
                 ),
+
                 const SizedBox(height: 24),
-                const Text(
-                  'Revisa tu correo',
+
+                Text(
+                  isEmailVerification
+                      ? 'Confirma tu correo'
+                      : 'Revisa tu correo',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textDark,
                   ),
                 ),
+
                 const SizedBox(height: 10),
+
                 Text(
                   'Enviamos un código de 6 dígitos a ${widget.email}.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: AppColors.textMuted),
                 ),
+
                 const SizedBox(height: 32),
+
                 TextField(
                   controller: codeController,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   maxLength: authCodeLength,
+                  autofocus: true,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(authCodeLength),
                   ],
                   onChanged: viewModel.onCodeChanged,
+                  onSubmitted: (_) {
+                    if (state.isComplete && !state.isLoading) {
+                      _verify();
+                    }
+                  },
                   style: const TextStyle(
                     fontSize: 28,
                     letterSpacing: 12,
@@ -157,9 +173,19 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
+
                 if (state.errorMessage != null) ...[
                   const SizedBox(height: 12),
                   Text(
@@ -170,10 +196,19 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     ),
                   ),
                 ],
+
                 const SizedBox(height: 24),
+
                 SizedBox(
                   height: 46,
                   child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
                     onPressed: state.isLoading || !state.isComplete
                         ? null
                         : _verify,
@@ -186,10 +221,16 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Verificar código'),
+                        : Text(
+                            isEmailVerification
+                                ? 'Verificar correo'
+                                : 'Verificar código',
+                          ),
                   ),
                 ),
+
                 const SizedBox(height: 22),
+
                 TextButton(
                   onPressed: state.canResend ? _resend : null,
                   child: state.isResending
@@ -198,6 +239,15 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       ? const Text('Reenviar código')
                       : Text('Reenviar en ${state.resendCountdown}'),
                 ),
+
+                if (isEmailVerification) ...[
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Debes verificar tu correo antes de poder iniciar sesión.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  ),
+                ],
               ],
             ),
           ),

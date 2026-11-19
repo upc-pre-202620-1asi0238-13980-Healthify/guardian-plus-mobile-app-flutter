@@ -1,3 +1,28 @@
+class RegisteredUserAccountDto {
+  final String id;
+  final String email;
+
+  const RegisteredUserAccountDto({required this.id, required this.email});
+
+  factory RegisteredUserAccountDto.fromJson(Map<String, dynamic> json) {
+    final rawId = json['id'] ?? json['userAccountId'];
+
+    final rawEmail = json['email'];
+
+    if (rawId is! String || rawId.trim().isEmpty) {
+      throw const FormatException(
+        'La cuenta registrada no tiene identificador.',
+      );
+    }
+
+    if (rawEmail is! String || rawEmail.trim().isEmpty) {
+      throw const FormatException('La cuenta registrada no tiene correo.');
+    }
+
+    return RegisteredUserAccountDto(id: rawId, email: rawEmail);
+  }
+}
+
 class OtpChallengeDto {
   final String userAccountId;
   final String? message;
@@ -21,8 +46,8 @@ class AuthenticatedSessionDto {
   const AuthenticatedSessionDto({
     required this.userAccountId,
     required this.accessToken,
-    required this.expiresAt,
     this.tokenType,
+    required this.expiresAt,
   });
 
   factory AuthenticatedSessionDto.fromJson(Map<String, dynamic> json) {

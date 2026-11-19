@@ -6,6 +6,22 @@ class AuthApi {
 
   const AuthApi({required this.apiClient});
 
+  Future<RegisteredUserAccountDto> register({
+    required String fullName,
+    required String email,
+    required String password,
+  }) async {
+    final json = await apiClient.post(
+      'auth/register',
+      authenticated: false,
+      body: {'fullName': fullName, 'email': email, 'password': password},
+    );
+
+    return RegisteredUserAccountDto.fromJson(
+      Map<String, dynamic>.from(json as Map),
+    );
+  }
+
   Future<OtpChallengeDto> login({
     required String email,
     required String password,

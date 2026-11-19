@@ -3,6 +3,7 @@ import 'package:guardian_plus_app/core/network/api_client.dart';
 import 'package:guardian_plus_app/core/session/care_context_store.dart';
 import 'package:guardian_plus_app/features/auth/application/login_use_case.dart';
 import 'package:guardian_plus_app/features/auth/application/logout_use_case.dart';
+import 'package:guardian_plus_app/features/auth/application/register_use_case.dart';
 import 'package:guardian_plus_app/features/auth/application/resend_email_verification_use_case.dart';
 import 'package:guardian_plus_app/features/auth/application/resend_otp_use_case.dart';
 import 'package:guardian_plus_app/features/auth/application/verify_email_use_case.dart';
@@ -14,6 +15,7 @@ import 'package:guardian_plus_app/features/auth/infrastructure/remote/auth_api.d
 import 'package:guardian_plus_app/features/auth/infrastructure/repositories/auth_repository_impl.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_view_model.dart';
+import 'package:guardian_plus_app/features/auth/presentation/register/register_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void setupAuth(GetIt getIt, {required SharedPreferences preferences}) {
@@ -31,6 +33,10 @@ void setupAuth(GetIt getIt, {required SharedPreferences preferences}) {
 
   getIt.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(repository: getIt<AuthRepository>()),
+  );
+
+  getIt.registerLazySingleton<RegisterUseCase>(
+    () => RegisterUseCase(repository: getIt<AuthRepository>()),
   );
 
   getIt.registerLazySingleton<VerifyOtpUseCase>(
@@ -61,6 +67,10 @@ void setupAuth(GetIt getIt, {required SharedPreferences preferences}) {
 
   getIt.registerFactory<LoginViewmodel>(
     () => LoginViewmodel(loginUseCase: getIt<LoginUseCase>()),
+  );
+
+  getIt.registerFactory<RegisterViewmodel>(
+    () => RegisterViewmodel(registerUseCase: getIt<RegisterUseCase>()),
   );
 
   getIt.registerFactory<OtpVerificationViewModel>(
