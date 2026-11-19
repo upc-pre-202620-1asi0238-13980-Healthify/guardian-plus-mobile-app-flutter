@@ -16,6 +16,11 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/wearab
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/link_wearable_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/wearable_details_page.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/wearable/wearable_details_view_model.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/domain/communication.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/call/call_page.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/call/call_view_model.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/perimeter/perimeter_monitoring_page.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/perimeter/perimeter_monitoring_view_model.dart';
 
 /// "Inicio" tab: how the care recipient is doing right now. Only reads live vitals, so no view model of its own.
 class HomePage extends StatefulWidget {
@@ -95,6 +100,28 @@ class _HomePageState extends State<HomePage> {
     if (mounted) _viewModel.load();
   }
 
+  // Direct communication (US-23): video first, the platform degrades it to voice or reports what the wearable lacks
+  Future<void> _openVideoCall() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) => CallPage(viewModel: getIt<CallViewModel>(param1: CallType.video)),
+      ),
+    );
+    if (mounted) _viewModel.load();
+  }
+
+  // Location and safe zones (US-18, EP04)
+  Future<void> _openLocation() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) => PerimeterMonitoringPage(viewModel: getIt<PerimeterMonitoringViewModel>()),
+      ),
+    );
+    if (mounted) _viewModel.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +146,8 @@ class _HomePageState extends State<HomePage> {
                 onComingSoon: _showComingSoon,
                 onLinkWristbandTap: _linkWristband,
                 onWristbandTap: _openWristband,
+                onVideoTap: _openVideoCall,
+                onLocationTap: _openLocation,
               ),
             };
           },
@@ -136,6 +165,8 @@ class _HomeContent extends StatelessWidget {
   final VoidCallback onComingSoon;
   final VoidCallback onLinkWristbandTap;
   final VoidCallback onWristbandTap;
+  final VoidCallback onVideoTap;
+  final VoidCallback onLocationTap;
 
   const new({
     required this.viewModel,
@@ -145,6 +176,8 @@ class _HomeContent extends StatelessWidget {
     required this.onComingSoon,
     required this.onLinkWristbandTap,
     required this.onWristbandTap,
+    required this.onVideoTap,
+    required this.onLocationTap,
   });
 
   @override
@@ -183,8 +216,8 @@ class _HomeContent extends StatelessWidget {
           onWristbandTap: onWristbandTap,
         ),
         gap,
-        // The app has no dialer, video call or location yet
-        QuickActionsRow(onCallTap: onComingSoon, onVideoTap: onComingSoon, onLocationTap: onComingSoon),
+        // Calling by phone is still pending; video and location open the mobility_geofencing screens
+        QuickActionsRow(onCallTap: onComingSoon, onVideoTap: onVideoTap, onLocationTap: onLocationTap),
         gap,
         SectionTitle(title: 'Signos vitales', action: 'Ver detalle', onActionTap: onSeeVitalsTap),
         gap,
