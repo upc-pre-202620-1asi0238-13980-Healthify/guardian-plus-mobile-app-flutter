@@ -21,42 +21,55 @@ const apiBaseUrl = String.fromEnvironment(
 class ApiClient {
   final http.Client client;
   final String baseUrl;
-
-  // Learns the platform's time from each answer, for the escalation countdowns.
   final ServerClock? serverClock;
+
+  /// Supplies the current IAM token without making Core depend directly
+  /// on a concrete authentication implementation.
+  final String? Function()? accessTokenProvider;
 
   const ApiClient({
     required this.client,
     this.baseUrl = apiBaseUrl,
     this.serverClock,
+    this.accessTokenProvider,
   });
 
-  // The deployed API sleeps when idle, and its first answer takes a while.
   static const _timeout = Duration(seconds: 30);
 
-  Future<dynamic> get(String path) {
-    return _send('GET', path);
+  Future<dynamic> get(String path, {bool authenticated = true}) {
+    return _send('GET', path, authenticated: authenticated);
   }
 
-  Future<dynamic> post(String path, {Object? body}) {
-    return _send('POST', path, body: body);
+  Future<dynamic> post(String path, {Object? body, bool authenticated = true}) {
+    return _send('POST', path, body: body, authenticated: authenticated);
   }
 
-  Future<dynamic> put(String path, {Object? body}) {
-    return _send('PUT', path, body: body);
+  Future<dynamic> put(String path, {Object? body, bool authenticated = true}) {
+    return _send('PUT', path, body: body, authenticated: authenticated);
   }
 
-  Future<dynamic> delete(String path) {
-    return _send('DELETE', path);
+  Future<dynamic> delete(String path, {bool authenticated = true}) {
+    return _send('DELETE', path, authenticated: authenticated);
   }
 
-  Future<dynamic> _send(String method, String path, {Object? body}) async {
+  Future<dynamic> _send(
+    String method,
+    String path, {
+    Object? body,
+    required bool authenticated,
+  }) async {
     final request = http.Request(method, Uri.parse('$baseUrl$path'))
       ..headers['Accept'] = 'application/json'
-      // The platform localizes its error messages
-      // (messages_es.properties) from this header.
       ..headers['Accept-Language'] = PlatformDispatcher.instance.locale
           .toLanguageTag();
+
+    if (authenticated) {
+      final accessToken = accessTokenProvider?.call();
+
+      if (accessToken != null && accessToken.trim().isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
 
     if (body != null) {
       request
@@ -86,8 +99,6 @@ class ApiClient {
 
     _syncClock(response.headers['date']);
 
-    // Decoded as UTF-8 explicitly:
-    // names and messages carry accents.
     final text = utf8.decode(response.bodyBytes);
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -121,9 +132,6 @@ class ApiClient {
     }
   }
 
-  /// The platform's error body (ErrorResource) carries
-  /// a localized message and may also include a code
-  /// and additional details.
   _ApiError _parseError(String text, int statusCode) {
     try {
       final decoded = jsonDecode(text);

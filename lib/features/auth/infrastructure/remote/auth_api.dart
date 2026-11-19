@@ -12,6 +12,7 @@ class AuthApi {
   }) async {
     final json = await apiClient.post(
       'auth/login',
+      authenticated: false,
       body: {'email': email, 'password': password},
     );
 
@@ -24,6 +25,7 @@ class AuthApi {
   }) async {
     final json = await apiClient.post(
       'auth/otp/verify',
+      authenticated: false,
       body: {'userAccountId': userAccountId, 'code': code},
     );
 
@@ -35,6 +37,7 @@ class AuthApi {
   Future<void> resendOtp(String userAccountId) async {
     await apiClient.post(
       'auth/otp/resend',
+      authenticated: false,
       body: {'userAccountId': userAccountId},
     );
   }
