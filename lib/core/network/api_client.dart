@@ -48,6 +48,10 @@ class ApiClient {
     return _send('PUT', path, body: body, authenticated: authenticated);
   }
 
+  Future<dynamic> patch(String path, {Object? body, bool authenticated = true}) {
+    return _send('PATCH', path, body: body, authenticated: authenticated);
+  }
+
   Future<dynamic> delete(String path, {bool authenticated = true}) {
     return _send('DELETE', path, authenticated: authenticated);
   }
@@ -113,6 +117,10 @@ class ApiClient {
     }
 
     if (text.isEmpty) {
+      // Deleting or toggling a resource may legitimately answer without a body
+      if (response.statusCode == 204 || method == 'DELETE' || method == 'PATCH') {
+        return null;
+      }
       throw const ApiException('El servidor no devolvió datos');
     }
 
