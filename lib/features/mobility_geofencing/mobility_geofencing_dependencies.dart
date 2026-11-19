@@ -12,13 +12,13 @@ import 'package:guardian_plus_app/features/mobility_geofencing/presentation/call
 import 'package:guardian_plus_app/features/mobility_geofencing/presentation/perimeter/perimeter_monitoring_view_model.dart';
 import 'package:guardian_plus_app/features/mobility_geofencing/presentation/safe_zones/safe_zones_view_model.dart';
 
-/// US-23: a call with no answer after this long is closed and logged.
+/// a call with no answer after this long is closed and logged.
 const unansweredCallTimeout = Duration(seconds: 30);
 
 /// How often the perimeter screen asks the platform for a new position.
 const perimeterRefreshInterval = Duration(seconds: 15);
 
-/// EP04: consecutive readings outside every active zone before the exit alert is raised.
+///consecutive readings outside every active zone before the exit alert is raised.
 const perimeterSustainedReadings = 2;
 
 /// Registers Mobility & Geofencing. Needs ApiClient and CareContextStore from the core.
