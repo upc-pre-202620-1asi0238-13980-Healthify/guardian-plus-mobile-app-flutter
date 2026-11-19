@@ -3,6 +3,9 @@ import 'package:guardian_plus_app/core/network/api_client.dart';
 import 'package:guardian_plus_app/features/profile/domain/profile_repository.dart';
 import 'package:guardian_plus_app/features/profile/infrastructure/remote/profile_api.dart';
 import 'package:guardian_plus_app/features/profile/infrastructure/repositories/profile_repository_impl.dart';
+import 'package:guardian_plus_app/core/session/care_context_store.dart';
+import 'package:guardian_plus_app/features/auth/domain/session_repository.dart';
+import 'package:guardian_plus_app/features/profile/application/load_care_context_use_case.dart';
 
 void setupProfile(GetIt getIt) {
   getIt.registerLazySingleton<ProfileApi>(
@@ -11,5 +14,12 @@ void setupProfile(GetIt getIt) {
 
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(api: getIt<ProfileApi>()),
+  );
+  getIt.registerLazySingleton<LoadCareContextUseCase>(
+    () => LoadCareContextUseCase(
+      sessionRepository: getIt<SessionRepository>(),
+      profileRepository: getIt<ProfileRepository>(),
+      careContextStore: getIt<CareContextStore>(),
+    ),
   );
 }

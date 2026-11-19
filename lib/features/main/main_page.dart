@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(viewModel: LoginViewmodel()),
+        builder: (context) => LoginPage(viewModel: getIt<LoginViewmodel>()),
       ),
       (route) => false,
     );

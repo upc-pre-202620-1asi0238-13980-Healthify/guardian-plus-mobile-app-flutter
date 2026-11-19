@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
       title: 'Guardian+',
       debugShowCheckedModeBanner: false,
       theme: GuardianTheme.light(),
-      home: LoginPage(viewModel: LoginViewmodel()),
+      home: LoginPage(viewModel: getIt<LoginViewmodel>()),
     );
   }
 }

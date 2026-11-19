@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_plus_app/core/service_locator.dart';
-import 'package:guardian_plus_app/core/session/care_context_store.dart';
-import 'package:guardian_plus_app/core/session/demo_care_context.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dart';
-import 'package:guardian_plus_app/features/main/main_page.dart';
+import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_page.dart';
 
 class LoginPage extends StatelessWidget {
-    final LoginViewmodel viewModel;
+  final LoginViewmodel viewModel;
+
   const LoginPage({super.key, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
-            backgroundColor: AppColors.hero,
-            body: CustomScrollView(
-                slivers: [
-                    SliverToBoxAdapter(child: _Hero()),
-                    SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: _LoginSheet(viewModel: viewModel)
-                    )
-                ],
-            )
-        );
+    return Scaffold(
+      backgroundColor: AppColors.hero,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: _Hero()),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _LoginSheet(viewModel: viewModel),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -47,7 +45,11 @@ class _Hero extends StatelessWidget {
                     color: Colors.white.withAlpha(38),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.verified_user_outlined, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.verified_user_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +66,11 @@ class _Hero extends StatelessWidget {
                     ),
                     Text(
                       'Guardian+',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -130,6 +136,7 @@ class _Hero extends StatelessWidget {
 
 class _LoginSheet extends StatefulWidget {
   const _LoginSheet({required this.viewModel});
+
   final LoginViewmodel viewModel;
 
   @override
@@ -138,6 +145,7 @@ class _LoginSheet extends StatefulWidget {
 
 class _LoginSheetState extends State<_LoginSheet> {
   final TextEditingController email = TextEditingController();
+
   final TextEditingController password = TextEditingController();
 
   static const TextStyle _monoMuted = TextStyle(
@@ -204,24 +212,28 @@ class _LoginSheetState extends State<_LoginSheet> {
               TextField(
                 controller: password,
                 obscureText: state.isPasswordHidden,
-                decoration: _inputDecoration('Ingrese u contrasena aca').copyWith(
-                  suffixIcon: IconButton(
-                    onPressed: widget.viewModel.togglePasswordVisibility,
-                    icon: Icon(
-                      state.isPasswordHidden
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: AppColors.textMuted,
+                decoration: _inputDecoration('Ingrese u contrasena aca')
+                    .copyWith(
+                      suffixIcon: IconButton(
+                        onPressed: widget.viewModel.togglePasswordVisibility,
+                        icon: Icon(
+                          state.isPasswordHidden
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {},
-                  child: const Text('¿Olvidaste tu contraseña?', style: _monoMuted),
+                  child: const Text(
+                    '¿Olvidaste tu contraseña?',
+                    style: _monoMuted,
+                  ),
                 ),
               ),
               if (state.errorMessage != null) ...[
@@ -239,21 +251,42 @@ class _LoginSheetState extends State<_LoginSheet> {
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
-                  // Until the sign-in talks to IAM, it goes straight to the app with the demo care context, saved
-                  // on every sign-in since signing out clears it
                   onPressed: state.isLoading
                       ? null
-                      : () {
-                          getIt<CareContextStore>().save(demoCareContext);
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                      : () async {
+                          final navigation = await widget.viewModel.login(
+                            email: email.text,
+                            password: password.text,
+                          );
+
+                          if (!mounted || navigation == null) {
+                            return;
+                          }
+
+                          password.clear();
+
+                          await Navigator.of(this.context).push(
+                            MaterialPageRoute(
+                              builder: (_) => OtpVerificationPage(
+                                userAccountId: navigation.userAccountId,
+                                email: navigation.email,
+                                purpose: navigation.purpose,
+                              ),
+                            ),
+                          );
                         },
                   child: state.isLoading
                       ? const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -262,7 +295,10 @@ class _LoginSheetState extends State<_LoginSheet> {
                             Icon(Icons.verified_user_outlined, size: 16),
                             Text(
                               'Ingresar de forma segura',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -286,7 +322,9 @@ class _LoginSheetState extends State<_LoginSheet> {
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.textDark,
                     side: const BorderSide(color: AppColors.border),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () {},
                   child: const Row(
@@ -296,7 +334,10 @@ class _LoginSheetState extends State<_LoginSheet> {
                       _GoogleLogo(size: 15),
                       Text(
                         'Continuar con Google',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
@@ -308,12 +349,18 @@ class _LoginSheetState extends State<_LoginSheet> {
                   onTap: () {},
                   child: const Text.rich(
                     TextSpan(
-                      style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
                       children: [
                         TextSpan(text: '¿No tienes cuenta? '),
                         TextSpan(
                           text: 'Crear cuenta',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ],
                     ),
@@ -375,6 +422,7 @@ class _LoginSheetState extends State<_LoginSheet> {
 
 class _GoogleLogo extends StatelessWidget {
   const _GoogleLogo({required this.size});
+
   final double size;
 
   @override
@@ -389,6 +437,7 @@ class _GoogleLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final double stroke = size.width * 0.22;
+
     final Rect rect = Rect.fromLTWH(
       stroke / 2,
       stroke / 2,
@@ -401,10 +450,32 @@ class _GoogleLogoPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke;
 
-    canvas.drawArc(rect, -140 * _deg, 100 * _deg, false, arc(const Color(0xFFEA4335)));
-    canvas.drawArc(rect, 140 * _deg, 80 * _deg, false, arc(const Color(0xFFFBBC05)));
-    canvas.drawArc(rect, 45 * _deg, 95 * _deg, false, arc(const Color(0xFF34A853)));
+    canvas.drawArc(
+      rect,
+      -140 * _deg,
+      100 * _deg,
+      false,
+      arc(const Color(0xFFEA4335)),
+    );
+
+    canvas.drawArc(
+      rect,
+      140 * _deg,
+      80 * _deg,
+      false,
+      arc(const Color(0xFFFBBC05)),
+    );
+
+    canvas.drawArc(
+      rect,
+      45 * _deg,
+      95 * _deg,
+      false,
+      arc(const Color(0xFF34A853)),
+    );
+
     canvas.drawArc(rect, 0, 45 * _deg, false, arc(const Color(0xFF4285F4)));
+
     canvas.drawRect(
       Rect.fromLTRB(
         size.width / 2,
