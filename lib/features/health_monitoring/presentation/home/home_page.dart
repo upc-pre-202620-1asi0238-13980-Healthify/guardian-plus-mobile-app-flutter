@@ -19,6 +19,7 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/wearab
 
 /// "Inicio" tab: how the care recipient is doing right now. Only reads live vitals, so no view model of its own.
 class HomePage extends StatefulWidget {
+  final Future<void> Function()? onProfileTap;
   final LiveVitalsViewModel viewModel;
   final VoidCallback onSeeVitalsTap;
   final VoidCallback onAlertsTap;
@@ -27,6 +28,7 @@ class HomePage extends StatefulWidget {
 
   const new({
     super.key,
+    this.onProfileTap,
     required this.viewModel,
     required this.onSeeVitalsTap,
     required this.onAlertsTap,
@@ -65,6 +67,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   // The Kotlin app signs out from its Profile menu, which this app does not have yet, so the avatar asks directly
+  Future<void> _openAccount() async {
+    if (widget.onProfileTap != null) {
+      await widget.onProfileTap!();
+      return;
+    }
+
+    await _confirmLogout();
+  }
+
   Future<void> _confirmLogout() async {
     final confirmed = await showLogoutDialog(
       context,
@@ -103,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               _ => _HomeContent(
                 viewModel: _viewModel,
                 onBellTap: widget.onAlertsTap,
-                onAvatarTap: _confirmLogout,
+                onAvatarTap: _openAccount,
                 onSeeVitalsTap: widget.onSeeVitalsTap,
                 onComingSoon: _showComingSoon,
                 onLinkWristbandTap: _linkWristband,

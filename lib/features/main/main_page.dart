@@ -15,6 +15,7 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/vital_
 import 'package:guardian_plus_app/features/main/guardian_bottom_bar.dart';
 import 'package:guardian_plus_app/features/main/placeholder_page.dart';
 import 'package:guardian_plus_app/features/main/top_level_destination.dart';
+import 'package:guardian_plus_app/features/profile/presentation/navigation/profile_navigation.dart';
 
 /// App shell behind the sign-in: one tab per bounded context, starting on "Inicio". The pages follow the
 /// order of [TopLevelDestination].
@@ -35,7 +36,9 @@ class _MainPageState extends State<MainPage> {
     getIt<LogoutUseCase>().execute();
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage(viewModel: LoginViewmodel())),
+      MaterialPageRoute(
+        builder: (context) => LoginPage(viewModel: getIt<LoginViewmodel>()),
+      ),
       (route) => false,
     );
   }
@@ -47,6 +50,7 @@ class _MainPageState extends State<MainPage> {
       onSeeVitalsTap: () => _open(TopLevelDestination.health),
       onAlertsTap: () => _open(TopLevelDestination.alerts),
       onLogout: _logout,
+      onProfileTap: () => openProfile(context, onLogout: _logout),
     ),
     HealthPage(
       liveVitalsViewModel: getIt<LiveVitalsViewModel>(),
@@ -66,7 +70,10 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       // Keeps every tab alive, with its scroll position and loaded data
       body: IndexedStack(index: _selected.index, children: _pages),
-      bottomNavigationBar: GuardianBottomBar(selected: _selected, onDestinationTap: _open),
+      bottomNavigationBar: GuardianBottomBar(
+        selected: _selected,
+        onDestinationTap: _open,
+      ),
     );
   }
 }

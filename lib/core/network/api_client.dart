@@ -12,7 +12,8 @@ import 'package:http/http.dart' as http;
 /// `http://localhost:8080/api/v1/` (iOS simulator).
 const apiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: 'https://guardian-plus-api.chilecentral.cloudapp.azure.com/api/v1/',
+  defaultValue:
+      'https://guardian-plus-api.chilecentral.cloudapp.azure.com/api/v1/',
 );
 
 /// Sends the requests of every feature's API to the platform and turns each failure into an [ApiException]
@@ -20,27 +21,56 @@ const apiBaseUrl = String.fromEnvironment(
 class ApiClient {
   final http.Client client;
   final String baseUrl;
-  // Learns the platform's time from each answer, for the escalation countdowns
   final ServerClock? serverClock;
 
-  const new({required this.client, this.baseUrl = apiBaseUrl, this.serverClock});
+  /// Supplies the current IAM token without making Core depend directly
+  /// on a concrete authentication implementation.
+  final String? Function()? accessTokenProvider;
 
-  // The deployed API sleeps when idle, and its first answer takes a while
+  const ApiClient({
+    required this.client,
+    this.baseUrl = apiBaseUrl,
+    this.serverClock,
+    this.accessTokenProvider,
+  });
+
   static const _timeout = Duration(seconds: 30);
 
-  Future<dynamic> get(String path) => _send('GET', path);
+  Future<dynamic> get(String path, {bool authenticated = true}) {
+    return _send('GET', path, authenticated: authenticated);
+  }
 
-  Future<dynamic> post(String path, {Object? body}) => _send('POST', path, body: body);
+  Future<dynamic> post(String path, {Object? body, bool authenticated = true}) {
+    return _send('POST', path, body: body, authenticated: authenticated);
+  }
 
-  Future<dynamic> put(String path, {Object? body}) => _send('PUT', path, body: body);
+  Future<dynamic> put(String path, {Object? body, bool authenticated = true}) {
+    return _send('PUT', path, body: body, authenticated: authenticated);
+  }
 
-  Future<dynamic> delete(String path) => _send('DELETE', path);
+  Future<dynamic> delete(String path, {bool authenticated = true}) {
+    return _send('DELETE', path, authenticated: authenticated);
+  }
 
-  Future<dynamic> _send(String method, String path, {Object? body}) async {
+  Future<dynamic> _send(
+    String method,
+    String path, {
+    Object? body,
+    required bool authenticated,
+  }) async {
     final request = http.Request(method, Uri.parse('$baseUrl$path'))
       ..headers['Accept'] = 'application/json'
-      // The platform localizes its error messages (messages_es.properties) from this header
-      ..headers['Accept-Language'] = PlatformDispatcher.instance.locale.toLanguageTag();
+      ..headers['Accept-Language'] = PlatformDispatcher.instance.locale
+          .toLanguageTag();
+
+    if (authenticated) {
+      final accessToken = accessTokenProvider?.call();
+
+      if (accessToken != null && accessToken.trim().isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
+
     if (body != null) {
       request
         ..headers['Content-Type'] = 'application/json; charset=utf-8'
@@ -48,48 +78,87 @@ class ApiClient {
     }
 
     final http.Response response;
+
     try {
-      response = await http.Response.fromStream(await client.send(request).timeout(_timeout));
+      response = await http.Response.fromStream(
+        await client.send(request).timeout(_timeout),
+      );
     } on SocketException {
-      throw const ApiException('No se pudo conectar con el servidor. Revisa tu conexión.');
+      throw const ApiException(
+        'No se pudo conectar con el servidor. Revisa tu conexión.',
+      );
     } on http.ClientException {
-      throw const ApiException('No se pudo conectar con el servidor. Revisa tu conexión.');
+      throw const ApiException(
+        'No se pudo conectar con el servidor. Revisa tu conexión.',
+      );
     } on TimeoutException {
-      throw const ApiException('El servidor tardó demasiado en responder. Inténtalo de nuevo.');
+      throw const ApiException(
+        'El servidor tardó demasiado en responder. Inténtalo de nuevo.',
+      );
     }
 
     _syncClock(response.headers['date']);
 
-    // Decoded as UTF-8 explicitly: names and messages carry accents
     final text = utf8.decode(response.bodyBytes);
+
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw ApiException(_errorMessage(text, response.statusCode), statusCode: response.statusCode);
+      final error = _parseError(text, response.statusCode);
+
+      throw ApiException(
+        error.message,
+        statusCode: response.statusCode,
+        code: error.code,
+        details: error.details,
+      );
     }
+
     if (text.isEmpty) {
       throw const ApiException('El servidor no devolvió datos');
     }
+
     return jsonDecode(text);
   }
 
   void _syncClock(String? dateHeader) {
-    if (serverClock == null || dateHeader == null) return;
+    if (serverClock == null || dateHeader == null) {
+      return;
+    }
+
     try {
       serverClock!.sync(HttpDate.parse(dateHeader));
     } on HttpException {
-      // A malformed header only means the countdowns keep the previous offset
+      // A malformed header only means the countdowns
+      // keep the previous offset.
     }
   }
 
-  /// The platform's error body (ErrorResource) carries a localized message; it says why the action was rejected.
-  String _errorMessage(String text, int statusCode) {
+  _ApiError _parseError(String text, int statusCode) {
     try {
-      final json = jsonDecode(text);
-      if (json is Map<String, dynamic> && json['message'] is String) {
-        return json['message'] as String;
+      final decoded = jsonDecode(text);
+
+      if (decoded is Map<String, dynamic>) {
+        return _ApiError(
+          message: decoded['message'] is String
+              ? decoded['message'] as String
+              : 'El servidor respondió con el código $statusCode',
+          code: decoded['code']?.toString(),
+          details: decoded['details']?.toString(),
+        );
       }
     } on FormatException {
-      // Not JSON: fall through to the generic message
+      // Not JSON: fall through to the generic message.
     }
-    return 'El servidor respondió con el código $statusCode';
+
+    return _ApiError(
+      message: 'El servidor respondió con el código $statusCode',
+    );
   }
+}
+
+class _ApiError {
+  final String message;
+  final String? code;
+  final String? details;
+
+  const _ApiError({required this.message, this.code, this.details});
 }
