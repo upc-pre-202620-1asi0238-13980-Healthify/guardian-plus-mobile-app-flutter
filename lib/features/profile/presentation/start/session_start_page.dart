@@ -6,6 +6,7 @@ import 'package:guardian_plus_app/features/profile/application/care_context_load
 import 'package:guardian_plus_app/features/profile/application/load_care_context_use_case.dart';
 import 'package:guardian_plus_app/features/profile/presentation/onboarding/onboarding_page.dart';
 import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class SessionStartPage extends StatefulWidget {
   const SessionStartPage({super.key});
@@ -72,7 +73,7 @@ class _SessionStartPageState extends State<SessionStartPage> {
 
       setState(() {
         loading = false;
-        errorMessage = 'No se pudo preparar tu cuenta.';
+        errorMessage = context.l10n.sessionPrepareError;
       });
     } catch (error) {
       if (!mounted) {
@@ -95,12 +96,12 @@ class _SessionStartPageState extends State<SessionStartPage> {
           child: Padding(
             padding: const EdgeInsets.all(28),
             child: loading
-                ? const Column(
+                ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(height: 20),
-                      Text('Cargando tu cuenta...'),
+                      Text(context.l10n.sessionLoadingAccount),
                     ],
                   )
                 : Column(
@@ -113,13 +114,13 @@ class _SessionStartPageState extends State<SessionStartPage> {
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        errorMessage ?? 'No se pudo cargar tu cuenta.',
+                        errorMessage ?? context.l10n.sessionLoadError,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 22),
                       FilledButton(
                         onPressed: _load,
-                        child: const Text('Reintentar'),
+                        child: Text(context.l10n.commonRetry),
                       ),
                     ],
                   ),

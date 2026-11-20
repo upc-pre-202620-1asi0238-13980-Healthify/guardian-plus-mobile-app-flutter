@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 import 'package:guardian_plus_app/features/profile/domain/profile_repository.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 
@@ -37,9 +39,7 @@ class AccessibilityViewModel extends ChangeNotifier {
   String? _successMessage;
 
   bool get highContrastEnabled => _highContrastEnabled;
-
   bool get reduceMotionEnabled => _reduceMotionEnabled;
-
   AppFontScale get fontScale => _fontScale;
 
   bool get isLoading => _isLoading;
@@ -63,6 +63,8 @@ class AccessibilityViewModel extends ChangeNotifier {
         _highContrastEnabled = preferences.highContrastEnabled;
         _reduceMotionEnabled = preferences.reduceMotionEnabled;
         _fontScale = preferences.fontScale;
+
+        getIt<ProfilePreferencesController>().apply(preferences);
       }
     } catch (_) {
       _errorMessage =
@@ -101,13 +103,25 @@ class AccessibilityViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _preferences = await repository.updateLanguageAndAccessibilityPreferences(
-        userId: userId,
-        language: _language,
-        highContrastEnabled: _highContrastEnabled,
-        reduceMotionEnabled: _reduceMotionEnabled,
-        fontScale: _fontScale,
-      );
+      final updated = await repository
+          .updateLanguageAndAccessibilityPreferences(
+            userId: userId,
+            language: _language,
+            highContrastEnabled: _highContrastEnabled,
+            reduceMotionEnabled: _reduceMotionEnabled,
+            fontScale: _fontScale,
+          );
+
+      _preferences = updated;
+
+      _language = updated.language;
+      _highContrastEnabled = updated.highContrastEnabled;
+      _reduceMotionEnabled = updated.reduceMotionEnabled;
+      _fontScale = updated.fontScale;
+
+      // IMPORTANTE:
+      // publica inmediatamente las preferencias en toda la aplicación.
+      getIt<ProfilePreferencesController>().apply(updated);
 
       _successMessage =
           'Las preferencias de accesibilidad se actualizaron correctamente.';

@@ -6,6 +6,8 @@ import 'package:guardian_plus_app/features/auth/domain/otp_purpose.dart';
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_state.dart';
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/start/session_start_page.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
+import 'package:guardian_plus_app/features/auth/presentation/auth_message_localizer.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   final String userAccountId;
@@ -106,7 +108,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           appBar: AppBar(
             backgroundColor: AppColors.sheet,
             title: Text(
-              isEmailVerification ? 'Verifica tu correo' : 'Verificación',
+              isEmailVerification
+                  ? context.l10n.otpVerifyEmailTitle
+                  : context.l10n.otpVerificationTitle,
             ),
           ),
           body: SafeArea(
@@ -125,8 +129,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
                 Text(
                   isEmailVerification
-                      ? 'Confirma tu correo'
-                      : 'Revisa tu correo',
+                      ? context.l10n.otpConfirmEmail
+                      : context.l10n.otpCheckEmail,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 24,
@@ -138,7 +142,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 const SizedBox(height: 10),
 
                 Text(
-                  'Enviamos un código de 6 dígitos a ${widget.email}.',
+                  context.l10n.otpCodeSentPrefix + ' ' + widget.email + '.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: AppColors.textMuted),
                 ),
@@ -189,7 +193,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 if (state.errorMessage != null) ...[
                   const SizedBox(height: 12),
                   Text(
-                    state.errorMessage!,
+                    localizeAuthMessage(context, state.errorMessage!),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
@@ -223,8 +227,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           )
                         : Text(
                             isEmailVerification
-                                ? 'Verificar correo'
-                                : 'Verificar código',
+                                ? context.l10n.otpVerifyEmail
+                                : context.l10n.otpVerifyCode,
                           ),
                   ),
                 ),
@@ -234,16 +238,20 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 TextButton(
                   onPressed: state.canResend ? _resend : null,
                   child: state.isResending
-                      ? const Text('Reenviando...')
+                      ? Text(context.l10n.otpResending)
                       : state.canResend
-                      ? const Text('Reenviar código')
-                      : Text('Reenviar en ${state.resendCountdown}'),
+                      ? Text(context.l10n.otpResendCode)
+                      : Text(
+                          context.l10n.otpResendIn +
+                              ' ' +
+                              state.resendCountdown.toString(),
+                        ),
                 ),
 
                 if (isEmailVerification) ...[
                   const SizedBox(height: 8),
-                  const Text(
-                    'Debes verificar tu correo antes de poder iniciar sesión.',
+                  Text(
+                    context.l10n.otpMustVerifyBeforeLogin,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),

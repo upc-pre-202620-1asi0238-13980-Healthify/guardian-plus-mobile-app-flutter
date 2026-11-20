@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class ProfileHomePage extends StatelessWidget {
   final String userFullName;
@@ -32,6 +33,7 @@ class ProfileHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final initials = _initials(userFullName);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -39,7 +41,7 @@ class ProfileHomePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
-            ProfileTopBar(title: 'Perfil', onBack: onBack),
+            ProfileTopBar(title: l10n.profileTitle, onBack: onBack),
             const SizedBox(height: 18),
             ProfileCard(
               padding: const EdgeInsets.all(14),
@@ -74,12 +76,12 @@ class ProfileHomePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const _RoleChip(label: 'Familiar'),
+                            _RoleChip(label: l10n.profileRoleFamily),
                           ],
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Cuida de $careRecipientName',
+                          '${l10n.profileCaresFor} $careRecipientName',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -91,68 +93,69 @@ class ProfileHomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 22),
-            const ProfileSectionTitle(title: 'Cuenta'),
+            ProfileSectionTitle(title: l10n.profileAccountSection),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: ProfileMenuTile(
                 icon: Icons.person_outline_rounded,
-                title: 'Mis datos',
-                subtitle: 'Información personal y contacto',
+                title: l10n.profilePersonalData,
+                subtitle: l10n.profilePersonalDataSubtitle,
                 onTap: onPersonalData,
               ),
             ),
             const SizedBox(height: 20),
-            const ProfileSectionTitle(title: 'Cuidado'),
+            ProfileSectionTitle(title: l10n.profileCareSection),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
                   ProfileMenuTile(
                     icon: Icons.favorite_border_rounded,
-                    title: 'Persona bajo cuidado',
-                    subtitle: 'Información de $careRecipientName',
+                    title: l10n.profileCareRecipient,
+                    subtitle:
+                        '${l10n.profileCareRecipientSubtitle} $careRecipientName',
                     onTap: onCareRecipient,
                   ),
                   const Divider(height: 1),
                   ProfileMenuTile(
                     icon: Icons.people_outline_rounded,
-                    title: 'Círculo de cuidado',
-                    subtitle: 'Personas que participan en su cuidado',
+                    title: l10n.profileCareCircle,
+                    subtitle: l10n.profileCareCircleSubtitle,
                     onTap: onCareCircle,
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-            const ProfileSectionTitle(title: 'Dispositivo y plan'),
+            ProfileSectionTitle(title: l10n.profileDevicePlanSection),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
                   ProfileMenuTile(
                     icon: Icons.watch_outlined,
-                    title: 'Pulsera',
-                    subtitle: 'Estado y preferencias del dispositivo',
+                    title: l10n.profileWearable,
+                    subtitle: l10n.profileWearableSubtitle,
                     onTap: onWearable,
                   ),
                   const Divider(height: 1),
                   ProfileMenuTile(
                     icon: Icons.star_border_rounded,
-                    title: 'Mi plan',
-                    subtitle: 'Suscripción y beneficios actuales',
+                    title: l10n.profileMyPlan,
+                    subtitle: l10n.profileMyPlanSubtitle,
                     onTap: onMyPlan,
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-            const ProfileSectionTitle(title: 'Preferencias'),
+            ProfileSectionTitle(title: l10n.profilePreferencesSection),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: ProfileMenuTile(
                 icon: Icons.settings_outlined,
-                title: 'Configuración',
-                subtitle: 'Preferencias de la aplicación',
+                title: l10n.profileSettings,
+                subtitle: l10n.settingsSubtitle,
                 onTap: onSettings,
               ),
             ),
@@ -161,7 +164,7 @@ class ProfileHomePage extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: ProfileMenuTile(
                 icon: Icons.logout_rounded,
-                title: 'Cerrar sesión',
+                title: l10n.profileLogout,
                 subtitle: '',
                 destructive: true,
                 onTap: onLogout,

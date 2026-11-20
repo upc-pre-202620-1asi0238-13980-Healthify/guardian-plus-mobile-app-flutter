@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/presentation/care_circle/care_circle_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class CareCirclePage extends StatefulWidget {
   final CareCircleViewModel viewModel;
@@ -42,6 +43,7 @@ class _CareCirclePageState extends State<CareCirclePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = widget.viewModel;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -50,20 +52,18 @@ class _CareCirclePageState extends State<CareCirclePage> {
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
             ProfileTopBar(
-              title: 'Círculo de cuidado',
-              subtitle: 'Personas que participan en el cuidado',
+              title: l10n.profileCareCircle,
+              subtitle: l10n.careCircleSubtitle,
               onBack: widget.onBack,
             ),
 
             const SizedBox(height: 22),
 
-            const ProfileInfoBanner(
-              text: 'Aquí puedes consultar las personas vinculadas actualmente al cuidado.',
-            ),
+            ProfileInfoBanner(text: l10n.careCircleInfo),
 
             const SizedBox(height: 24),
 
-            const ProfileSectionTitle(title: 'Miembros'),
+            ProfileSectionTitle(title: l10n.careCircleMembers),
 
             if (state.isLoading)
               const Padding(
@@ -79,25 +79,22 @@ class _CareCirclePageState extends State<CareCirclePage> {
                       color: theme.colorScheme.error,
                     ),
                     const SizedBox(height: 10),
-                    Text(state.errorMessage!, textAlign: TextAlign.center),
+                    Text(l10n.careCircleLoadError, textAlign: TextAlign.center),
                     const SizedBox(height: 14),
                     OutlinedButton(
                       onPressed: state.load,
-                      child: const Text('Reintentar'),
+                      child: Text(l10n.commonRetry),
                     ),
                   ],
                 ),
               )
             else if (state.members.isEmpty)
-              const ProfileCard(
+              ProfileCard(
                 child: Column(
                   children: [
                     Icon(Icons.people_outline_rounded, size: 32),
                     SizedBox(height: 10),
-                    Text(
-                      'No hay miembros activos en el círculo de cuidado.',
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(l10n.careCircleEmpty, textAlign: TextAlign.center),
                   ],
                 ),
               )
@@ -129,7 +126,7 @@ class _CareCirclePageState extends State<CareCirclePage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Las personas del círculo de cuidado pueden tener acceso a información necesaria para acompañar el cuidado según su relación.',
+                      l10n.careCirclePrivacy,
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
@@ -151,6 +148,7 @@ class _CareCircleMemberTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Padding(
       padding: const EdgeInsets.all(14),
@@ -182,7 +180,7 @@ class _CareCircleMemberTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  member.relationshipLabel,
+                  _relationshipLabel(context, member.relationshipLabel),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -198,7 +196,7 @@ class _CareCircleMemberTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'Activo',
+              l10n.careCircleActive,
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.primary,
                 fontWeight: FontWeight.w600,
@@ -208,6 +206,20 @@ class _CareCircleMemberTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _relationshipLabel(BuildContext context, String value) {
+    final normalized = value.trim().toLowerCase();
+
+    if (normalized == 'family' || normalized == 'familiar') {
+      return context.l10n.relationshipFamily;
+    }
+
+    if (normalized == 'caregiver' || normalized == 'cuidador') {
+      return context.l10n.relationshipCaregiver;
+    }
+
+    return value;
   }
 
   String _initials(String name) {

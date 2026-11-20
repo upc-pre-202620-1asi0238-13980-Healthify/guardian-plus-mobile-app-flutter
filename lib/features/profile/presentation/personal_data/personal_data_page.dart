@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_profile.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
 import 'package:guardian_plus_app/features/profile/presentation/personal_data/personal_data_view_model.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class PersonalDataPage extends StatefulWidget {
   final PersonalDataViewModel viewModel;
@@ -82,6 +83,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = widget.viewModel;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -92,26 +94,26 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
                 children: [
                   ProfileTopBar(
-                    title: 'Mis datos',
-                    subtitle: 'Información personal y contacto',
+                    title: l10n.profilePersonalData,
+                    subtitle: l10n.profilePersonalDataSubtitle,
                     onBack: widget.onBack,
                   ),
                   const SizedBox(height: 24),
 
-                  const ProfileSectionTitle(title: 'Información personal'),
+                  ProfileSectionTitle(title: l10n.profilePersonalInfoSection),
 
                   ProfileCard(
                     child: Column(
                       children: [
                         _ProfileTextField(
                           controller: _firstNameController,
-                          label: 'Nombres',
+                          label: l10n.profileFirstNames,
                           icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
                         _ProfileTextField(
                           controller: _lastNameController,
-                          label: 'Apellidos',
+                          label: l10n.profileLastNames,
                           icon: Icons.badge_outlined,
                         ),
                       ],
@@ -120,12 +122,12 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
 
                   const SizedBox(height: 22),
 
-                  const ProfileSectionTitle(title: 'Contacto'),
+                  ProfileSectionTitle(title: l10n.profileContactSection),
 
                   ProfileCard(
                     child: _ProfileTextField(
                       controller: _phoneController,
-                      label: 'Teléfono',
+                      label: l10n.profilePhone,
                       keyboardType: TextInputType.phone,
                       icon: Icons.phone_outlined,
                     ),
@@ -133,12 +135,12 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
 
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    _MessageCard(message: state.errorMessage!, error: true),
+                    _MessageCard(message: l10n.profileDataError, error: true),
                   ],
 
                   if (state.successMessage != null) ...[
                     const SizedBox(height: 16),
-                    _MessageCard(message: state.successMessage!),
+                    _MessageCard(message: l10n.profileDataSuccess),
                   ],
 
                   const SizedBox(height: 24),
@@ -157,14 +159,12 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Guardar cambios'),
+                        : Text(l10n.profileSaveChanges),
                   ),
 
                   const SizedBox(height: 14),
 
-                  const ProfileInfoBanner(
-                    text: 'Mantén actualizados tus datos para facilitar la comunicación dentro de Guardian+.',
-                  ),
+                  ProfileInfoBanner(text: l10n.profilePersonalInfoBanner),
                 ],
               ),
       ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
 import 'package:guardian_plus_app/features/profile/presentation/settings/settings_view_model.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
   final SettingsViewModel viewModel;
@@ -27,10 +30,12 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _initializationPromptShown = false;
 
+  ProfilePreferencesController get _preferences =>
+      getIt<ProfilePreferencesController>();
+
   @override
   void initState() {
     super.initState();
-
     widget.viewModel.load();
   }
 
@@ -49,25 +54,27 @@ class _SettingsPageState extends State<SettingsPage> {
 
     _initializationPromptShown = true;
 
+    final l10n = context.l10n;
+
     final notificationsEnabled = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Notificaciones de Guardian+'),
-          content: const Text('¿Deseas recibir notificaciones de Guardian+?'),
+          title: Text(l10n.settingsNotificationsTitle),
+          content: Text(l10n.settingsNotificationsQuestion),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext, false);
               },
-              child: const Text('No recibir'),
+              child: Text(l10n.settingsNotificationsNo),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.pop(dialogContext, true);
               },
-              child: const Text('Recibir'),
+              child: Text(l10n.settingsNotificationsYes),
             ),
           ],
         );
@@ -87,20 +94,18 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     if (saved) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preferencias configuradas correctamente.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.settingsInitialized)));
 
       return;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('No se pudieron configurar las preferencias.'),
+        content: Text(context.l10n.settingsInitializationError),
         action: SnackBarAction(
-          label: 'Reintentar',
+          label: context.l10n.commonRetry,
           onPressed: () {
             setState(() {
               _initializationPromptShown = false;
@@ -144,137 +149,139 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.viewModel,
+      listenable: _preferences,
       builder: (context, _) {
-        final theme = Theme.of(context);
+        return ListenableBuilder(
+          listenable: widget.viewModel,
+          builder: (context, _) {
+            final theme = Theme.of(context);
+            final l10n = context.l10n;
+            final viewModel = widget.viewModel;
 
-        final viewModel = widget.viewModel;
+            if (!viewModel.isLoading &&
+                viewModel.needsInitialization &&
+                !_initializationPromptShown) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _promptInitialization();
+              });
+            }
 
-        if (!viewModel.isLoading &&
-            viewModel.needsInitialization &&
-            !_initializationPromptShown) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _promptInitialization();
-          });
-        }
+            return Scaffold(
+              backgroundColor: theme.colorScheme.surface,
+              body: SafeArea(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+                  children: [
+                    ProfileTopBar(
+                      title: l10n.settingsTitle,
+                      subtitle: l10n.settingsSubtitle,
+                      onBack: widget.onBack,
+                    ),
 
-        return Scaffold(
-          backgroundColor: theme.colorScheme.surface,
-          body: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
-              children: [
-                ProfileTopBar(
-                  title: 'Configuración',
-                  subtitle: 'Preferencias de la aplicación',
-                  onBack: widget.onBack,
-                ),
+                    if (viewModel.isLoading || viewModel.isSaving) ...[
+                      const SizedBox(height: 16),
+                      const LinearProgressIndicator(),
+                    ],
 
-                if (viewModel.isLoading || viewModel.isSaving) ...[
-                  const SizedBox(height: 16),
-                  const LinearProgressIndicator(),
-                ],
+                    if (viewModel.errorMessage != null) ...[
+                      const SizedBox(height: 18),
+                      _ErrorBanner(
+                        message: viewModel.errorMessage!,
+                        onRetry: () {
+                          viewModel.clearError();
 
-                if (viewModel.errorMessage != null) ...[
-                  const SizedBox(height: 18),
-                  _ErrorBanner(
-                    message: viewModel.errorMessage!,
-                    onRetry: () {
-                      viewModel.clearError();
+                          if (viewModel.needsInitialization) {
+                            setState(() {
+                              _initializationPromptShown = false;
+                            });
 
-                      if (viewModel.needsInitialization) {
-                        setState(() {
-                          _initializationPromptShown = false;
-                        });
-
-                        _promptInitialization();
-                      } else {
-                        viewModel.load();
-                      }
-                    },
-                  ),
-                ],
-
-                const SizedBox(height: 24),
-
-                const ProfileSectionTitle(title: 'Preferencias'),
-
-                ProfileCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      ProfileMenuTile(
-                        icon: Icons.language_rounded,
-                        title: 'Idioma',
-                        subtitle: 'Español (Latinoamérica)',
-                        onTap: _openLanguage,
-                      ),
-                      const Divider(height: 1),
-                      ProfileMenuTile(
-                        icon: Icons.accessibility_new_rounded,
-                        title: 'Accesibilidad',
-                        subtitle: 'Texto, contraste y asistencia',
-                        onTap: _openAccessibility,
+                            _promptInitialization();
+                          } else {
+                            viewModel.load();
+                          }
+                        },
                       ),
                     ],
-                  ),
-                ),
 
-                const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                const ProfileSectionTitle(title: 'Aplicación'),
+                    ProfileSectionTitle(title: l10n.settingsPreferences),
 
-                ProfileCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      ProfileMenuTile(
-                        icon: Icons.description_outlined,
-                        title: 'Términos y condiciones',
-                        subtitle: 'Condiciones de uso de Guardian+',
-                        onTap: widget.onTerms,
+                    ProfileCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          ProfileMenuTile(
+                            icon: Icons.language_rounded,
+                            title: l10n.settingsLanguage,
+                            subtitle: _preferences.languageLabel,
+                            onTap: _openLanguage,
+                          ),
+                          const Divider(height: 1),
+                          ProfileMenuTile(
+                            icon: Icons.accessibility_new_rounded,
+                            title: l10n.settingsAccessibility,
+                            subtitle: l10n.settingsAccessibilitySubtitle,
+                            onTap: _openAccessibility,
+                          ),
+                        ],
                       ),
-                      const Divider(height: 1),
-                      ProfileMenuTile(
-                        icon: Icons.info_outline,
-                        title: 'Acerca de Guardian+',
-                        subtitle: 'Información de la aplicación',
-                        onTap: widget.onAbout,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    ProfileSectionTitle(title: l10n.settingsApplication),
+
+                    ProfileCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          ProfileMenuTile(
+                            icon: Icons.description_outlined,
+                            title: l10n.settingsTerms,
+                            subtitle: l10n.settingsTermsSubtitle,
+                            onTap: widget.onTerms,
+                          ),
+                          const Divider(height: 1),
+                          ProfileMenuTile(
+                            icon: Icons.info_outline,
+                            title: l10n.settingsAbout,
+                            subtitle: l10n.settingsAboutSubtitle,
+                            onTap: widget.onAbout,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    ProfileInfoBanner(text: l10n.settingsInfo),
+
+                    const SizedBox(height: 32),
+
+                    Text(
+                      'GUARDIAN+',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+
+                    const SizedBox(height: 2),
+
+                    Text(
+                      l10n.settingsVersion,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
-
-                const SizedBox(height: 18),
-
-                const ProfileInfoBanner(
-                  text:
-                      'Puedes ajustar estas preferencias en cualquier momento.',
-                ),
-
-                const SizedBox(height: 32),
-
-                Text(
-                  'GUARDIAN+',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-
-                const SizedBox(height: 2),
-
-                Text(
-                  'Versión 1.0',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -308,7 +315,7 @@ class _ErrorBanner extends StatelessWidget {
               style: TextStyle(color: theme.colorScheme.onErrorContainer),
             ),
           ),
-          TextButton(onPressed: onRetry, child: const Text('Reintentar')),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.commonRetry)),
         ],
       ),
     );

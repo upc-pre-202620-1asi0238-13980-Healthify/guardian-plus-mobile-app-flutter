@@ -4,8 +4,10 @@ import 'package:guardian_plus_app/core/service_locator.dart';
 import 'package:guardian_plus_app/core/session/care_context.dart';
 import 'package:guardian_plus_app/core/session/care_context_store.dart';
 import 'package:guardian_plus_app/features/profile/domain/profile_repository.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 import 'package:guardian_plus_app/features/profile/presentation/navigation/profile_navigation.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
 
 class _TestProfileRepository implements ProfileRepository {
   @override
@@ -38,11 +40,18 @@ void main() {
     );
 
     getIt.registerSingleton<ProfileRepository>(_TestProfileRepository());
+
+    getIt.registerSingleton<ProfilePreferencesController>(
+      ProfilePreferencesController(repository: getIt<ProfileRepository>()),
+    );
   });
 
   tearDown(() => getIt.reset());
 
   Widget app(VoidCallback onLogout) => MaterialApp(
+    locale: const Locale('es'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     home: Builder(
       builder: (context) => Scaffold(
         body: TextButton(
@@ -64,13 +73,15 @@ void main() {
 
     expect(find.text('María Rojas'), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.text('Configuración'), 250);
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Configuración'));
 
     await tester.pumpAndSettle();
 
-    await tester.scrollUntilVisible(find.text('Términos y condiciones'), 250);
+    await tester.drag(find.byType(ListView), const Offset(0, -600));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Términos y condiciones'));
 
@@ -84,7 +95,8 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
-    await tester.scrollUntilVisible(find.text('María Rojas'), -250);
+    await tester.drag(find.byType(ListView), const Offset(0, 800));
+    await tester.pumpAndSettle();
 
     expect(find.text('María Rojas'), findsOneWidget);
   });
@@ -100,7 +112,8 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      await tester.scrollUntilVisible(find.text('Cerrar sesión'), 250);
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Cerrar sesión'));
 

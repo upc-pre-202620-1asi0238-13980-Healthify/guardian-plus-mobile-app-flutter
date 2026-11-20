@@ -5,6 +5,7 @@ import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/main/main_page.dart';
 import 'package:guardian_plus_app/features/profile/domain/care_relationship.dart';
 import 'package:guardian_plus_app/features/profile/presentation/onboarding/onboarding_viewmodel.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class OnboardingPage extends StatefulWidget {
   final String userAccountId;
@@ -107,6 +108,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       listenable: viewModel,
       builder: (context, _) {
         final state = viewModel.state;
+        final l10n = context.l10n;
 
         return Scaffold(
           backgroundColor: AppColors.hero,
@@ -133,8 +135,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        const Text(
-                          'Completa tu\nperfil.',
+                        Text(
+                          l10n.onboardingCompleteProfile,
                           style: TextStyle(
                             fontSize: 34,
                             height: 1.1,
@@ -143,8 +145,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Solo necesitamos algunos datos para preparar Guardian+.',
+                        Text(
+                          l10n.onboardingHeroSubtitle,
                           style: TextStyle(fontSize: 13, color: Colors.white70),
                         ),
                       ],
@@ -165,8 +167,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Configura tu cuenta',
+                      Text(
+                        l10n.onboardingConfigureAccount,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -174,32 +176,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
-                        'Esta información se usará para personalizar tu experiencia.',
+                      Text(
+                        l10n.onboardingExperienceInfo,
                         style: TextStyle(color: AppColors.textMuted),
                       ),
 
                       if (state.showUserProfile) ...[
-                        _sectionTitle('TUS DATOS'),
-                        _fieldLabel('NOMBRES'),
+                        _sectionTitle(l10n.onboardingYourData.toUpperCase()),
+                        _fieldLabel(l10n.profileFirstNames.toUpperCase()),
                         const SizedBox(height: 8),
                         TextField(
                           controller: firstNameController,
                           textCapitalization: TextCapitalization.words,
                           onChanged: viewModel.onFirstNameChanged,
-                          decoration: _inputDecoration('Juan'),
+                          decoration: _inputDecoration(
+                            l10n.onboardingFirstNameHint,
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        _fieldLabel('APELLIDOS'),
+                        _fieldLabel(l10n.profileLastNames.toUpperCase()),
                         const SizedBox(height: 8),
                         TextField(
                           controller: lastNameController,
                           textCapitalization: TextCapitalization.words,
                           onChanged: viewModel.onLastNameChanged,
-                          decoration: _inputDecoration('Sánchez Pérez'),
+                          decoration: _inputDecoration(
+                            l10n.onboardingLastNameHint,
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        _fieldLabel('CELULAR'),
+                        _fieldLabel(l10n.profilePhone.toUpperCase()),
                         const SizedBox(height: 8),
                         TextField(
                           controller: phoneController,
@@ -215,26 +221,30 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ],
 
                       if (state.showCareRecipient) ...[
-                        _sectionTitle('PERSONA BAJO CUIDADO'),
-                        _fieldLabel('NOMBRES'),
+                        _sectionTitle(l10n.profileCareRecipient.toUpperCase()),
+                        _fieldLabel(l10n.profileFirstNames.toUpperCase()),
                         const SizedBox(height: 8),
                         TextField(
                           controller: careRecipientFirstNameController,
                           textCapitalization: TextCapitalization.words,
                           onChanged: viewModel.onCareRecipientFirstNameChanged,
-                          decoration: _inputDecoration('Elena'),
+                          decoration: _inputDecoration(
+                            l10n.onboardingRecipientFirstNameHint,
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        _fieldLabel('APELLIDOS'),
+                        _fieldLabel(l10n.profileLastNames.toUpperCase()),
                         const SizedBox(height: 8),
                         TextField(
                           controller: careRecipientLastNameController,
                           textCapitalization: TextCapitalization.words,
                           onChanged: viewModel.onCareRecipientLastNameChanged,
-                          decoration: _inputDecoration('Rojas'),
+                          decoration: _inputDecoration(
+                            l10n.onboardingRecipientLastNameHint,
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        _fieldLabel('FECHA DE NACIMIENTO'),
+                        _fieldLabel(l10n.careRecipientBirthDate.toUpperCase()),
                         const SizedBox(height: 8),
                         InkWell(
                           onTap: _selectBirthDate,
@@ -254,7 +264,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 Expanded(
                                   child: Text(
                                     state.careRecipientBirthDate == null
-                                        ? 'Seleccionar fecha'
+                                        ? l10n.careRecipientSelectDate
                                         : _formatDate(
                                             state.careRecipientBirthDate!,
                                           ),
@@ -276,13 +286,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _fieldLabel('RELACIÓN'),
+                        _fieldLabel(l10n.onboardingRelationship.toUpperCase()),
                         const SizedBox(height: 8),
                         Row(
                           children: [
                             Expanded(
                               child: _relationshipButton(
-                                text: 'Familiar',
+                                text: l10n.relationshipFamily,
                                 selected:
                                     state.relationshipType ==
                                     RelationshipType.family,
@@ -296,7 +306,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: _relationshipButton(
-                                text: 'Cuidador',
+                                text: l10n.relationshipCaregiver,
                                 selected:
                                     state.relationshipType ==
                                     RelationshipType.caregiver,
@@ -344,8 +354,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : const Text(
-                                  'Continuar',
+                              : Text(
+                                  l10n.commonContinue,
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
                         ),

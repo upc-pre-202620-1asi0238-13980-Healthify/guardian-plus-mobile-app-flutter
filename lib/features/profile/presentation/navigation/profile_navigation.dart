@@ -19,6 +19,9 @@ import 'package:guardian_plus_app/features/profile/presentation/personal_data/pe
 import 'package:guardian_plus_app/features/profile/presentation/personal_data/personal_data_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/settings/settings_page.dart';
 import 'package:guardian_plus_app/features/profile/presentation/terms/terms_page.dart';
+import 'package:guardian_plus_app/features/subscriptions/domain/subscription_repository.dart';
+import 'package:guardian_plus_app/features/subscriptions/presentation/my_plan/my_plan_page.dart';
+import 'package:guardian_plus_app/features/subscriptions/presentation/my_plan/my_plan_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/settings/settings_view_model.dart';
 
 Future<void> openProfile(
@@ -130,6 +133,25 @@ class _ProfileEntryState extends State<_ProfileEntry> {
     ),
   );
 
+  Future<void> _myPlan() {
+    final subscriberId = _store.require().userAccountId;
+
+    final viewModel = MyPlanViewModel(
+      repository: getIt<SubscriptionRepository>(),
+      subscriberId: subscriberId,
+    );
+
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (pageContext) => MyPlanPage(
+          viewModel: viewModel,
+          onBack: () => Navigator.pop(pageContext),
+        ),
+      ),
+    );
+  }
+
   Future<void> _logout() async {
     if (_confirmingLogout) return;
     _confirmingLogout = true;
@@ -153,9 +175,7 @@ class _ProfileEntryState extends State<_ProfileEntry> {
     onCareRecipient: _careRecipient,
     onCareCircle: _careCircle,
     onWearable: _wearable,
-    onMyPlan: () => ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Mi plan estará disponible próximamente.')),
-    ),
+    onMyPlan: _myPlan,
     onSettings: () => _openSettings(context),
     onLogout: _logout,
   );
