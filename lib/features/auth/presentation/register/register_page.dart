@@ -3,6 +3,8 @@ import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/auth/domain/otp_purpose.dart';
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_page.dart';
 import 'package:guardian_plus_app/features/auth/presentation/register/register_viewmodel.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
+import 'package:guardian_plus_app/features/auth/presentation/auth_message_localizer.dart';
 
 class RegisterPage extends StatefulWidget {
   final RegisterViewmodel viewModel;
@@ -77,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
           backgroundColor: AppColors.sheet,
           appBar: AppBar(
             backgroundColor: AppColors.sheet,
-            title: const Text('Crear cuenta'),
+            title: Text(context.l10n.authCreateAccount),
           ),
           body: SafeArea(
             child: ListView(
@@ -89,8 +91,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(height: 18),
-                const Text(
-                  'Únete a Guardian+',
+                Text(
+                  context.l10n.registerJoin,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -99,68 +101,76 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Crea tu cuenta de cuidador',
+                Text(
+                  context.l10n.registerSubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted),
                 ),
                 const SizedBox(height: 30),
-                _label('NOMBRE COMPLETO'),
+                _label(context.l10n.registerFullName.toUpperCase()),
                 const SizedBox(height: 8),
                 TextField(
                   controller: fullNameController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: _inputDecoration('Juan Pérez'),
+                  decoration: _inputDecoration(
+                    context.l10n.registerFullNameHint,
+                  ),
                 ),
                 const SizedBox(height: 18),
-                _label('CORREO ELECTRÓNICO'),
+                _label(context.l10n.authEmail.toUpperCase()),
                 const SizedBox(height: 8),
                 TextField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration('nombre@correo.com'),
+                  decoration: _inputDecoration(context.l10n.authEmailHint),
                 ),
                 const SizedBox(height: 18),
-                _label('CONTRASEÑA'),
+                _label(context.l10n.authPassword.toUpperCase()),
                 const SizedBox(height: 8),
                 TextField(
                   controller: passwordController,
                   obscureText: state.isPasswordHidden,
-                  decoration: _inputDecoration('Mínimo 8 caracteres').copyWith(
-                    suffixIcon: IconButton(
-                      onPressed: widget.viewModel.togglePasswordVisibility,
-                      icon: Icon(
-                        state.isPasswordHidden
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: AppColors.textMuted,
+                  decoration:
+                      _inputDecoration(
+                        context.l10n.registerPasswordHint,
+                      ).copyWith(
+                        suffixIcon: IconButton(
+                          onPressed: widget.viewModel.togglePasswordVisibility,
+                          icon: Icon(
+                            state.isPasswordHidden
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            color: AppColors.textMuted,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 18),
-                _label('CONFIRMAR CONTRASEÑA'),
+                _label(context.l10n.registerConfirmPassword.toUpperCase()),
                 const SizedBox(height: 8),
                 TextField(
                   controller: confirmPasswordController,
                   obscureText: state.isConfirmPasswordHidden,
-                  decoration: _inputDecoration('Repite tu contraseña').copyWith(
-                    suffixIcon: IconButton(
-                      onPressed:
-                          widget.viewModel.toggleConfirmPasswordVisibility,
-                      icon: Icon(
-                        state.isConfirmPasswordHidden
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: AppColors.textMuted,
+                  decoration:
+                      _inputDecoration(
+                        context.l10n.registerConfirmPasswordHint,
+                      ).copyWith(
+                        suffixIcon: IconButton(
+                          onPressed:
+                              widget.viewModel.toggleConfirmPasswordVisibility,
+                          icon: Icon(
+                            state.isConfirmPasswordHidden
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            color: AppColors.textMuted,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
                 if (state.errorMessage != null) ...[
                   const SizedBox(height: 14),
                   Text(
-                    state.errorMessage!,
+                    localizeAuthMessage(context, state.errorMessage!),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
@@ -188,15 +198,15 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            'Crear cuenta',
+                        : Text(
+                            context.l10n.authCreateAccount,
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                   ),
                 ),
                 const SizedBox(height: 18),
-                const Text(
-                  'Te enviaremos un código de verificación a tu correo.',
+                Text(
+                  context.l10n.registerVerificationNotice,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                 ),

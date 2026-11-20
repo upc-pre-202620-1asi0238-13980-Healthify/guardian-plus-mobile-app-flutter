@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:guardian_plus_app/core/service_locator.dart';
+import 'package:guardian_plus_app/features/profile/application/profile_preferences_controller.dart';
 import 'package:guardian_plus_app/features/profile/domain/profile_repository.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 
@@ -22,6 +24,7 @@ class LanguageViewModel extends ChangeNotifier {
   LanguageViewModel({required this.repository, required this.userId});
 
   UserPreferences? _preferences;
+
   AppLanguage _selectedLanguage = AppLanguage.spanishLatinAmerica;
 
   bool _isLoading = false;
@@ -31,6 +34,7 @@ class LanguageViewModel extends ChangeNotifier {
   String? _successMessage;
 
   UserPreferences? get preferences => _preferences;
+
   AppLanguage get selectedLanguage => _selectedLanguage;
 
   bool get isLoading => _isLoading;
@@ -47,8 +51,12 @@ class LanguageViewModel extends ChangeNotifier {
     try {
       _preferences = await repository.findUserPreferences(userId);
 
-      if (_preferences != null) {
-        _selectedLanguage = _preferences!.language;
+      final preferences = _preferences;
+
+      if (preferences != null) {
+        _selectedLanguage = preferences.language;
+
+        getIt<ProfilePreferencesController>().apply(preferences);
       }
     } catch (_) {
       _errorMessage = 'No se pudo cargar la preferencia de idioma.';
@@ -77,17 +85,23 @@ class LanguageViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final current = _preferences;
+      final current =
+          _preferences ?? getIt<ProfilePreferencesController>().preferences;
 
-      _preferences = await repository.updateLanguageAndAccessibilityPreferences(
-        userId: userId,
-        language: _selectedLanguage,
-        highContrastEnabled: current?.highContrastEnabled ?? false,
-        reduceMotionEnabled: current?.reduceMotionEnabled ?? false,
-        fontScale: current?.fontScale ?? AppFontScale.defaultScale,
-      );
+      final updated = await repository
+          .updateLanguageAndAccessibilityPreferences(
+            userId: userId,
+            language: _selectedLanguage,
+            highContrastEnabled: current?.highContrastEnabled ?? false,
+            reduceMotionEnabled: current?.reduceMotionEnabled ?? false,
+            fontScale: current?.fontScale ?? AppFontScale.defaultScale,
+          );
 
-      _selectedLanguage = _preferences!.language;
+      _preferences = updated;
+      _selectedLanguage = updated.language;
+
+      // Hace visible el cambio para toda la aplicación inmediatamente.
+      getIt<ProfilePreferencesController>().apply(updated);
 
       _successMessage = 'El idioma se actualizó correctamente.';
 

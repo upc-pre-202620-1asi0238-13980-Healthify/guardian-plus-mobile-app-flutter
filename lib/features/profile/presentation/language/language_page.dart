@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
 import 'package:guardian_plus_app/features/profile/presentation/language/language_view_model.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class LanguagePage extends StatefulWidget {
   final LanguageViewModel viewModel;
@@ -39,10 +40,23 @@ class _LanguagePageState extends State<LanguagePage> {
     super.dispose();
   }
 
+  String _languageLabel(BuildContext context, AppLanguage language) {
+    final l10n = context.l10n;
+
+    switch (language) {
+      case AppLanguage.spanishLatinAmerica:
+        return l10n.languageSpanishLatam;
+
+      case AppLanguage.englishUnitedStates:
+        return l10n.languageEnglishUs;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = widget.viewModel;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -53,21 +67,22 @@ class _LanguagePageState extends State<LanguagePage> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
                 children: [
                   ProfileTopBar(
-                    title: 'Idioma',
-                    subtitle: 'Selecciona el idioma de Guardian+',
+                    title: l10n.languageTitle,
+                    subtitle: l10n.languageSubtitle,
                     onBack: widget.onBack,
                   ),
 
                   const SizedBox(height: 24),
 
-                  const ProfileSectionTitle(title: 'Idioma de la aplicación'),
+                  ProfileSectionTitle(title: l10n.languageSection),
 
                   ProfileCard(
                     padding: EdgeInsets.zero,
                     child: Column(
                       children: [
                         _LanguageOption(
-                          title: state.labelFor(
+                          title: _languageLabel(
+                            context,
                             AppLanguage.spanishLatinAmerica,
                           ),
                           subtitle: 'Español',
@@ -82,7 +97,8 @@ class _LanguagePageState extends State<LanguagePage> {
                         ),
                         const Divider(height: 1),
                         _LanguageOption(
-                          title: state.labelFor(
+                          title: _languageLabel(
+                            context,
                             AppLanguage.englishUnitedStates,
                           ),
                           subtitle: 'English',
@@ -101,12 +117,15 @@ class _LanguagePageState extends State<LanguagePage> {
 
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    _LanguageMessage(message: state.errorMessage!, error: true),
+                    _LanguageMessage(
+                      message: l10n.languageUpdateError,
+                      error: true,
+                    ),
                   ],
 
                   if (state.successMessage != null) ...[
                     const SizedBox(height: 16),
-                    _LanguageMessage(message: state.successMessage!),
+                    _LanguageMessage(message: l10n.languageUpdated),
                   ],
 
                   const SizedBox(height: 24),
@@ -125,14 +144,12 @@ class _LanguagePageState extends State<LanguagePage> {
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Guardar idioma'),
+                        : Text(l10n.languageSave),
                   ),
 
                   const SizedBox(height: 16),
 
-                  const ProfileInfoBanner(
-                    text: 'La preferencia seleccionada se guarda en tu perfil de Guardian+.',
-                  ),
+                  ProfileInfoBanner(text: l10n.languageInfo),
                 ],
               ),
       ),
@@ -175,9 +192,7 @@ class _LanguageOption extends StatelessWidget {
                 color: theme.colorScheme.primary,
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +213,6 @@ class _LanguageOption extends StatelessWidget {
                 ],
               ),
             ),
-
             Icon(
               selected
                   ? Icons.check_circle_rounded

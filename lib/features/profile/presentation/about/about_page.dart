@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class AboutPage extends StatelessWidget {
   final VoidCallback onBack;
@@ -10,6 +11,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -18,8 +20,8 @@ class AboutPage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
             ProfileTopBar(
-              title: 'Acerca de Guardian+',
-              subtitle: 'Información de la aplicación',
+              title: l10n.settingsAbout,
+              subtitle: l10n.settingsAboutSubtitle,
               onBack: onBack,
             ),
             const SizedBox(height: 22),
@@ -48,7 +50,7 @@ class AboutPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'Cuidado y monitoreo remoto',
+                    l10n.aboutTagline,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -59,25 +61,18 @@ class AboutPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const ProfileSectionTitle(title: 'Sobre Guardian+'),
-            const ProfileCard(
-              child: Text(
-                'Guardian+ ayuda a familiares y cuidadores a acompañar de forma remota a personas bajo cuidado mediante una experiencia centralizada y accesible.',
-              ),
-            ),
+            ProfileSectionTitle(title: l10n.aboutSection),
+            ProfileCard(child: Text(l10n.aboutDescription)),
             const SizedBox(height: 24),
-            const ProfileSectionTitle(title: 'Información'),
+            ProfileSectionTitle(title: l10n.aboutInformation),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  const _InfoRow(
-                    label: 'Versión de la aplicación',
-                    value: '1.0',
-                  ),
+                  _InfoRow(label: l10n.aboutAppVersion, value: '1.0'),
                   const Divider(height: 1),
                   _InfoRow(
-                    label: 'Desarrollado por',
+                    label: l10n.aboutDevelopedBy,
                     value: 'Healthify',
                     valueColor: theme.colorScheme.primary,
                   ),
@@ -85,20 +80,18 @@ class AboutPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const ProfileSectionTitle(title: 'Información legal'),
+            ProfileSectionTitle(title: l10n.aboutLegalInformation),
             ProfileCard(
               padding: EdgeInsets.zero,
               child: ProfileMenuTile(
                 icon: Icons.description_outlined,
-                title: 'Términos y condiciones',
-                subtitle: 'Consulta las condiciones de uso de Guardian+',
+                title: l10n.settingsTerms,
+                subtitle: l10n.aboutTermsSubtitle,
                 onTap: onTerms,
               ),
             ),
             const SizedBox(height: 16),
-            const ProfileInfoBanner(
-              text: 'Gracias por utilizar Guardian+ para acompañar el cuidado de las personas que más importan.',
-            ),
+            ProfileInfoBanner(text: l10n.aboutThanks),
           ],
         ),
       ),
@@ -112,6 +105,7 @@ class _VersionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
@@ -120,7 +114,7 @@ class _VersionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        'Versión 1.0',
+        l10n.aboutVersion,
         style: theme.textTheme.labelSmall?.copyWith(
           color: theme.colorScheme.primary,
         ),

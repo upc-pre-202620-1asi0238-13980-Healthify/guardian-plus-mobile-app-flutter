@@ -5,6 +5,8 @@ import 'package:guardian_plus_app/features/auth/presentation/login_viewmodel.dar
 import 'package:guardian_plus_app/features/auth/presentation/otp/otp_verification_page.dart';
 import 'package:guardian_plus_app/features/auth/presentation/register/register_page.dart';
 import 'package:guardian_plus_app/features/auth/presentation/register/register_viewmodel.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
+import 'package:guardian_plus_app/features/auth/presentation/auth_message_localizer.dart';
 
 class LoginPage extends StatelessWidget {
   final LoginViewmodel viewModel;
@@ -54,11 +56,11 @@ class _Hero extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'PLATAFORMA DE SALUD',
+                      context.l10n.authHealthPlatform,
                       style: TextStyle(
                         fontFamily: AppFonts.mono,
                         fontFamilyFallback: AppFonts.monoFallback,
@@ -80,8 +82,8 @@ class _Hero extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 36),
-            const Text(
-              'Cuidado\nconectado.',
+            Text(
+              context.l10n.authConnectedCare,
               style: TextStyle(
                 fontSize: 36,
                 height: 1.1,
@@ -90,17 +92,17 @@ class _Hero extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Monitoreo en tiempo real para quienes importan',
+            Text(
+              context.l10n.authMonitoringSubtitle,
               style: TextStyle(fontSize: 13, color: Colors.white70),
             ),
             const SizedBox(height: 32),
             Row(
               spacing: 24,
               children: [
-                _stat('24/7', 'Monitoreo'),
-                _stat('5s', 'Actualización'),
-                _stat('99.8%', 'Disponibilidad'),
+                _stat('24/7', context.l10n.authMonitoringStat),
+                _stat('5s', context.l10n.authUpdateStat),
+                _stat('99.8%', context.l10n.authAvailabilityStat),
               ],
             ),
           ],
@@ -198,19 +200,14 @@ class _LoginSheetState extends State<_LoginSheet> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Cuenta verificada. Ya puedes iniciar sesión.'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.authAccountVerified)));
   }
 
   void _googleSignIn() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Google Sign-In se conectará en el siguiente bloque.'),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(context.l10n.authGoogleSoon)));
   }
 
   @override
@@ -240,18 +237,18 @@ class _LoginSheetState extends State<_LoginSheet> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Iniciar Sesión',
+              Text(
+                context.l10n.authLogin,
                 style: TextStyle(fontSize: 15, color: AppColors.textMuted),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Accede a tu cuenta de cuidador',
+              Text(
+                context.l10n.authLoginSubtitle,
                 style: TextStyle(fontSize: 15, color: AppColors.textMuted),
               ),
               const SizedBox(height: 20),
 
-              _label('CORREO ELECTRÓNICO', letterSpacing: 1.5),
+              _label(context.l10n.authEmail.toUpperCase(), letterSpacing: 1.5),
 
               const SizedBox(height: 12),
 
@@ -259,12 +256,15 @@ class _LoginSheetState extends State<_LoginSheet> {
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
-                decoration: _inputDecoration('nombre@correo.com'),
+                decoration: _inputDecoration(context.l10n.authEmailHint),
               ),
 
               const SizedBox(height: 16),
 
-              _label('CONTRASEÑA', letterSpacing: 1.5),
+              _label(
+                context.l10n.authPassword.toUpperCase(),
+                letterSpacing: 1.5,
+              ),
 
               const SizedBox(height: 12),
 
@@ -277,17 +277,18 @@ class _LoginSheetState extends State<_LoginSheet> {
                     _login();
                   }
                 },
-                decoration: _inputDecoration('Ingresa tu contraseña').copyWith(
-                  suffixIcon: IconButton(
-                    onPressed: widget.viewModel.togglePasswordVisibility,
-                    icon: Icon(
-                      state.isPasswordHidden
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: AppColors.textMuted,
+                decoration: _inputDecoration(context.l10n.authPasswordHint)
+                    .copyWith(
+                      suffixIcon: IconButton(
+                        onPressed: widget.viewModel.togglePasswordVisibility,
+                        icon: Icon(
+                          state.isPasswordHidden
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
               ),
 
               const SizedBox(height: 12),
@@ -299,8 +300,8 @@ class _LoginSheetState extends State<_LoginSheet> {
                     // Password reset se conectará
                     // en su bloque correspondiente.
                   },
-                  child: const Text(
-                    '¿Olvidaste tu contraseña?',
+                  child: Text(
+                    context.l10n.authForgotPassword,
                     style: _monoMuted,
                   ),
                 ),
@@ -309,7 +310,7 @@ class _LoginSheetState extends State<_LoginSheet> {
               if (state.errorMessage != null) ...[
                 const SizedBox(height: 12),
                 Text(
-                  state.errorMessage!,
+                  localizeAuthMessage(context, state.errorMessage!),
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
@@ -337,13 +338,13 @@ class _LoginSheetState extends State<_LoginSheet> {
                             color: Colors.white,
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
                           children: [
                             Icon(Icons.verified_user_outlined, size: 16),
                             Text(
-                              'Ingresar de forma segura',
+                              context.l10n.authSecureLogin,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -356,11 +357,11 @@ class _LoginSheetState extends State<_LoginSheet> {
 
               const SizedBox(height: 24),
 
-              const Row(
+              Row(
                 spacing: 12,
                 children: [
                   Expanded(child: Divider(color: AppColors.border)),
-                  Text('o continúa con', style: _monoMuted),
+                  Text(context.l10n.authContinueWith, style: _monoMuted),
                   Expanded(child: Divider(color: AppColors.border)),
                 ],
               ),
@@ -380,13 +381,13 @@ class _LoginSheetState extends State<_LoginSheet> {
                     ),
                   ),
                   onPressed: _googleSignIn,
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 10,
                     children: [
                       _GoogleLogo(size: 15),
                       Text(
-                        'Continuar con Google',
+                        context.l10n.authContinueWithGoogle,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -402,16 +403,16 @@ class _LoginSheetState extends State<_LoginSheet> {
               Center(
                 child: GestureDetector(
                   onTap: _openRegister,
-                  child: const Text.rich(
+                  child: Text.rich(
                     TextSpan(
                       style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textMuted,
                       ),
                       children: [
-                        TextSpan(text: '¿No tienes cuenta? '),
+                        TextSpan(text: context.l10n.authNoAccount + ' '),
                         TextSpan(
-                          text: 'Crear cuenta',
+                          text: context.l10n.authCreateAccount,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
@@ -425,9 +426,9 @@ class _LoginSheetState extends State<_LoginSheet> {
 
               const SizedBox(height: 20),
 
-              const Center(
+              Center(
                 child: Text(
-                  'Al ingresar, aceptas los Términos de uso y la Política de privacidad',
+                  context.l10n.authTermsNotice,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: AppFonts.mono,

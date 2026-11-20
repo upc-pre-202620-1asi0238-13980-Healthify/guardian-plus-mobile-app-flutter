@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/domain/care_recipient.dart';
 import 'package:guardian_plus_app/features/profile/presentation/care_recipient/care_recipient_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class CareRecipientPage extends StatefulWidget {
   final CareRecipientViewModel viewModel;
@@ -103,6 +104,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = widget.viewModel;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -113,14 +115,14 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
                 children: [
                   ProfileTopBar(
-                    title: 'Persona bajo cuidado',
-                    subtitle: 'Información de la persona que acompañas',
+                    title: l10n.profileCareRecipient,
+                    subtitle: l10n.careRecipientSubtitle,
                     onBack: widget.onBack,
                   ),
 
                   const SizedBox(height: 24),
 
-                  const ProfileSectionTitle(title: 'Información personal'),
+                  ProfileSectionTitle(title: l10n.profilePersonalInfoSection),
 
                   ProfileCard(
                     child: Column(
@@ -128,7 +130,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                         TextField(
                           controller: _firstNameController,
                           decoration: InputDecoration(
-                            labelText: 'Nombres',
+                            labelText: l10n.profileFirstNames,
                             prefixIcon: const Icon(Icons.person_outline),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -141,7 +143,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                         TextField(
                           controller: _lastNameController,
                           decoration: InputDecoration(
-                            labelText: 'Apellidos',
+                            labelText: l10n.profileLastNames,
                             prefixIcon: const Icon(Icons.badge_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -156,7 +158,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                           borderRadius: BorderRadius.circular(12),
                           child: InputDecorator(
                             decoration: InputDecoration(
-                              labelText: 'Fecha de nacimiento',
+                              labelText: l10n.careRecipientBirthDate,
                               prefixIcon: const Icon(
                                 Icons.calendar_today_outlined,
                               ),
@@ -166,7 +168,7 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                             ),
                             child: Text(
                               _birthDate == null
-                                  ? 'Seleccionar fecha'
+                                  ? l10n.careRecipientSelectDate
                                   : _formatDate(_birthDate!),
                             ),
                           ),
@@ -177,12 +179,15 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
 
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    _StatusMessage(message: state.errorMessage!, error: true),
+                    _StatusMessage(
+                      message: l10n.careRecipientError,
+                      error: true,
+                    ),
                   ],
 
                   if (state.successMessage != null) ...[
                     const SizedBox(height: 16),
-                    _StatusMessage(message: state.successMessage!),
+                    _StatusMessage(message: l10n.careRecipientSuccess),
                   ],
 
                   const SizedBox(height: 24),
@@ -201,14 +206,12 @@ class _CareRecipientPageState extends State<CareRecipientPage> {
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Guardar cambios'),
+                        : Text(l10n.profileSaveChanges),
                   ),
 
                   const SizedBox(height: 14),
 
-                  const ProfileInfoBanner(
-                    text: 'Esta información ayuda a identificar correctamente a la persona bajo cuidado dentro de Guardian+.',
-                  ),
+                  ProfileInfoBanner(text: l10n.careRecipientInfoBanner),
                 ],
               ),
       ),

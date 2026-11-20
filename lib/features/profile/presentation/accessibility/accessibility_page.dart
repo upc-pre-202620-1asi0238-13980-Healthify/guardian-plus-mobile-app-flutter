@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/profile/domain/user_preferences.dart';
 import 'package:guardian_plus_app/features/profile/presentation/accessibility/accessibility_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/common/profile_ui.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class AccessibilityPage extends StatefulWidget {
   final AccessibilityViewModel viewModel;
@@ -39,10 +40,26 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
     super.dispose();
   }
 
+  String _fontScaleLabel(BuildContext context, AppFontScale value) {
+    final l10n = context.l10n;
+
+    switch (value) {
+      case AppFontScale.small:
+        return l10n.accessibilitySmall;
+
+      case AppFontScale.defaultScale:
+        return l10n.accessibilityDefault;
+
+      case AppFontScale.large:
+        return l10n.accessibilityLarge;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = widget.viewModel;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -53,21 +70,21 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
                 children: [
                   ProfileTopBar(
-                    title: 'Accesibilidad',
-                    subtitle: 'Personaliza tu experiencia',
+                    title: l10n.accessibilityTitle,
+                    subtitle: l10n.accessibilitySubtitle,
                     onBack: widget.onBack,
                   ),
 
                   const SizedBox(height: 24),
 
-                  const ProfileSectionTitle(title: 'Visual'),
+                  ProfileSectionTitle(title: l10n.accessibilityVisual),
 
                   ProfileCard(
                     padding: EdgeInsets.zero,
                     child: _AccessibilitySwitch(
                       icon: Icons.contrast_rounded,
-                      title: 'Alto contraste',
-                      subtitle: 'Aumenta la diferencia visual entre elementos',
+                      title: l10n.accessibilityHighContrast,
+                      subtitle: l10n.accessibilityHighContrastDescription,
                       value: state.highContrastEnabled,
                       onChanged: state.setHighContrast,
                     ),
@@ -75,14 +92,14 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
 
                   const SizedBox(height: 20),
 
-                  const ProfileSectionTitle(title: 'Movimiento'),
+                  ProfileSectionTitle(title: l10n.accessibilityMovement),
 
                   ProfileCard(
                     padding: EdgeInsets.zero,
                     child: _AccessibilitySwitch(
                       icon: Icons.animation_outlined,
-                      title: 'Reducir movimiento',
-                      subtitle: 'Reduce animaciones y transiciones',
+                      title: l10n.accessibilityReduceMotion,
+                      subtitle: l10n.accessibilityReduceMotionDescription,
                       value: state.reduceMotionEnabled,
                       onChanged: state.setReduceMotion,
                     ),
@@ -90,7 +107,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
 
                   const SizedBox(height: 20),
 
-                  const ProfileSectionTitle(title: 'Tamaño del texto'),
+                  ProfileSectionTitle(title: l10n.accessibilityTextSize),
 
                   ProfileCard(
                     padding: EdgeInsets.zero,
@@ -102,7 +119,8 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                           index++
                         ) ...[
                           _FontScaleOption(
-                            label: state.fontScaleLabel(
+                            label: _fontScaleLabel(
+                              context,
                               AppFontScale.values[index],
                             ),
                             value: AppFontScale.values[index],
@@ -121,7 +139,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
 
                   const SizedBox(height: 20),
 
-                  const ProfileSectionTitle(title: 'Vista previa'),
+                  ProfileSectionTitle(title: l10n.accessibilityPreview),
 
                   ProfileCard(
                     child: _AccessibilityPreview(
@@ -133,14 +151,14 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 16),
                     _AccessibilityMessage(
-                      message: state.errorMessage!,
+                      message: l10n.accessibilityUpdateError,
                       error: true,
                     ),
                   ],
 
                   if (state.successMessage != null) ...[
                     const SizedBox(height: 16),
-                    _AccessibilityMessage(message: state.successMessage!),
+                    _AccessibilityMessage(message: l10n.accessibilityUpdated),
                   ],
 
                   const SizedBox(height: 24),
@@ -159,14 +177,12 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Guardar preferencias'),
+                        : Text(l10n.accessibilitySave),
                   ),
 
                   const SizedBox(height: 14),
 
-                  const ProfileInfoBanner(
-                    text: 'Estas preferencias se guardan en tu perfil para mantener una experiencia consistente.',
-                  ),
+                  ProfileInfoBanner(text: l10n.accessibilityInfo),
                 ],
               ),
       ),
@@ -206,9 +222,7 @@ class _AccessibilitySwitch extends StatelessWidget {
             ),
             child: Icon(icon, color: theme.colorScheme.primary),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,9 +243,7 @@ class _AccessibilitySwitch extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(width: 12),
-
           Switch(value: value, onChanged: onChanged),
         ],
       ),
@@ -297,6 +309,7 @@ class _AccessibilityPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     final scale = switch (fontScale) {
       AppFontScale.small => .9,
@@ -312,7 +325,7 @@ class _AccessibilityPreview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ejemplo de texto',
+          l10n.accessibilityPreviewTitle,
           textScaler: TextScaler.linear(scale),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
@@ -320,7 +333,7 @@ class _AccessibilityPreview extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Así se visualizará parte del contenido de Guardian+ con el tamaño seleccionado.',
+          l10n.accessibilityPreviewBody,
           textScaler: TextScaler.linear(scale),
           style: theme.textTheme.bodyMedium?.copyWith(color: foreground),
         ),

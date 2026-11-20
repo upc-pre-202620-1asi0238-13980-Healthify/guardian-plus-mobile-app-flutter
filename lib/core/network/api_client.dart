@@ -27,11 +27,15 @@ class ApiClient {
   /// on a concrete authentication implementation.
   final String? Function()? accessTokenProvider;
 
+  /// Called when the platform rejects the current IAM token.
+  final void Function()? onInvalidToken;
+
   const ApiClient({
     required this.client,
     this.baseUrl = apiBaseUrl,
     this.serverClock,
     this.accessTokenProvider,
+    this.onInvalidToken,
   });
 
   static const _timeout = Duration(seconds: 30);
@@ -104,6 +108,10 @@ class ApiClient {
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final error = _parseError(text, response.statusCode);
 
+      if (authenticated && _isInvalidToken(response, error)) {
+        onInvalidToken?.call();
+      }
+
       throw ApiException(
         error.message,
         statusCode: response.statusCode,
@@ -117,6 +125,20 @@ class ApiClient {
     }
 
     return jsonDecode(text);
+  }
+
+  bool _isInvalidToken(http.Response response, _ApiError error) {
+    if (response.statusCode != 401) {
+      return false;
+    }
+
+    final authenticateHeader =
+        response.headers['www-authenticate']?.toLowerCase() ?? '';
+
+    final errorCode = error.code?.toLowerCase() ?? '';
+
+    return authenticateHeader.contains('invalid_token') ||
+        errorCode == 'invalid_token';
   }
 
   void _syncClock(String? dateHeader) {
