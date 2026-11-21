@@ -46,11 +46,9 @@ LiveVitalSign _sign(VitalSignType type, double value, {bool live = true}) {
 }
 
 class _FakeVitalSignRepository implements VitalSignRepository {
-  List<LiveVitalSign> signs;
+  List<LiveVitalSign> signs = const [];
   bool fails = false;
   final List<String> requested = [];
-
-  new([this.signs = const []]);
 
   @override
   Future<LiveVitalSigns> getLiveVitalSigns(String careRecipientProfileId) async {
@@ -110,9 +108,8 @@ void main() {
   test('an SOS gets the live heart rate and SpO2 and the named place of the last position', () async {
     vitals.signs = [_sign(VitalSignType.hr, 111.6), _sign(VitalSignType.spo2, 95), _sign(VitalSignType.temp, 36.6)];
 
-    final context = await repository(
-      answering(_locationJson),
-    ).getAlertContext(alert('sos', source: AlertSourceType.sosTriggered));
+    final context = await repository(answering(_locationJson))
+        .getAlertContext(alert('sos', source: AlertSourceType.sosTriggered));
 
     expect(requests.single.url.path, '/location-tracking/elena/current');
     expect(vitals.requested, ['elena']);
@@ -142,9 +139,8 @@ void main() {
   test('no position yet (404) or no readings still give the rest of the context', () async {
     vitals.fails = true;
 
-    final context = await repository(
-      answering({'message': 'Location not found'}, status: 404),
-    ).getAlertContext(alert('fall'));
+    final context = await repository(answering({'message': 'Location not found'}, status: 404))
+        .getAlertContext(alert('fall'));
 
     expect(context.locationName, isNull);
     expect(context.hasVitals, isFalse);
