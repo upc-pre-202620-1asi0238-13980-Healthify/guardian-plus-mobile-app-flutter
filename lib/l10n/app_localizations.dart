@@ -1363,6 +1363,1188 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We sent you a new code.'**
   String get otpNewCodeSent;
+
+  /// No description provided for @alertSeverityCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical'**
+  String get alertSeverityCritical;
+
+  /// No description provided for @alertSeverityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get alertSeverityHigh;
+
+  /// No description provided for @alertSeverityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get alertSeverityMedium;
+
+  /// No description provided for @alertStatusPendingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming'**
+  String get alertStatusPendingConfirmation;
+
+  /// No description provided for @alertStatusTriggered.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get alertStatusTriggered;
+
+  /// No description provided for @alertStatusEscalated.
+  ///
+  /// In en, this message translates to:
+  /// **'Escalated'**
+  String get alertStatusEscalated;
+
+  /// No description provided for @alertStatusAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledged'**
+  String get alertStatusAcknowledged;
+
+  /// No description provided for @alertStatusDismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismissed'**
+  String get alertStatusDismissed;
+
+  /// No description provided for @alertStatusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get alertStatusResolved;
+
+  /// No description provided for @incidentStatusInAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'In attention'**
+  String get incidentStatusInAttention;
+
+  /// No description provided for @incidentStatusStabilized.
+  ///
+  /// In en, this message translates to:
+  /// **'Stabilized'**
+  String get incidentStatusStabilized;
+
+  /// No description provided for @incidentStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get incidentStatusClosed;
+
+  /// No description provided for @alertSourceFall.
+  ///
+  /// In en, this message translates to:
+  /// **'Fall'**
+  String get alertSourceFall;
+
+  /// No description provided for @alertSourceSos.
+  ///
+  /// In en, this message translates to:
+  /// **'SOS'**
+  String get alertSourceSos;
+
+  /// No description provided for @alertSourceVitalSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital signs'**
+  String get alertSourceVitalSigns;
+
+  /// No description provided for @alertSourceSafeZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe zone'**
+  String get alertSourceSafeZone;
+
+  /// No description provided for @alertSourceInactivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactivity'**
+  String get alertSourceInactivity;
+
+  /// No description provided for @alertSourceReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get alertSourceReminder;
+
+  /// No description provided for @alertSourceMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication'**
+  String get alertSourceMedication;
+
+  /// No description provided for @alertTitleFall.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible fall detected'**
+  String get alertTitleFall;
+
+  /// No description provided for @alertTitleVitalSign.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital sign out of range'**
+  String get alertTitleVitalSign;
+
+  /// No description provided for @alertTitleSafeZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Left the safe zone'**
+  String get alertTitleSafeZone;
+
+  /// No description provided for @alertTitleInactivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Prolonged inactivity'**
+  String get alertTitleInactivity;
+
+  /// No description provided for @alertTitleReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Unconfirmed reminder'**
+  String get alertTitleReminder;
+
+  /// No description provided for @alertTitleMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication running out'**
+  String get alertTitleMedication;
+
+  /// No description provided for @alertTimeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get alertTimeNow;
+
+  /// No description provided for @alertTitleSos.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} pressed the SOS button'**
+  String alertTitleSos(String name);
+
+  /// No description provided for @alertTimeSecondsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s ago'**
+  String alertTimeSecondsAgo(int seconds);
+
+  /// No description provided for @alertTimeMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min ago'**
+  String alertTimeMinutesAgo(int minutes);
+
+  /// No description provided for @alertTimeHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h ago'**
+  String alertTimeHoursAgo(int hours);
+
+  /// No description provided for @alertTimeDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} d ago'**
+  String alertTimeDaysAgo(int days);
+
+  /// No description provided for @alertCallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the phone to call {phoneNumber}'**
+  String alertCallFailed(String phoneNumber);
+
+  /// No description provided for @alertCallNeedsContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an emergency contact to be able to call'**
+  String get alertCallNeedsContact;
+
+  /// No description provided for @alertsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alertsTitle;
+
+  /// No description provided for @alertsActiveCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 active} other{{count} active}}'**
+  String alertsActiveCount(int count);
+
+  /// No description provided for @alertsSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert settings'**
+  String get alertsSettingsTooltip;
+
+  /// No description provided for @alertsTabActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get alertsTabActive;
+
+  /// No description provided for @alertsTabHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get alertsTabHistory;
+
+  /// No description provided for @alertsOtherActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Other active alerts'**
+  String get alertsOtherActive;
+
+  /// No description provided for @alertsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active alerts'**
+  String get alertsActive;
+
+  /// No description provided for @alertsAllGoodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is fine'**
+  String alertsAllGoodTitle(String name);
+
+  /// No description provided for @alertsAllGoodMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No active alerts. We\'ll let you know right away if anything changes.'**
+  String get alertsAllGoodMessage;
+
+  /// No description provided for @alertsMetaUnacknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'{elapsed} · Unacknowledged'**
+  String alertsMetaUnacknowledged(String elapsed);
+
+  /// No description provided for @alertsMetaConfirming.
+  ///
+  /// In en, this message translates to:
+  /// **'{elapsed} · Confirming'**
+  String alertsMetaConfirming(String elapsed);
+
+  /// No description provided for @alertsMetaAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'{elapsed} · Acknowledged'**
+  String alertsMetaAcknowledged(String elapsed);
+
+  /// No description provided for @alertsViewDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'View alert details'**
+  String get alertsViewDetail;
+
+  /// No description provided for @alertsAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledge'**
+  String get alertsAcknowledge;
+
+  /// No description provided for @alertsCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call {name}'**
+  String alertsCall(String name);
+
+  /// No description provided for @alertsWaitingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name} to confirm they are okay'**
+  String alertsWaitingConfirmation(String name);
+
+  /// No description provided for @alertsFallNoResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} did not respond within 20 s'**
+  String alertsFallNoResponse(String name);
+
+  /// No description provided for @alertsSosHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'Long press on the wristband'**
+  String get alertsSosHeld;
+
+  /// No description provided for @alertsSentToEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the whole care circle'**
+  String get alertsSentToEveryone;
+
+  /// No description provided for @alertsEscalatingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unacknowledged · sending to the next contacts…'**
+  String get alertsEscalatingNow;
+
+  /// No description provided for @alertsEscalatesToSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Unacknowledged · goes to your secondary contacts in'**
+  String get alertsEscalatesToSecondary;
+
+  /// No description provided for @alertsEscalatesToEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Unacknowledged · goes to the whole care circle in'**
+  String get alertsEscalatesToEveryone;
+
+  /// No description provided for @alertsEscalationNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'If nobody acknowledges a critical alert within {seconds} s, it will be sent automatically to your secondary contacts.'**
+  String alertsEscalationNotice(int seconds);
+
+  /// No description provided for @alertsManageContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage emergency contacts'**
+  String get alertsManageContacts;
+
+  /// No description provided for @alertDetailTopPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Top priority'**
+  String get alertDetailTopPriority;
+
+  /// No description provided for @alertDetailSosHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'3 s long press on the wristband · Their location was sent to your contacts'**
+  String get alertDetailSosHeld;
+
+  /// No description provided for @alertDetailDismissedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'False alarm dismissed by {name}'**
+  String alertDetailDismissedBy(String name);
+
+  /// No description provided for @alertDetailIncidentClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident closed'**
+  String get alertDetailIncidentClosed;
+
+  /// No description provided for @alertDetailIncidentStabilized.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident stabilized'**
+  String get alertDetailIncidentStabilized;
+
+  /// No description provided for @alertDetailFallNoResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} did not respond after a fall'**
+  String alertDetailFallNoResponse(String name);
+
+  /// No description provided for @alertDetailImpactDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Impact detected by the wristband'**
+  String get alertDetailImpactDetected;
+
+  /// No description provided for @alertDetailDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected'**
+  String get alertDetailDetected;
+
+  /// No description provided for @alertDetailStabilizedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Stabilized'**
+  String get alertDetailStabilizedAt;
+
+  /// No description provided for @alertDetailClosedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get alertDetailClosedAt;
+
+  /// No description provided for @alertDetailDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get alertDetailDuration;
+
+  /// No description provided for @alertDetailCancelWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation window'**
+  String get alertDetailCancelWindow;
+
+  /// No description provided for @alertDetailSecondsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s left'**
+  String alertDetailSecondsLeft(int seconds);
+
+  /// No description provided for @alertDetailWindowExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired · {seconds} s'**
+  String alertDetailWindowExpired(int seconds);
+
+  /// No description provided for @alertDetailSinceDetection.
+  ///
+  /// In en, this message translates to:
+  /// **'Since detection'**
+  String get alertDetailSinceDetection;
+
+  /// No description provided for @alertDetailEscalationWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'When someone acknowledges it or is on the way, everyone else will see it here.'**
+  String get alertDetailEscalationWatching;
+
+  /// No description provided for @alertDetailEscalationToSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t acknowledge the alert, it will be sent to your secondary contacts.'**
+  String get alertDetailEscalationToSecondary;
+
+  /// No description provided for @alertDetailEscalationToEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'If nobody acknowledges it, it will be sent to the whole care circle.'**
+  String get alertDetailEscalationToEveryone;
+
+  /// No description provided for @alertDetailAutoEscalation.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic escalation'**
+  String get alertDetailAutoEscalation;
+
+  /// No description provided for @alertDetailSentToContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice sent to your contacts'**
+  String get alertDetailSentToContacts;
+
+  /// No description provided for @contactStatusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get contactStatusWaiting;
+
+  /// No description provided for @contactStatusSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending'**
+  String get contactStatusSending;
+
+  /// No description provided for @contactStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Notified'**
+  String get contactStatusSent;
+
+  /// No description provided for @contactStatusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get contactStatusDelivered;
+
+  /// No description provided for @contactStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get contactStatusFailed;
+
+  /// No description provided for @contactStatusAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledged'**
+  String get contactStatusAcknowledged;
+
+  /// No description provided for @contactStatusOnTheWay.
+  ///
+  /// In en, this message translates to:
+  /// **'On the way'**
+  String get contactStatusOnTheWay;
+
+  /// No description provided for @contactStatusArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get contactStatusArrived;
+
+  /// No description provided for @contactStatusNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not needed'**
+  String get contactStatusNotNeeded;
+
+  /// No description provided for @contactPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get contactPrimary;
+
+  /// No description provided for @contactSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary'**
+  String get contactSecondary;
+
+  /// No description provided for @alertDetailTimelineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident follow-up'**
+  String get alertDetailTimelineTitle;
+
+  /// No description provided for @alertDetailSomeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'A circle member'**
+  String get alertDetailSomeMember;
+
+  /// No description provided for @timelineFallDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Fall detected by the wristband'**
+  String get timelineFallDetected;
+
+  /// No description provided for @timelineNotCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t cancel the alert within {seconds} s'**
+  String timelineNotCancelled(String name, int seconds);
+
+  /// No description provided for @timelineDismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} confirmed from the wristband that they are okay'**
+  String timelineDismissed(String name);
+
+  /// No description provided for @timelineSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert sent to {names}'**
+  String timelineSentTo(String names);
+
+  /// No description provided for @timelineAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} acknowledged the alert'**
+  String timelineAcknowledged(String names);
+
+  /// No description provided for @timelineOnTheWay.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} is on the way'**
+  String timelineOnTheWay(String names);
+
+  /// No description provided for @timelineArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} arrived with {name}'**
+  String timelineArrived(String names, String name);
+
+  /// No description provided for @timelineNextEscalation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending to the next contacts (pending)'**
+  String get timelineNextEscalation;
+
+  /// No description provided for @alertDetailAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledge alert'**
+  String get alertDetailAcknowledge;
+
+  /// No description provided for @alertDetailArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve arrived'**
+  String get alertDetailArrived;
+
+  /// No description provided for @alertDetailCloseIncident.
+  ///
+  /// In en, this message translates to:
+  /// **'Close incident'**
+  String get alertDetailCloseIncident;
+
+  /// No description provided for @alertDetailOnMyWay.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m on my way'**
+  String get alertDetailOnMyWay;
+
+  /// No description provided for @alertDetailMarkStabilized.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark stabilized'**
+  String get alertDetailMarkStabilized;
+
+  /// No description provided for @alertDetailCallEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Call emergency services (SAMU 106)'**
+  String get alertDetailCallEmergency;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get notesLabel;
+
+  /// No description provided for @notesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Fall without injuries, she is lying down now.'**
+  String get notesHint;
+
+  /// No description provided for @summaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident summary'**
+  String get summaryTitle;
+
+  /// No description provided for @summaryType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get summaryType;
+
+  /// No description provided for @summaryStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get summaryStart;
+
+  /// No description provided for @summaryAcknowledgedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledged by'**
+  String get summaryAcknowledgedBy;
+
+  /// No description provided for @summaryAcknowledgedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · in {duration}'**
+  String summaryAcknowledgedIn(String name, String duration);
+
+  /// No description provided for @summaryNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get summaryNotes;
+
+  /// No description provided for @vitalsHeartRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart rate'**
+  String get vitalsHeartRate;
+
+  /// No description provided for @vitalsOxygen.
+  ///
+  /// In en, this message translates to:
+  /// **'O₂ saturation'**
+  String get vitalsOxygen;
+
+  /// No description provided for @vitalsUnitBpm.
+  ///
+  /// In en, this message translates to:
+  /// **'bpm'**
+  String get vitalsUnitBpm;
+
+  /// No description provided for @readingHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get readingHigh;
+
+  /// No description provided for @readingLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get readingLow;
+
+  /// No description provided for @readingNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get readingNormal;
+
+  /// No description provided for @locationUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Location updated {ago}'**
+  String locationUpdated(String ago);
+
+  /// No description provided for @locationViewMap.
+  ///
+  /// In en, this message translates to:
+  /// **'View on map'**
+  String get locationViewMap;
+
+  /// No description provided for @alertDetailStabilizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as stabilized'**
+  String get alertDetailStabilizeTitle;
+
+  /// No description provided for @alertDetailStabilizeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is no longer in danger. The incident stays open until you close it.'**
+  String alertDetailStabilizeMessage(String name);
+
+  /// No description provided for @alertDetailCloseMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The alert will be resolved and moved to the history.'**
+  String get alertDetailCloseMessage;
+
+  /// No description provided for @alertDetailSosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SOS alert'**
+  String get alertDetailSosTitle;
+
+  /// No description provided for @alertDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert details'**
+  String get alertDetailTitle;
+
+  /// No description provided for @historyEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No alerts in the history'**
+  String get historyEmptyTitle;
+
+  /// No description provided for @historyEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When an alert happens, it will be recorded here with its whole follow-up.'**
+  String get historyEmptyMessage;
+
+  /// No description provided for @historyEmptyFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no {severity} severity alerts.'**
+  String historyEmptyFiltered(String severity);
+
+  /// No description provided for @historyWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'{value, select, 1{Monday} 2{Tuesday} 3{Wednesday} 4{Thursday} 5{Friday} 6{Saturday} 7{Sunday} other{}}'**
+  String historyWeekday(String value);
+
+  /// No description provided for @historyMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{value, select, 1{Jan} 2{Feb} 3{Mar} 4{Apr} 5{May} 6{Jun} 7{Jul} 8{Aug} 9{Sep} 10{Oct} 11{Nov} 12{Dec} other{}}'**
+  String historyMonth(String value);
+
+  /// No description provided for @historyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get historyToday;
+
+  /// No description provided for @historyYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get historyYesterday;
+
+  /// No description provided for @historyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday} {day} {month}'**
+  String historyDay(String weekday, int day, String month);
+
+  /// No description provided for @historyAcknowledgedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledged in {duration}'**
+  String historyAcknowledgedIn(String duration);
+
+  /// No description provided for @historyWaitingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name} to confirm'**
+  String historyWaitingConfirmation(String name);
+
+  /// No description provided for @historyUnacknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Unacknowledged'**
+  String get historyUnacknowledged;
+
+  /// No description provided for @historySummaryAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts · 7 days'**
+  String get historySummaryAlerts;
+
+  /// No description provided for @historySummaryResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Average response'**
+  String get historySummaryResponse;
+
+  /// No description provided for @historySummaryEscalated.
+  ///
+  /// In en, this message translates to:
+  /// **'Escalated'**
+  String get historySummaryEscalated;
+
+  /// No description provided for @historyFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get historyFilterAll;
+
+  /// No description provided for @historyFilterCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical'**
+  String get historyFilterCritical;
+
+  /// No description provided for @historyFilterHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get historyFilterHigh;
+
+  /// No description provided for @historyFilterMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get historyFilterMedium;
+
+  /// No description provided for @alertSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert settings'**
+  String get alertSettingsTitle;
+
+  /// No description provided for @alertSettingsSoundSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert sound'**
+  String get alertSettingsSoundSection;
+
+  /// No description provided for @alertSettingsSilentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Silence non-critical alerts'**
+  String get alertSettingsSilentTitle;
+
+  /// No description provided for @alertSettingsSilentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s non-critical alerts reach the care circle\'s phones without sound. Falls and SOS always ring.'**
+  String alertSettingsSilentDetail(String name);
+
+  /// No description provided for @alertSettingsEscalationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Escalation'**
+  String get alertSettingsEscalationSection;
+
+  /// No description provided for @alertSettingsEscalationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify the next contacts'**
+  String get alertSettingsEscalationTitle;
+
+  /// No description provided for @alertSettingsEscalationDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'If the primary contact doesn\'t acknowledge a critical or high alert, it is sent to the others.'**
+  String get alertSettingsEscalationDetail;
+
+  /// No description provided for @alertSettingsBroadcastTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify everyone on falls and SOS'**
+  String get alertSettingsBroadcastTitle;
+
+  /// No description provided for @alertSettingsBroadcastDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical alerts reach the whole care circle at the same time.'**
+  String get alertSettingsBroadcastDetail;
+
+  /// No description provided for @alertSettingsChannelPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notification'**
+  String get alertSettingsChannelPush;
+
+  /// No description provided for @alertSettingsChannelSms.
+  ///
+  /// In en, this message translates to:
+  /// **'Text message (SMS)'**
+  String get alertSettingsChannelSms;
+
+  /// No description provided for @alertSettingsChannelInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app'**
+  String get alertSettingsChannelInApp;
+
+  /// No description provided for @alertSettingsChannelsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'How we notify you'**
+  String get alertSettingsChannelsSection;
+
+  /// No description provided for @alertSettingsChannelsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical alerts are always backed up by SMS. At least one channel must stay on.'**
+  String get alertSettingsChannelsNote;
+
+  /// No description provided for @alertSettingsAckTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait time before escalating'**
+  String get alertSettingsAckTimeout;
+
+  /// No description provided for @contactsSummaryNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts yet'**
+  String get contactsSummaryNone;
+
+  /// No description provided for @contactsSummaryOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 contact · {name}'**
+  String contactsSummaryOne(String name);
+
+  /// No description provided for @contactsSummaryMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} contacts · {name} is the primary one'**
+  String contactsSummaryMany(int count, String name);
+
+  /// No description provided for @emergencyContactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contacts'**
+  String get emergencyContactsTitle;
+
+  /// No description provided for @contactsIntroEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no emergency contacts yet. Add at least one so the alerts reach someone.'**
+  String contactsIntroEmpty(String name);
+
+  /// No description provided for @contactsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'They receive {name}\'s alerts in this order. If the first one doesn\'t answer within {seconds} s, the next ones are notified.'**
+  String contactsIntro(String name, int seconds);
+
+  /// No description provided for @contactsKeepOne.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one contact must remain: they receive the alerts first.'**
+  String get contactsKeepOne;
+
+  /// No description provided for @contactsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get contactsAdd;
+
+  /// No description provided for @addContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New emergency contact'**
+  String get addContactTitle;
+
+  /// No description provided for @addContactSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'They will be added at the end of {name}\'s list.'**
+  String addContactSubtitle(String name);
+
+  /// No description provided for @addContactName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get addContactName;
+
+  /// No description provided for @addContactNameError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name (up to {max} characters)'**
+  String addContactNameError(int max);
+
+  /// No description provided for @addContactRelationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship'**
+  String get addContactRelationship;
+
+  /// No description provided for @addContactRelationshipHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Daughter, neighbor, caregiver'**
+  String get addContactRelationshipHint;
+
+  /// No description provided for @addContactRelationshipError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the relationship (up to {max} characters)'**
+  String addContactRelationshipError(int max);
+
+  /// No description provided for @addContactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone with country code'**
+  String get addContactPhone;
+
+  /// No description provided for @addContactPhoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the international format, for example +51987654321'**
+  String get addContactPhoneError;
+
+  /// No description provided for @addContactSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save contact'**
+  String get addContactSave;
+
+  /// No description provided for @contactPrimaryChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get contactPrimaryChip;
+
+  /// No description provided for @contactSecondaryChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary {position}'**
+  String contactSecondaryChip(int position);
+
+  /// No description provided for @contactMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move {name} up'**
+  String contactMoveUp(String name);
+
+  /// No description provided for @contactMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move {name} down'**
+  String contactMoveDown(String name);
+
+  /// No description provided for @contactRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String contactRemoveTooltip(String name);
+
+  /// No description provided for @removeContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String removeContactTitle(String name);
+
+  /// No description provided for @removeContactMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'They will stop receiving {name}\'s alerts. The rest of the list moves up one place.'**
+  String removeContactMessage(String name);
+
+  /// No description provided for @removeContactConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeContactConfirm;
+
+  /// No description provided for @errorLoadAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the alerts'**
+  String get errorLoadAlerts;
+
+  /// No description provided for @errorLoadAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the alert'**
+  String get errorLoadAlert;
+
+  /// No description provided for @errorLoadHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the history'**
+  String get errorLoadHistory;
+
+  /// No description provided for @errorLoadSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the settings'**
+  String get errorLoadSettings;
+
+  /// No description provided for @errorLoadContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the contacts'**
+  String get errorLoadContacts;
+
+  /// No description provided for @errorAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t acknowledge the alert'**
+  String get errorAcknowledge;
+
+  /// No description provided for @errorRunAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t complete the action'**
+  String get errorRunAction;
+
+  /// No description provided for @errorChangeChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t change the channel'**
+  String get errorChangeChannel;
+
+  /// No description provided for @errorKeepOneChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one channel must stay on to receive the alerts'**
+  String get errorKeepOneChannel;
+
+  /// No description provided for @errorSaveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the settings'**
+  String get errorSaveSettings;
+
+  /// No description provided for @errorReorderContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t change the order'**
+  String get errorReorderContacts;
+
+  /// No description provided for @errorRemoveContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t remove the contact'**
+  String get errorRemoveContact;
+
+  /// No description provided for @errorAddContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t add the contact'**
+  String get errorAddContact;
 }
 
 class _AppLocalizationsDelegate
