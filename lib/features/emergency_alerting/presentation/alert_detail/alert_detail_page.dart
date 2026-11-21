@@ -11,7 +11,9 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/escalation_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/incident_summary_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/incident_timeline.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/location_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/notes_dialog.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/vitals_row.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_colors.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/detail_top_bar.dart';
@@ -21,8 +23,10 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/commo
 
 class AlertDetailPage extends StatefulWidget {
   final AlertDetailViewModel viewModel;
+  // Opens Mobility's map of the person under care; without it the location card has no shortcut
+  final VoidCallback? onViewMap;
 
-  const new({super.key, required this.viewModel});
+  const new({super.key, required this.viewModel, this.onViewMap});
 
   @override
   State<AlertDetailPage> createState() => _AlertDetailPageState();
@@ -109,6 +113,7 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
               onClose: _confirmClose,
               onCall: () => callCareRecipient(context, getIt<CareContextStore>().require()),
               onCallEmergency: () => dial(context, emergencyServicesNumber),
+              onViewMap: widget.onViewMap,
             ),
           },
         );
@@ -143,6 +148,7 @@ class _DetailBody extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onCall;
   final VoidCallback onCallEmergency;
+  final VoidCallback? onViewMap;
 
   const new({
     required this.state,
@@ -154,12 +160,16 @@ class _DetailBody extends StatelessWidget {
     required this.onClose,
     required this.onCall,
     required this.onCallEmergency,
+    required this.onViewMap,
   });
 
   @override
   Widget build(BuildContext context) {
     final incident = state.incident;
     final calm = state.isCalm;
+    final alertContext = state.context;
+    final locationName = alertContext.locationName;
+    final locationUpdatedAt = alertContext.locationUpdatedAt;
     final showContacts =
         state.escalationContacts.isNotEmpty &&
         alert.status != AlertStatus.pendingConfirmation &&
@@ -202,6 +212,15 @@ class _DetailBody extends StatelessWidget {
         sourceType: alert.sourceType,
         careRecipientFirstName: state.careRecipientFirstName,
       ),
+      // What is happening now matters while the emergency lasts; a calm alert drops it
+      if (!calm && alertContext.hasVitals)
+        VitalsRow(heartRateBpm: alertContext.heartRateBpm, oxygenSaturation: alertContext.oxygenSaturation),
+      if (!calm && locationName != null)
+        LocationCard(
+          locationName: locationName,
+          updatedAgo: locationUpdatedAt == null ? null : relativeTime(locationUpdatedAt, state.now).toLowerCase(),
+          onViewMap: onViewMap,
+        ),
       AlertDetailActions(
         actions: actions,
         runningAction: state.runningAction,

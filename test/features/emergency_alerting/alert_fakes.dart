@@ -1,6 +1,8 @@
 import 'package:guardian_plus_app/core/network/api_exception.dart';
 import 'package:guardian_plus_app/core/time/server_clock.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context_repository.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_delivery.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_page.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_repository.dart';
@@ -252,4 +254,20 @@ Incident incident(String alertId, {IncidentStatus status = IncidentStatus.inAtte
     status: status,
     markedInAttentionAt: testNow.subtract(const Duration(seconds: 30)),
   );
+}
+
+/// Answers every alert with the same context, as if Health Monitoring and Mobility had it.
+class FakeAlertContextRepository implements AlertContextRepository {
+  AlertContext context;
+  Object? failure;
+  final List<String> requestedAlertIds = [];
+
+  new([this.context = AlertContext.empty]);
+
+  @override
+  Future<AlertContext> getAlertContext(Alert alert) async {
+    requestedAlertIds.add(alert.id);
+    if (failure != null) throw failure!;
+    return context;
+  }
 }

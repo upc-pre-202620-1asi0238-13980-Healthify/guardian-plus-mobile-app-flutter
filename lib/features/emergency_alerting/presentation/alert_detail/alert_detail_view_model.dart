@@ -9,10 +9,13 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/claim_
 import 'package:guardian_plus_app/features/emergency_alerting/application/close_incident_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/complete_alert_response_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_by_id_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_context_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_settings_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_emergency_contacts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_incident_by_alert_id_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/stabilize_incident_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/emergency_contact.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/incident.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/alert_detail_state.dart';
@@ -23,6 +26,7 @@ class AlertDetailViewModel extends ChangeNotifier {
   final String alertId;
   final GetAlertByIdUseCase getAlertById;
   final GetIncidentByAlertIdUseCase getIncidentByAlertId;
+  final GetAlertContextUseCase getAlertContext;
   final GetEmergencyContactsUseCase getEmergencyContacts;
   final GetAlertSettingsUseCase getAlertSettings;
   final AcknowledgeAlertUseCase acknowledgeAlert;
@@ -38,6 +42,7 @@ class AlertDetailViewModel extends ChangeNotifier {
     required this.alertId,
     required this.getAlertById,
     required this.getIncidentByAlertId,
+    required this.getAlertContext,
     required this.getEmergencyContacts,
     required this.getAlertSettings,
     required this.acknowledgeAlert,
@@ -139,13 +144,14 @@ class AlertDetailViewModel extends ChangeNotifier {
     _refreshing = true;
     try {
       final alert = await getAlertById.execute(alertId);
-      final incident = await _incidentOrNull();
+      final (incident, context) = await (_incidentOrNull(), _contextOf(alert)).wait;
       _emit(
         _state.copyWith(
           isLoading: false,
           errorMessage: () => null,
           alert: alert,
           incident: () => incident,
+          context: context,
           now: serverClock.now(),
         ),
       );
@@ -162,6 +168,15 @@ class AlertDetailViewModel extends ChangeNotifier {
       return await getIncidentByAlertId.execute(alertId);
     } catch (_) {
       return _state.incident;
+    }
+  }
+
+  // The context only adds to the alert: without it the detail shows what it already had
+  Future<AlertContext> _contextOf(Alert alert) async {
+    try {
+      return await getAlertContext.execute(alert);
+    } catch (_) {
+      return _state.context;
     }
   }
 

@@ -9,14 +9,17 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/close_
 import 'package:guardian_plus_app/features/emergency_alerting/application/complete_alert_response_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_active_alerts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_by_id_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_context_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_history_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_settings_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_emergency_contacts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_incident_by_alert_id_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_pending_alerts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/stabilize_incident_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_source_type.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_status.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/active_alerts_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/alert_detail_page.dart';
@@ -30,6 +33,7 @@ import '../fakes.dart';
 void main() {
   late FakeAlertRepository alerts;
   late FakeIncidentRepository incidents;
+  late FakeAlertContextRepository alertContext;
   late FakeEmergencyContactRepository contacts;
   late FakeAlertSettingsRepository settings;
   late CareContextStore store;
@@ -37,6 +41,7 @@ void main() {
 
   setUp(() {
     incidents = FakeIncidentRepository();
+    alertContext = FakeAlertContextRepository();
     contacts = FakeEmergencyContactRepository([contact('a', priorityOrder: 1).withName('María Rojas')]);
     settings = FakeAlertSettingsRepository();
     store = careContextStore();
@@ -57,6 +62,7 @@ void main() {
     alertId: alertId,
     getAlertById: GetAlertByIdUseCase(repository: alerts),
     getIncidentByAlertId: GetIncidentByAlertIdUseCase(repository: incidents),
+    getAlertContext: GetAlertContextUseCase(repository: alertContext),
     getEmergencyContacts: GetEmergencyContactsUseCase(repository: contacts),
     getAlertSettings: GetAlertSettingsUseCase(repository: settings),
     acknowledgeAlert: AcknowledgeAlertUseCase(repository: alerts),
@@ -143,6 +149,53 @@ void main() {
     expect(find.text('Reconocer alerta'), findsNothing);
     expect(find.text('Voy en camino'), findsOneWidget);
     expect(alerts.calls, ['acknowledge fall by maria']);
+  });
+
+  testWidgets('during an emergency the detail shows the vital signs and where the person is', (tester) async {
+    alerts = FakeAlertRepository(
+      active: [
+        alert('sos', source: AlertSourceType.sosTriggered, deliveries: [delivery('maria')]),
+      ],
+    );
+    alertContext = FakeAlertContextRepository(
+      AlertContext(
+        heartRateBpm: 112,
+        oxygenSaturation: 95,
+        locationName: 'Av. Larco 345 · Miraflores',
+        locationUpdatedAt: testNow.subtract(const Duration(seconds: 30)),
+      ),
+    );
+    var mapOpened = false;
+
+    await tester.pumpWidget(
+      await app(tester, AlertDetailPage(viewModel: detailViewModel('sos'), onViewMap: () => mapOpened = true)),
+    );
+    await tester.pump();
+
+    expect(find.text('FRECUENCIA CARDÍACA'), findsOneWidget);
+    expect(find.text('112'), findsOneWidget);
+    expect(find.text('Alta'), findsOneWidget);
+    expect(find.text('95'), findsOneWidget);
+    expect(find.text('Normal'), findsOneWidget);
+    expect(find.text('Av. Larco 345 · Miraflores'), findsOneWidget);
+    expect(find.text('Ubicación actualizada hace 30 s'), findsOneWidget);
+
+    await tester.tap(find.text('Ver en mapa'));
+    expect(mapOpened, isTrue);
+  });
+
+  testWidgets('once the incident is stabilized the detail drops the vital signs and location', (tester) async {
+    alerts = FakeAlertRepository(active: [alert('sos', source: AlertSourceType.sosTriggered)]);
+    incidents = FakeIncidentRepository(incident('sos', status: IncidentStatus.stabilized));
+    alertContext = FakeAlertContextRepository(
+      const AlertContext(heartRateBpm: 80, locationName: 'Av. Larco 345 · Miraflores'),
+    );
+
+    await tester.pumpWidget(await app(tester, AlertDetailPage(viewModel: detailViewModel('sos'))));
+    await tester.pump();
+
+    expect(find.text('FRECUENCIA CARDÍACA'), findsNothing);
+    expect(find.text('Av. Larco 345 · Miraflores'), findsNothing);
   });
 
   testWidgets('stabilizing asks for optional notes and turns the detail into the incident summary', (tester) async {

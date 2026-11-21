@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_delivery.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_source_type.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_status.dart';
@@ -65,6 +66,7 @@ class AlertDetailState {
     this.errorMessage,
     this.alert,
     this.incident,
+    this.context = AlertContext.empty,
     this.contacts = const [],
     this.ackTimeoutSec = 60,
     this.escalationEnabled = true,
@@ -79,6 +81,8 @@ class AlertDetailState {
   final String? errorMessage;
   final Alert? alert;
   final Incident? incident;
+  // Vital signs and location around the alert, from Health Monitoring and Mobility
+  final AlertContext context;
   final List<EmergencyContact> contacts;
   final int ackTimeoutSec;
   final bool escalationEnabled;
@@ -231,6 +235,7 @@ class AlertDetailState {
     ValueGetter<String?>? errorMessage,
     Alert? alert,
     ValueGetter<Incident?>? incident,
+    AlertContext? context,
     List<EmergencyContact>? contacts,
     int? ackTimeoutSec,
     bool? escalationEnabled,
@@ -243,6 +248,7 @@ class AlertDetailState {
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       alert: alert ?? this.alert,
       incident: incident != null ? incident() : this.incident,
+      context: context ?? this.context,
       contacts: contacts ?? this.contacts,
       ackTimeoutSec: ackTimeoutSec ?? this.ackTimeoutSec,
       escalationEnabled: escalationEnabled ?? this.escalationEnabled,
