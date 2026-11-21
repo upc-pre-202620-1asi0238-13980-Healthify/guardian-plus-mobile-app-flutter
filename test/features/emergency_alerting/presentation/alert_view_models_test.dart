@@ -114,7 +114,7 @@ void main() {
 
       await viewModel.acknowledge('fall');
 
-      expect(viewModel.state.actionErrorMessage, 'Otro miembro ya reconoció la alerta');
+      expect(viewModel.state.actionError?.platformMessage, 'Otro miembro ya reconoció la alerta');
       expect(viewModel.state.acknowledgingAlertId, isNull);
       expect(viewModel.state.featuredAlert?.alert.id, 'fall');
     });
@@ -124,7 +124,7 @@ void main() {
       final viewModel = create();
       await pumpEventQueue();
 
-      expect(viewModel.state.errorMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
+      expect(viewModel.state.error?.platformMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
       expect(viewModel.state.isLoading, isFalse);
     });
   });
@@ -273,7 +273,7 @@ void main() {
 
       await viewModel.acknowledge();
 
-      expect(viewModel.state.actionErrorMessage, 'La alerta ya fue reconocida');
+      expect(viewModel.state.actionError?.platformMessage, 'La alerta ya fue reconocida');
       expect(viewModel.state.runningAction, isNull);
     });
 
@@ -310,7 +310,7 @@ void main() {
       await viewModel.acknowledge();
 
       expect(viewModel.state.context.oxygenSaturation, 95);
-      expect(viewModel.state.errorMessage, isNull);
+      expect(viewModel.state.error, isNull);
     });
   });
 }

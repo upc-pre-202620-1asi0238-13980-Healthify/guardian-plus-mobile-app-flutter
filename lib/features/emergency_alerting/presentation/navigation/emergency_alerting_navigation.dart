@@ -28,9 +28,7 @@ Future<void> openAlertDetail(BuildContext context, String alertId) {
 Future<void> _openLocation(BuildContext context) {
   return Navigator.push<void>(
     context,
-    MaterialPageRoute(
-      builder: (context) => PerimeterMonitoringPage(viewModel: getIt<PerimeterMonitoringViewModel>()),
-    ),
+    MaterialPageRoute(builder: (context) => PerimeterMonitoringPage(viewModel: getIt<PerimeterMonitoringViewModel>())),
   );
 }
 

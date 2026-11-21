@@ -10,6 +10,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alerts/components/alerts_tab_bar.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/dialer.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/navigation/emergency_alerting_navigation.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Alerts tab of the bottom bar: shared header and the "Activas · Historial" tabs.
 class AlertsPage extends StatefulWidget {
@@ -52,9 +53,9 @@ class _AlertsPageState extends State<AlertsPage> {
       _openAlert(acknowledged);
     }
     // A rejected acknowledgement (e.g. someone else already did it) is reported once
-    final message = state.actionErrorMessage;
-    if (message != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    final error = state.actionError;
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
       _activeAlerts.onActionErrorShown();
     }
   }

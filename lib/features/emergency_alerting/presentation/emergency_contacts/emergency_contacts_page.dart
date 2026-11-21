@@ -8,6 +8,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/emerg
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/components/remove_contact_dialog.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_state.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_view_model.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class EmergencyContactsPage extends StatefulWidget {
   final EmergencyContactsViewModel viewModel;
@@ -37,9 +38,9 @@ class _EmergencyContactsPageState extends State<EmergencyContactsPage> {
 
   // Rejections from the platform (e.g. removing the last contact) are shown once
   void _showActionError() {
-    final message = _viewModel.state.actionErrorMessage;
-    if (message == null || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    final error = _viewModel.state.actionError;
+    if (error == null || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
     _viewModel.onActionErrorShown();
   }
 
@@ -67,7 +68,7 @@ class _EmergencyContactsPageState extends State<EmergencyContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DetailTopBar(
-        title: 'Contactos de emergencia',
+        title: context.l10n.emergencyContactsTitle,
         subtitle: _viewModel.state.careRecipientName,
         onBackPressed: Navigator.canPop(context) ? () => Navigator.pop(context) : null,
       ),
@@ -79,8 +80,8 @@ class _EmergencyContactsPageState extends State<EmergencyContactsPage> {
           if (state.isLoading && state.contacts.isEmpty) {
             return const LoadingView();
           }
-          if (state.errorMessage != null && state.contacts.isEmpty) {
-            return ErrorRetryView(message: state.errorMessage!, onRetry: _viewModel.loadContacts);
+          if (state.error != null && state.contacts.isEmpty) {
+            return ErrorRetryView(message: state.error!.message(context.l10n), onRetry: _viewModel.loadContacts);
           }
           return _ContactList(
             state: state,
@@ -127,10 +128,8 @@ class _ContactList extends StatelessWidget {
           ),
           child: Text(
             contacts.isEmpty
-                ? '${state.careRecipientFirstName} todavía no tiene contactos de emergencia. '
-                      'Agrega al menos uno para que las alertas lleguen a alguien.'
-                : 'Reciben las alertas de ${state.careRecipientFirstName} en este orden. Si el primero no '
-                      'responde en ${state.ackTimeoutSec} s, se avisa a los siguientes.',
+                ? context.l10n.contactsIntroEmpty(state.careRecipientFirstName)
+                : context.l10n.contactsIntro(state.careRecipientFirstName, state.ackTimeoutSec),
             style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
           ),
         ),
@@ -150,16 +149,13 @@ class _ContactList extends StatelessWidget {
         ],
         if (contacts.length == 1) ...[
           const SizedBox(height: 12),
-          Text(
-            'Debe quedar al menos un contacto: es quien recibe las alertas primero.',
-            style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant),
-          ),
+          Text(context.l10n.contactsKeepOne, style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant)),
         ],
         const SizedBox(height: 16),
         FilledButton.icon(
           onPressed: state.isSaving ? null : onAdd,
           icon: const Icon(Icons.person_add_alt_1, size: 18),
-          label: const Text('Agregar contacto'),
+          label: Text(context.l10n.contactsAdd),
         ),
       ],
     );

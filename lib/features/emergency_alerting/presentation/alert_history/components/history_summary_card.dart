@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/alert_history_state.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Week at a glance: how many alerts, how fast the Care Circle answered and how many escalated.
 class HistorySummaryCard extends StatelessWidget {
@@ -22,16 +23,16 @@ class HistorySummaryCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _Figure(value: '${summary.totalAlerts}', label: 'Alertas · 7 días', color: scheme.onSurface),
+          _Figure(value: '${summary.totalAlerts}', label: context.l10n.historySummaryAlerts, color: scheme.onSurface),
           _Figure(
             // Seconds read best in this narrow column ("81 s"); long waits fall back to minutes
             value: response == null ? '—' : (response < 600 ? '$response s' : formatDuration(response)),
-            label: 'Respuesta media',
+            label: context.l10n.historySummaryResponse,
             color: scheme.primary,
           ),
           _Figure(
             value: '${summary.escalatedCount}',
-            label: 'Escaladas',
+            label: context.l10n.historySummaryEscalated,
             color: summary.escalatedCount > 0 ? scheme.error : scheme.onSurface,
           ),
         ],
@@ -52,11 +53,7 @@ class _Figure extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Text(
-            value,
-            maxLines: 1,
-            style: dataMetricStyle.copyWith(color: color),
-          ),
+          Text(value, maxLines: 1, style: dataMetricStyle.copyWith(color: color)),
           const SizedBox(height: 2),
           Text(
             label,

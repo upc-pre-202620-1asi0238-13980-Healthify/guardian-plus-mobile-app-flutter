@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Top bar of the screens opened from another one: back button, title, subtitle and an optional [trailing]
 /// widget such as a state chip. [onBackPressed] is null when there is nowhere to go back to, and the button
@@ -34,7 +35,7 @@ class DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
                   if (onBackPressed != null) ...[
                     IconButton.outlined(
                       onPressed: onBackPressed,
-                      tooltip: 'Volver',
+                      tooltip: context.l10n.commonBack,
                       icon: const Icon(Icons.chevron_left),
                       style: IconButton.styleFrom(side: BorderSide(color: colors.outline)),
                     ),

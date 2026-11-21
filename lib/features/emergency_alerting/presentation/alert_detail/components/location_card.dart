@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Where the person under care is (Mobility & Geofencing), with a shortcut to the map.
 class LocationCard extends StatelessWidget {
@@ -37,13 +38,13 @@ class LocationCard extends StatelessWidget {
                 Text(locationName, style: text.titleSmall?.copyWith(color: scheme.onSurface)),
                 if (updatedAgo != null)
                   Text(
-                    'Ubicación actualizada $updatedAgo',
+                    context.l10n.locationUpdated(updatedAgo!),
                     style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                   ),
               ],
             ),
           ),
-          if (onViewMap != null) TextButton(onPressed: onViewMap, child: const Text('Ver en mapa')),
+          if (onViewMap != null) TextButton(onPressed: onViewMap, child: Text(context.l10n.locationViewMap)),
         ],
       ),
     );

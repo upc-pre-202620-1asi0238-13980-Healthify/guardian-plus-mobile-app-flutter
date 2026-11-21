@@ -5,6 +5,8 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_statu
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_colors.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/status_chip.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Row of the history (component AlertaHistorialItem of the prototype): what happened, when and how it ended.
 class HistoryAlertItem extends StatelessWidget {
@@ -18,6 +20,7 @@ class HistoryAlertItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     // Finished alerts drop the severity color: green when someone answered, grey when it was dismissed
     final icon = switch (alert.status) {
       AlertStatus.resolved => (container: scheme.primaryContainer, content: scheme.primary),
@@ -54,7 +57,7 @@ class HistoryAlertItem extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            alert.sourceType.title(careRecipientFirstName),
+                            alert.sourceType.title(l10n, careRecipientFirstName),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: text.titleMedium?.copyWith(color: scheme.onSurface),
@@ -68,9 +71,9 @@ class HistoryAlertItem extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 2),
-                    Text(_outcome, style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                    Text(_outcome(l10n), style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
                     const SizedBox(height: 8),
-                    StatusChip(text: alert.status.label, container: chip.container, content: chip.content),
+                    StatusChip(text: alert.status.label(l10n), container: chip.container, content: chip.content),
                   ],
                 ),
               ),
@@ -82,16 +85,16 @@ class HistoryAlertItem extends StatelessWidget {
   }
 
   /// One sentence on how the alert ended, from what the list endpoint returns.
-  String get _outcome {
+  String _outcome(AppLocalizations l10n) {
     final acknowledgedAt = alert.acknowledgedAt;
     if (alert.status == AlertStatus.dismissed) {
-      return '$careRecipientFirstName confirmó desde la pulsera que está bien';
+      return l10n.timelineDismissed(careRecipientFirstName);
     }
     if (acknowledgedAt != null) {
       final seconds = acknowledgedAt.difference(alert.triggeredAt).inSeconds;
-      return 'Reconocida en ${formatDuration(seconds < 0 ? 0 : seconds)}';
+      return l10n.historyAcknowledgedIn(formatDuration(seconds < 0 ? 0 : seconds));
     }
-    if (alert.status == AlertStatus.pendingConfirmation) return 'Esperando que $careRecipientFirstName confirme';
-    return 'Sin reconocer';
+    if (alert.status == AlertStatus.pendingConfirmation) return l10n.historyWaitingConfirmation(careRecipientFirstName);
+    return l10n.historyUnacknowledged;
   }
 }

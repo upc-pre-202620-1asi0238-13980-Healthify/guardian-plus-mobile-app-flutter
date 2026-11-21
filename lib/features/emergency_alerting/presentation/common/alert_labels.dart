@@ -3,45 +3,46 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_sourc
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
 
 // Domain values → interface labels, following the label tables of the report (section 3.1.2.2)
 
 extension SeverityLabel on Severity {
-  String get label => switch (this) {
-    Severity.critical => 'Crítica',
-    Severity.high => 'Alta',
-    Severity.medium => 'Media',
+  String label(AppLocalizations l10n) => switch (this) {
+    Severity.critical => l10n.alertSeverityCritical,
+    Severity.high => l10n.alertSeverityHigh,
+    Severity.medium => l10n.alertSeverityMedium,
   };
 }
 
 extension AlertStatusLabel on AlertStatus {
-  String get label => switch (this) {
-    AlertStatus.pendingConfirmation => 'Confirmando',
-    AlertStatus.triggered => 'Nueva',
-    AlertStatus.escalated => 'Escalada',
-    AlertStatus.acknowledged => 'Reconocida',
-    AlertStatus.dismissed => 'Descartada',
-    AlertStatus.resolved => 'Resuelta',
+  String label(AppLocalizations l10n) => switch (this) {
+    AlertStatus.pendingConfirmation => l10n.alertStatusPendingConfirmation,
+    AlertStatus.triggered => l10n.alertStatusTriggered,
+    AlertStatus.escalated => l10n.alertStatusEscalated,
+    AlertStatus.acknowledged => l10n.alertStatusAcknowledged,
+    AlertStatus.dismissed => l10n.alertStatusDismissed,
+    AlertStatus.resolved => l10n.alertStatusResolved,
   };
 }
 
 extension IncidentStatusLabel on IncidentStatus {
-  String get label => switch (this) {
-    IncidentStatus.inAttention => 'En atención',
-    IncidentStatus.stabilized => 'Estabilizado',
-    IncidentStatus.closed => 'Cerrado',
+  String label(AppLocalizations l10n) => switch (this) {
+    IncidentStatus.inAttention => l10n.incidentStatusInAttention,
+    IncidentStatus.stabilized => l10n.incidentStatusStabilized,
+    IncidentStatus.closed => l10n.incidentStatusClosed,
   };
 }
 
 extension AlertSourceTypeLabel on AlertSourceType {
-  String get tag => switch (this) {
-    AlertSourceType.fallDetected => 'Caída',
-    AlertSourceType.sosTriggered => 'SOS',
-    AlertSourceType.vitalSignAnomaly => 'Signos vitales',
-    AlertSourceType.safeZoneViolation => 'Zona segura',
-    AlertSourceType.prolongedInactivity => 'Inactividad',
-    AlertSourceType.reminderReissued => 'Recordatorio',
-    AlertSourceType.medicationRestockSuggested => 'Medicación',
+  String tag(AppLocalizations l10n) => switch (this) {
+    AlertSourceType.fallDetected => l10n.alertSourceFall,
+    AlertSourceType.sosTriggered => l10n.alertSourceSos,
+    AlertSourceType.vitalSignAnomaly => l10n.alertSourceVitalSigns,
+    AlertSourceType.safeZoneViolation => l10n.alertSourceSafeZone,
+    AlertSourceType.prolongedInactivity => l10n.alertSourceInactivity,
+    AlertSourceType.reminderReissued => l10n.alertSourceReminder,
+    AlertSourceType.medicationRestockSuggested => l10n.alertSourceMedication,
   };
 
   IconData get icon => switch (this) {
@@ -55,25 +56,25 @@ extension AlertSourceTypeLabel on AlertSourceType {
   };
 
   /// Title of an alert; the SOS one names the person under care ("Elena presionó el botón SOS").
-  String title(String careRecipientFirstName) => switch (this) {
-    AlertSourceType.fallDetected => 'Posible caída detectada',
-    AlertSourceType.sosTriggered => '$careRecipientFirstName presionó el botón SOS',
-    AlertSourceType.vitalSignAnomaly => 'Signo vital fuera de rango',
-    AlertSourceType.safeZoneViolation => 'Salida de zona segura',
-    AlertSourceType.prolongedInactivity => 'Inactividad prolongada',
-    AlertSourceType.reminderReissued => 'Recordatorio sin confirmar',
-    AlertSourceType.medicationRestockSuggested => 'Medicamento por agotarse',
+  String title(AppLocalizations l10n, String careRecipientFirstName) => switch (this) {
+    AlertSourceType.fallDetected => l10n.alertTitleFall,
+    AlertSourceType.sosTriggered => l10n.alertTitleSos(careRecipientFirstName),
+    AlertSourceType.vitalSignAnomaly => l10n.alertTitleVitalSign,
+    AlertSourceType.safeZoneViolation => l10n.alertTitleSafeZone,
+    AlertSourceType.prolongedInactivity => l10n.alertTitleInactivity,
+    AlertSourceType.reminderReissued => l10n.alertTitleReminder,
+    AlertSourceType.medicationRestockSuggested => l10n.alertTitleMedication,
   };
 }
 
 /// "Hace 42 s", "Hace 6 min"… measured against the screen clock so it keeps moving.
-String relativeTime(DateTime from, DateTime now) {
+String relativeTime(AppLocalizations l10n, DateTime from, DateTime now) {
   final seconds = _nonNegative(now.difference(from).inSeconds);
-  if (seconds < 5) return 'Ahora';
-  if (seconds < 60) return 'Hace $seconds s';
-  if (seconds < 3600) return 'Hace ${seconds ~/ 60} min';
-  if (seconds < 86400) return 'Hace ${seconds ~/ 3600} h';
-  return 'Hace ${seconds ~/ 86400} d';
+  if (seconds < 5) return l10n.alertTimeNow;
+  if (seconds < 60) return l10n.alertTimeSecondsAgo(seconds);
+  if (seconds < 3600) return l10n.alertTimeMinutesAgo(seconds ~/ 60);
+  if (seconds < 86400) return l10n.alertTimeHoursAgo(seconds ~/ 3600);
+  return l10n.alertTimeDaysAgo(seconds ~/ 86400);
 }
 
 /// 42 → "0:42", the escalation countdown format of the prototype.

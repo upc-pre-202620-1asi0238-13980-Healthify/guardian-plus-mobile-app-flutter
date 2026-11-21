@@ -6,6 +6,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/components/severity_filter_row.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// "Historial" tab of the Alerts screen. The screen around it owns the view model.
 class AlertHistoryView extends StatefulWidget {
@@ -57,8 +58,8 @@ class _AlertHistoryViewState extends State<AlertHistoryView> {
         final List<Widget> body;
         if (state.isLoading) {
           body = [const Padding(padding: EdgeInsets.all(32), child: LoadingView())];
-        } else if (state.errorMessage != null && state.alerts.isEmpty) {
-          body = [ErrorRetryView(message: state.errorMessage!, onRetry: viewModel.loadHistory)];
+        } else if (state.error != null && state.alerts.isEmpty) {
+          body = [ErrorRetryView(message: state.error!.message(context.l10n), onRetry: viewModel.loadHistory)];
         } else if (state.alerts.isEmpty) {
           final filter = state.severityFilter;
           body = [
@@ -66,12 +67,12 @@ class _AlertHistoryViewState extends State<AlertHistoryView> {
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 12),
               child: Column(
                 children: [
-                  if (filter == null) Text('Sin alertas en el historial', style: text.titleMedium),
+                  if (filter == null) Text(context.l10n.historyEmptyTitle, style: text.titleMedium),
                   const SizedBox(height: 4),
                   Text(
                     filter == null
-                        ? 'Cuando ocurra una alerta, quedará registrada aquí con todo su seguimiento.'
-                        : 'No hay alertas de severidad ${filter.label.toLowerCase()}.',
+                        ? context.l10n.historyEmptyMessage
+                        : context.l10n.historyEmptyFiltered(filter.label(context.l10n).toLowerCase()),
                     textAlign: TextAlign.center,
                     style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                   ),

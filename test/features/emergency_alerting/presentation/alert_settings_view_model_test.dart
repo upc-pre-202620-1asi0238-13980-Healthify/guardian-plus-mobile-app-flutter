@@ -9,6 +9,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/update
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_channel_setting.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/notification_channel.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_view_model.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 
 import '../fakes.dart';
 
@@ -51,7 +52,7 @@ void main() {
     await pumpEventQueue();
 
     expect(viewModel.state.settings, isNull);
-    expect(viewModel.state.errorMessage, 'Configuración no encontrada');
+    expect(viewModel.state.error?.platformMessage, 'Configuración no encontrada');
   });
 
   test('a new timeout is saved together with the rest of the escalation settings', () async {
@@ -76,7 +77,7 @@ void main() {
     await viewModel.setSilentModeEnabled(true);
 
     expect(viewModel.state.settings!.silentModeEnabled, isFalse);
-    expect(viewModel.state.actionErrorMessage, 'No autorizado');
+    expect(viewModel.state.actionError?.platformMessage, 'No autorizado');
   });
 
   test('the last enabled channel cannot be turned off, and nothing is sent', () async {
@@ -86,7 +87,7 @@ void main() {
     await viewModel.setChannelEnabled(NotificationChannel.inApp, false);
 
     expect(channels.configured, isEmpty);
-    expect(viewModel.state.actionErrorMessage, 'Debe quedar al menos un canal activo para recibir las alertas');
+    expect(viewModel.state.actionError?.task, FailedTask.keepOneChannel);
   });
 
   test('turning a channel on adds it to the ones in effect', () async {

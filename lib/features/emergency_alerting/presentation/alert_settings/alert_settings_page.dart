@@ -10,6 +10,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/detail_top_bar.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/navigation/emergency_alerting_navigation.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class AlertSettingsPage extends StatefulWidget {
   final AlertSettingsViewModel viewModel;
@@ -38,9 +39,9 @@ class _AlertSettingsPageState extends State<AlertSettingsPage> {
   }
 
   void _showActionError() {
-    final message = _viewModel.state.actionErrorMessage;
-    if (message == null || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    final error = _viewModel.state.actionError;
+    if (error == null || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
     _viewModel.onActionErrorShown();
   }
 
@@ -54,7 +55,7 @@ class _AlertSettingsPageState extends State<AlertSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DetailTopBar(
-        title: 'Configuración de alertas',
+        title: context.l10n.alertSettingsTitle,
         subtitle: _viewModel.state.careRecipientName,
         onBackPressed: Navigator.canPop(context) ? () => Navigator.pop(context) : null,
       ),
@@ -64,8 +65,8 @@ class _AlertSettingsPageState extends State<AlertSettingsPage> {
           final state = _viewModel.state;
           final settings = state.settings;
 
-          if (settings == null && state.errorMessage != null) {
-            return ErrorRetryView(message: state.errorMessage!, onRetry: _viewModel.loadSettings);
+          if (settings == null && state.error != null) {
+            return ErrorRetryView(message: state.error!.message(context.l10n), onRetry: _viewModel.loadSettings);
           }
           if (settings == null) {
             return const LoadingView();
@@ -82,12 +83,11 @@ class _AlertSettingsPageState extends State<AlertSettingsPage> {
               _EscalationSection(settings: settings, enabled: !state.isSavingSettings, viewModel: _viewModel),
               const SizedBox(height: 20),
               SettingsSection(
-                title: 'Sonido de las alertas',
+                title: context.l10n.alertSettingsSoundSection,
                 children: [
                   SettingSwitchRow(
-                    title: 'Silenciar alertas no críticas',
-                    detail: 'Las alertas de ${state.careRecipientFirstName} que no son críticas llegan sin sonido '
-                        'a los celulares del círculo de cuidado. Las caídas y los SOS siempre suenan.',
+                    title: context.l10n.alertSettingsSilentTitle,
+                    detail: context.l10n.alertSettingsSilentDetail(state.careRecipientFirstName),
                     icon: Icons.notifications_off_outlined,
                     value: settings.silentModeEnabled,
                     enabled: !state.isSavingSettings,
@@ -115,11 +115,11 @@ class _EscalationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsSection(
-      title: 'Escalamiento',
+      title: context.l10n.alertSettingsEscalationSection,
       children: [
         SettingSwitchRow(
-          title: 'Avisar a los siguientes contactos',
-          detail: 'Si el contacto principal no reconoce una alerta crítica o alta, se envía a los demás.',
+          title: context.l10n.alertSettingsEscalationTitle,
+          detail: context.l10n.alertSettingsEscalationDetail,
           value: settings.escalationEnabled,
           enabled: enabled,
           onChanged: viewModel.setEscalationEnabled,
@@ -132,8 +132,8 @@ class _EscalationSection extends StatelessWidget {
         ),
         const Padding(padding: EdgeInsets.only(top: 8), child: Divider()),
         SettingSwitchRow(
-          title: 'Avisar a todos ante caídas y SOS',
-          detail: 'Las alertas críticas llegan a todo el círculo de cuidado al mismo tiempo.',
+          title: context.l10n.alertSettingsBroadcastTitle,
+          detail: context.l10n.alertSettingsBroadcastDetail,
           value: settings.broadcastCriticalImmediately,
           enabled: enabled,
           onChanged: viewModel.setBroadcastCriticalImmediately,
@@ -149,23 +149,23 @@ class _ChannelsSection extends StatelessWidget {
 
   const new({required this.state, required this.onChanged});
 
-  static const _channels = [
-    (NotificationChannel.push, 'Notificación push', Icons.smartphone),
-    (NotificationChannel.sms, 'Mensaje de texto (SMS)', Icons.sms_outlined),
-    (NotificationChannel.inApp, 'Dentro de la app', Icons.notifications_outlined),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final enabledChannels = state.enabledChannels;
+    final channels = [
+      (NotificationChannel.push, l10n.alertSettingsChannelPush, Icons.smartphone),
+      (NotificationChannel.sms, l10n.alertSettingsChannelSms, Icons.sms_outlined),
+      (NotificationChannel.inApp, l10n.alertSettingsChannelInApp, Icons.notifications_outlined),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSection(
-          title: 'Cómo te avisamos a ti',
+          title: l10n.alertSettingsChannelsSection,
           children: [
-            for (final (channel, label, icon) in _channels)
+            for (final (channel, label, icon) in channels)
               SettingSwitchRow(
                 title: label,
                 icon: icon,
@@ -179,10 +179,9 @@ class _ChannelsSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 4, top: 8),
           child: Text(
-            'Las alertas críticas siempre se respaldan por SMS. Debe quedar al menos un canal activo.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+            l10n.alertSettingsChannelsNote,
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ),
       ],

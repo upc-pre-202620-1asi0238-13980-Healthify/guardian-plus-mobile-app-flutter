@@ -77,7 +77,7 @@ class AlertDetailViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   Future<void> load() async {
-    _emit(_state.copyWith(isLoading: true, errorMessage: () => null));
+    _emit(_state.copyWith(isLoading: true, error: () => null));
     await Future.wait([_loadContacts(), _loadSettings()]);
     await _refresh();
   }
@@ -117,7 +117,7 @@ class AlertDetailViewModel extends ChangeNotifier {
   }
 
   void onActionErrorShown() {
-    _emit(_state.copyWith(actionErrorMessage: () => null));
+    _emit(_state.copyWith(actionError: () => null));
   }
 
   /// Runs a command, then reads the alert and its incident again so every card shows the new state.
@@ -129,12 +129,7 @@ class AlertDetailViewModel extends ChangeNotifier {
       await _refresh(force: true);
       _emit(_state.copyWith(runningAction: () => null));
     } catch (e) {
-      _emit(
-        _state.copyWith(
-          runningAction: () => null,
-          actionErrorMessage: () => errorMessageOf(e, 'No se pudo completar la acción'),
-        ),
-      );
+      _emit(_state.copyWith(runningAction: () => null, actionError: () => ScreenError.of(e, FailedTask.runAction)));
     }
   }
 
@@ -148,7 +143,7 @@ class AlertDetailViewModel extends ChangeNotifier {
       _emit(
         _state.copyWith(
           isLoading: false,
-          errorMessage: () => null,
+          error: () => null,
           alert: alert,
           incident: () => incident,
           context: context,
@@ -156,7 +151,7 @@ class AlertDetailViewModel extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      _emit(_state.copyWith(isLoading: false, errorMessage: () => errorMessageOf(e, 'No se pudo cargar la alerta')));
+      _emit(_state.copyWith(isLoading: false, error: () => ScreenError.of(e, FailedTask.loadAlert)));
     } finally {
       _refreshing = false;
     }

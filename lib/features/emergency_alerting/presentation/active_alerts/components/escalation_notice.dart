@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Yellow notice that explains the escalation rule, using the timeout configured for the person under care.
 class EscalationNotice extends StatelessWidget {
@@ -27,14 +28,13 @@ class EscalationNotice extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Si nadie reconoce una alerta crítica en $ackTimeoutSec s, se enviará automáticamente a tus '
-                  'contactos secundarios.',
+                  context.l10n.alertsEscalationNotice(ackTimeoutSec),
                   style: text.bodySmall?.copyWith(color: GuardianColors.onNoticeContainer),
                 ),
                 TextButton(
                   onPressed: onManageContacts,
                   style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
-                  child: const Text('Gestionar contactos de emergencia'),
+                  child: Text(context.l10n.alertsManageContacts),
                 ),
               ],
             ),

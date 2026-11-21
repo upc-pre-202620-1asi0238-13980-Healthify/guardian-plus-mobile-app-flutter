@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/text/initials.dart';
 import 'package:guardian_plus_app/core/theme.dart';
-import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/detail_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/recipient_level.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/alert_detail_state.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/detail_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/status_chip.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Who the alert reached and what each contact did. While it waits for an acknowledgement it also shows the
 /// countdown to the next escalation level (US11); a broadcast lists everyone at once (US25).
@@ -27,12 +28,12 @@ class EscalationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final left = escalationSecondsLeft;
     final description = switch (left) {
-      null => 'Cuando alguien la reconozca o vaya en camino, los demás lo verán aquí.',
-      _ when currentRecipientLevel == RecipientLevel.primary =>
-        'Si no reconoces la alerta, se enviará a tus contactos secundarios.',
-      _ => 'Si nadie la reconoce, se enviará a todo el círculo de cuidado.',
+      null => l10n.alertDetailEscalationWatching,
+      _ when currentRecipientLevel == RecipientLevel.primary => l10n.alertDetailEscalationToSecondary,
+      _ => l10n.alertDetailEscalationToEveryone,
     };
 
     return DetailCard(
@@ -41,7 +42,7 @@ class EscalationCard extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                left != null ? 'Escalamiento automático' : 'Aviso enviado a tus contactos',
+                left != null ? l10n.alertDetailAutoEscalation : l10n.alertDetailSentToContacts,
                 style: text.titleMedium,
               ),
             ),
@@ -79,18 +80,19 @@ class _ContactRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final contact = item.contact;
     final isPrimary = contact.priorityOrder == 1;
     final (label, positive) = switch (item.status) {
-      ContactStatus.waiting => ('En espera', false),
-      ContactStatus.sending => ('Enviando', false),
-      ContactStatus.sent => ('Notificada', true),
-      ContactStatus.delivered => ('Entregada', true),
-      ContactStatus.failed => ('Falló', false),
-      ContactStatus.acknowledged => ('Reconoció', true),
-      ContactStatus.onTheWay => ('En camino', true),
-      ContactStatus.arrived => ('Llegó', true),
-      ContactStatus.notNeeded => ('No fue necesario', false),
+      ContactStatus.waiting => (l10n.contactStatusWaiting, false),
+      ContactStatus.sending => (l10n.contactStatusSending, false),
+      ContactStatus.sent => (l10n.contactStatusSent, true),
+      ContactStatus.delivered => (l10n.contactStatusDelivered, true),
+      ContactStatus.failed => (l10n.contactStatusFailed, false),
+      ContactStatus.acknowledged => (l10n.contactStatusAcknowledged, true),
+      ContactStatus.onTheWay => (l10n.contactStatusOnTheWay, true),
+      ContactStatus.arrived => (l10n.contactStatusArrived, true),
+      ContactStatus.notNeeded => (l10n.contactStatusNotNeeded, false),
     };
     final (chipContainer, chipContent) = switch (item.status) {
       ContactStatus.failed => (scheme.errorContainer, scheme.onErrorContainer),
@@ -117,7 +119,7 @@ class _ContactRow extends StatelessWidget {
               children: [
                 Text(contact.displayName, style: text.titleSmall),
                 Text(
-                  '${isPrimary ? 'Primario' : 'Secundario'} · ${contact.relationship}',
+                  '${isPrimary ? l10n.contactPrimary : l10n.contactSecondary} · ${contact.relationship}',
                   style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                 ),
               ],

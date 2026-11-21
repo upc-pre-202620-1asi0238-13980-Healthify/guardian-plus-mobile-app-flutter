@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/alert_detail_state.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Which buttons the current state allows; every flag maps to a command the platform accepts right now.
 class AvailableActions {
@@ -51,6 +52,7 @@ class AlertDetailActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     final busy = runningAction != null;
 
     Widget primary(String label, IconData icon, AlertDetailAction action, VoidCallback onPressed) => FilledButton.icon(
@@ -73,22 +75,23 @@ class AlertDetailActions extends StatelessWidget {
 
     final buttons = [
       if (actions.canAcknowledge)
-        primary('Reconocer alerta', Icons.check, AlertDetailAction.acknowledge, onAcknowledge),
-      if (actions.canComplete) primary('Llegué', Icons.location_on_outlined, AlertDetailAction.complete, onComplete),
+        primary(l10n.alertDetailAcknowledge, Icons.check, AlertDetailAction.acknowledge, onAcknowledge),
+      if (actions.canComplete)
+        primary(l10n.alertDetailArrived, Icons.location_on_outlined, AlertDetailAction.complete, onComplete),
       if (actions.canClose && !actions.canStabilize)
-        primary('Cerrar incidente', Icons.check, AlertDetailAction.close, onClose),
+        primary(l10n.alertDetailCloseIncident, Icons.check, AlertDetailAction.close, onClose),
       if (actions.canClaim)
-        secondary('Voy en camino', Icons.location_on_outlined, onClaim, action: AlertDetailAction.claim),
+        secondary(l10n.alertDetailOnMyWay, Icons.location_on_outlined, onClaim, action: AlertDetailAction.claim),
       if (actions.canStabilize) ...[
         secondary(
-          'Marcar estabilizado',
+          l10n.alertDetailMarkStabilized,
           Icons.monitor_heart_outlined,
           onStabilize,
           action: AlertDetailAction.stabilize,
         ),
-        secondary('Cerrar incidente', Icons.check, onClose, action: AlertDetailAction.close),
+        secondary(l10n.alertDetailCloseIncident, Icons.check, onClose, action: AlertDetailAction.close),
       ],
-      if (actions.canCall) secondary('Llamar a $careRecipientFirstName', Icons.phone_outlined, onCall),
+      if (actions.canCall) secondary(l10n.alertsCall(careRecipientFirstName), Icons.phone_outlined, onCall),
       if (actions.canCallEmergency)
         FilledButton.icon(
           onPressed: onCallEmergency,
@@ -98,7 +101,7 @@ class AlertDetailActions extends StatelessWidget {
             side: BorderSide(color: scheme.error.withAlpha(102)),
           ),
           icon: const Icon(Icons.sos, size: 18),
-          label: const Text('Llamar a emergencias (SAMU 106)', maxLines: 1),
+          label: Text(l10n.alertDetailCallEmergency, maxLines: 1),
         ),
     ];
 

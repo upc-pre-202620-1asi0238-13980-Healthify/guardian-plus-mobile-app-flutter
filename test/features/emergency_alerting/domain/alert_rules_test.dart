@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_page.dart';
@@ -8,6 +10,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/response_st
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/escalation.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
 
 import '../alert_fakes.dart';
 
@@ -58,14 +61,19 @@ void main() {
   });
 
   group('labels', () {
-    test('the SOS title names the person under care', () {
-      expect(AlertSourceType.sosTriggered.title('Elena'), 'Elena presionó el botón SOS');
+    final es = lookupAppLocalizations(const Locale('es'));
+    final en = lookupAppLocalizations(const Locale('en'));
+
+    test('the SOS title names the person under care, in the app language', () {
+      expect(AlertSourceType.sosTriggered.title(es, 'Elena'), 'Elena presionó el botón SOS');
+      expect(AlertSourceType.sosTriggered.title(en, 'Elena'), 'Elena pressed the SOS button');
     });
 
     test('relative times and durations read like the prototype', () {
-      expect(relativeTime(testNow.subtract(const Duration(seconds: 3)), testNow), 'Ahora');
-      expect(relativeTime(testNow.subtract(const Duration(seconds: 42)), testNow), 'Hace 42 s');
-      expect(relativeTime(testNow.subtract(const Duration(minutes: 6)), testNow), 'Hace 6 min');
+      expect(relativeTime(es, testNow.subtract(const Duration(seconds: 3)), testNow), 'Ahora');
+      expect(relativeTime(es, testNow.subtract(const Duration(seconds: 42)), testNow), 'Hace 42 s');
+      expect(relativeTime(es, testNow.subtract(const Duration(minutes: 6)), testNow), 'Hace 6 min');
+      expect(relativeTime(en, testNow.subtract(const Duration(minutes: 6)), testNow), '6 min ago');
       expect(formatCountdown(42), '0:42');
       expect(formatCountdown(125), '2:05');
       expect(formatDuration(48), '48 s');

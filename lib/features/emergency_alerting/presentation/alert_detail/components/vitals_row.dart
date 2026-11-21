@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/status_chip.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Heart rate and SpO2 at the moment of the alert (Health Monitoring).
 class VitalsRow extends StatelessWidget {
@@ -16,14 +17,15 @@ class VitalsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final heartRate = heartRateBpm;
     final oxygen = oxygenSaturation;
     final tiles = [
       if (heartRate != null)
         _VitalTile(
-          label: 'Frecuencia cardíaca',
+          label: l10n.vitalsHeartRate,
           value: '$heartRate',
-          unit: 'lpm',
+          unit: l10n.vitalsUnitBpm,
           reading: heartRate > heartRateHigh
               ? _Reading.high
               : heartRate < heartRateLow
@@ -32,7 +34,7 @@ class VitalsRow extends StatelessWidget {
         ),
       if (oxygen != null)
         _VitalTile(
-          label: 'Saturación O₂',
+          label: l10n.vitalsOxygen,
           value: '$oxygen',
           unit: '%',
           reading: oxygen < oxygenLow ? _Reading.low : _Reading.normal,
@@ -41,10 +43,7 @@ class VitalsRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final (index, tile) in tiles.indexed) ...[
-          if (index > 0) const SizedBox(width: 12),
-          Expanded(child: tile),
-        ],
+        for (final (index, tile) in tiles.indexed) ...[if (index > 0) const SizedBox(width: 12), Expanded(child: tile)],
       ],
     );
   }
@@ -64,10 +63,11 @@ class _VitalTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final (chipText, container, content) = switch (reading) {
-      _Reading.high => ('Alta', scheme.tertiaryContainer, scheme.tertiary),
-      _Reading.low => ('Baja', scheme.tertiaryContainer, scheme.tertiary),
-      _Reading.normal => ('Normal', scheme.primaryContainer, scheme.onPrimaryContainer),
+      _Reading.high => (l10n.readingHigh, scheme.tertiaryContainer, scheme.tertiary),
+      _Reading.low => (l10n.readingLow, scheme.tertiaryContainer, scheme.tertiary),
+      _Reading.normal => (l10n.readingNormal, scheme.primaryContainer, scheme.onPrimaryContainer),
     };
     return Container(
       padding: const EdgeInsets.all(14),

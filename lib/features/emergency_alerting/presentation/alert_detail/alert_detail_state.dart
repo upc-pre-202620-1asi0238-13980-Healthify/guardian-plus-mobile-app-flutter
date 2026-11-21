@@ -11,6 +11,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_st
 import 'package:guardian_plus_app/features/emergency_alerting/domain/recipient_level.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/response_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/escalation.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 
 /// Commands the member can run from the detail; used to show progress on the right button.
 enum AlertDetailAction { acknowledge, claim, complete, stabilize, close }
@@ -63,7 +64,7 @@ class TimelineEvent {
 class AlertDetailState {
   const new({
     this.isLoading = false,
-    this.errorMessage,
+    this.error,
     this.alert,
     this.incident,
     this.context = AlertContext.empty,
@@ -73,12 +74,12 @@ class AlertDetailState {
     this.careRecipientName = '',
     this.currentUserId = '',
     this.runningAction,
-    this.actionErrorMessage,
+    this.actionError,
     required this.now,
   });
 
   final bool isLoading;
-  final String? errorMessage;
+  final ScreenError? error;
   final Alert? alert;
   final Incident? incident;
   // Vital signs and location around the alert, from Health Monitoring and Mobility
@@ -89,7 +90,7 @@ class AlertDetailState {
   final String careRecipientName;
   final String currentUserId;
   final AlertDetailAction? runningAction;
-  final String? actionErrorMessage;
+  final ScreenError? actionError;
   final DateTime now;
 
   String get careRecipientFirstName => careRecipientName.split(' ').first;
@@ -232,7 +233,7 @@ class AlertDetailState {
   // Nullable fields take a function, so copyWith can also set them back to null
   AlertDetailState copyWith({
     bool? isLoading,
-    ValueGetter<String?>? errorMessage,
+    ValueGetter<ScreenError?>? error,
     Alert? alert,
     ValueGetter<Incident?>? incident,
     AlertContext? context,
@@ -240,12 +241,12 @@ class AlertDetailState {
     int? ackTimeoutSec,
     bool? escalationEnabled,
     ValueGetter<AlertDetailAction?>? runningAction,
-    ValueGetter<String?>? actionErrorMessage,
+    ValueGetter<ScreenError?>? actionError,
     DateTime? now,
   }) {
     return AlertDetailState(
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      error: error != null ? error() : this.error,
       alert: alert ?? this.alert,
       incident: incident != null ? incident() : this.incident,
       context: context ?? this.context,
@@ -255,7 +256,7 @@ class AlertDetailState {
       careRecipientName: careRecipientName,
       currentUserId: currentUserId,
       runningAction: runningAction != null ? runningAction() : this.runningAction,
-      actionErrorMessage: actionErrorMessage != null ? actionErrorMessage() : this.actionErrorMessage,
+      actionError: actionError != null ? actionError() : this.actionError,
       now: now ?? this.now,
     );
   }

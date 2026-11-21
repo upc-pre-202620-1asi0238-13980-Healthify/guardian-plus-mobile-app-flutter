@@ -3,22 +3,23 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_chann
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_settings.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/emergency_contact.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/notification_channel.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 
 class AlertSettingsState {
   const new({
     this.isLoading = false,
-    this.errorMessage,
+    this.error,
     this.settings,
     this.configuredChannels = const [],
     this.contacts = const [],
     this.careRecipientName = '',
     this.isSavingSettings = false,
     this.savingChannel,
-    this.actionErrorMessage,
+    this.actionError,
   });
 
   final bool isLoading;
-  final String? errorMessage;
+  final ScreenError? error;
   final AlertSettings? settings;
   // Only what the member configured; see enabledChannels for what is actually in effect
   final List<AlertChannelSetting> configuredChannels;
@@ -27,7 +28,7 @@ class AlertSettingsState {
   final String careRecipientName;
   final bool isSavingSettings;
   final NotificationChannel? savingChannel;
-  final String? actionErrorMessage;
+  final ScreenError? actionError;
 
   String get careRecipientFirstName => careRecipientName.split(' ').first;
 
@@ -48,24 +49,24 @@ class AlertSettingsState {
   // Nullable fields take a function, so copyWith can also set them back to null
   AlertSettingsState copyWith({
     bool? isLoading,
-    ValueGetter<String?>? errorMessage,
+    ValueGetter<ScreenError?>? error,
     AlertSettings? settings,
     List<AlertChannelSetting>? configuredChannels,
     List<EmergencyContact>? contacts,
     bool? isSavingSettings,
     ValueGetter<NotificationChannel?>? savingChannel,
-    ValueGetter<String?>? actionErrorMessage,
+    ValueGetter<ScreenError?>? actionError,
   }) {
     return AlertSettingsState(
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      error: error != null ? error() : this.error,
       settings: settings ?? this.settings,
       configuredChannels: configuredChannels ?? this.configuredChannels,
       contacts: contacts ?? this.contacts,
       careRecipientName: careRecipientName,
       isSavingSettings: isSavingSettings ?? this.isSavingSettings,
       savingChannel: savingChannel != null ? savingChannel() : this.savingChannel,
-      actionErrorMessage: actionErrorMessage != null ? actionErrorMessage() : this.actionErrorMessage,
+      actionError: actionError != null ? actionError() : this.actionError,
     );
   }
 }

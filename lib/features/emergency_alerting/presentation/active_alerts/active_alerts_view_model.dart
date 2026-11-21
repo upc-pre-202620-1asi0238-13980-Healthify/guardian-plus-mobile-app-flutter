@@ -66,7 +66,7 @@ class ActiveAlertsViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   Future<void> loadAlerts() async {
-    _emit(_state.copyWith(isLoading: true, errorMessage: () => null));
+    _emit(_state.copyWith(isLoading: true, error: () => null));
     await refresh();
   }
 
@@ -79,10 +79,7 @@ class ActiveAlertsViewModel extends ChangeNotifier {
       await refresh();
     } catch (e) {
       _emit(
-        _state.copyWith(
-          acknowledgingAlertId: () => null,
-          actionErrorMessage: () => errorMessageOf(e, 'No se pudo reconocer la alerta'),
-        ),
+        _state.copyWith(acknowledgingAlertId: () => null, actionError: () => ScreenError.of(e, FailedTask.acknowledge)),
       );
     }
   }
@@ -92,7 +89,7 @@ class ActiveAlertsViewModel extends ChangeNotifier {
   }
 
   void onActionErrorShown() {
-    _emit(_state.copyWith(actionErrorMessage: () => null));
+    _emit(_state.copyWith(actionError: () => null));
   }
 
   /// Reads the settings and the active alerts again; also called when coming back from an alert's detail.
@@ -111,16 +108,14 @@ class ActiveAlertsViewModel extends ChangeNotifier {
       _emit(
         _state.copyWith(
           isLoading: false,
-          errorMessage: () => null,
+          error: () => null,
           now: serverClock.now(),
           featuredAlert: () => featured,
           otherAlerts: items.where((item) => item.alert.id != featured?.alert.id).toList(),
         ),
       );
     } catch (e) {
-      _emit(
-        _state.copyWith(isLoading: false, errorMessage: () => errorMessageOf(e, 'No se pudieron cargar las alertas')),
-      );
+      _emit(_state.copyWith(isLoading: false, error: () => ScreenError.of(e, FailedTask.loadAlerts)));
     } finally {
       _refreshing = false;
     }

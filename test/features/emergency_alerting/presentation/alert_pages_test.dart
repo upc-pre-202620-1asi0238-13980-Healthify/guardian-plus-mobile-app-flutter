@@ -26,6 +26,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/alert_detail_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/alert_history_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alerts/alerts_page.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
 
 import '../alert_fakes.dart';
 import '../fakes.dart';
@@ -55,7 +56,13 @@ void main() {
   Future<Widget> app(WidgetTester tester, Widget page) async {
     await tester.binding.setSurfaceSize(const Size(412, 2400));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    return MaterialApp(theme: GuardianTheme.light(), home: page);
+    return MaterialApp(
+      theme: GuardianTheme.light(),
+      locale: const Locale('es'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: page,
+    );
   }
 
   AlertDetailViewModel detailViewModel(String alertId) => AlertDetailViewModel(

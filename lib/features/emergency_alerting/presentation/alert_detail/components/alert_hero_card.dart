@@ -8,6 +8,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/incident.da
 import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Top card of the detail. Red for critical alerts still in play (with the SOS variant of US15),
 /// orange or yellow for high and medium ones, and green once the incident is stabilized or over.
@@ -38,8 +39,11 @@ class AlertHeroCard extends StatelessWidget {
       Severity.high => (scheme.tertiary, scheme.onTertiary),
       Severity.medium => (GuardianColors.noticeContainer, GuardianColors.onNoticeContainer),
     };
+    final l10n = context.l10n;
     final isActiveSos = alert.sourceType == AlertSourceType.sosTriggered && !calm;
-    final tag = isActiveSos ? 'Máxima prioridad' : '${alert.sourceType.tag} · ${alert.severity.label}';
+    final tag = isActiveSos
+        ? l10n.alertDetailTopPriority
+        : '${alert.sourceType.tag(l10n)} · ${alert.severity.label(l10n)}';
 
     return Material(
       color: container,
@@ -65,7 +69,7 @@ class AlertHeroCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  calm ? formatClockTime(alert.triggeredAt) : relativeTime(alert.triggeredAt, now),
+                  calm ? formatClockTime(alert.triggeredAt) : relativeTime(l10n, alert.triggeredAt, now),
                   style: dataLabelStyle.copyWith(color: content),
                 ),
               ],
@@ -107,6 +111,7 @@ class _SosHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Center(
       child: Column(
         children: [
@@ -125,13 +130,13 @@ class _SosHeadline extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            '$careRecipientFirstName presionó el botón SOS',
+            l10n.alertTitleSos(careRecipientFirstName),
             textAlign: TextAlign.center,
             style: text.titleLarge?.copyWith(color: content),
           ),
           const SizedBox(height: 6),
           Text(
-            'Pulsación sostenida de 3 s en la pulsera · Se envió su ubicación a tus contactos',
+            l10n.alertDetailSosHeld,
             textAlign: TextAlign.center,
             style: text.bodyMedium?.copyWith(color: content.withAlpha(217)),
           ),
@@ -152,18 +157,20 @@ class _IconHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final sourceTitle = alert.sourceType.title(careRecipientFirstName);
+    final l10n = context.l10n;
+    final sourceTitle = alert.sourceType.title(l10n, careRecipientFirstName);
     final title = switch (alert.status) {
-      AlertStatus.dismissed => 'Falsa alarma descartada por $careRecipientFirstName',
-      _ when incident?.status == IncidentStatus.closed || alert.status == AlertStatus.resolved => 'Incidente cerrado',
-      _ when incident?.status == IncidentStatus.stabilized => 'Incidente estabilizado',
+      AlertStatus.dismissed => l10n.alertDetailDismissedBy(careRecipientFirstName),
+      _ when incident?.status == IncidentStatus.closed || alert.status == AlertStatus.resolved =>
+        l10n.alertDetailIncidentClosed,
+      _ when incident?.status == IncidentStatus.stabilized => l10n.alertDetailIncidentStabilized,
       _ when alert.sourceType == AlertSourceType.fallDetected && alert.status != AlertStatus.pendingConfirmation =>
-        '$careRecipientFirstName no respondió tras una caída',
+        l10n.alertDetailFallNoResponse(careRecipientFirstName),
       _ => sourceTitle,
     };
     final subtitle = [
       if (title != sourceTitle && incident != null) sourceTitle,
-      if (alert.sourceType == AlertSourceType.fallDetected) 'Impacto detectado por la pulsera',
+      if (alert.sourceType == AlertSourceType.fallDetected) l10n.alertDetailImpactDetected,
     ].join(' · ');
 
     return Row(
@@ -207,22 +214,31 @@ class _HeroTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final List<(String, String)> tiles;
     if (calm) {
       final endedAt = incident?.closedAt ?? incident?.stabilizedAt ?? alert.resolvedAt ?? now;
       tiles = [
-        ('Detectada', formatClockTime(alert.triggeredAt)),
-        (incident?.status == IncidentStatus.stabilized ? 'Estabilizada' : 'Cerrada', formatClockTime(endedAt)),
-        ('Duración', formatDuration(_seconds(alert.triggeredAt, endedAt))),
+        (l10n.alertDetailDetected, formatClockTime(alert.triggeredAt)),
+        (
+          incident?.status == IncidentStatus.stabilized ? l10n.alertDetailStabilizedAt : l10n.alertDetailClosedAt,
+          formatClockTime(endedAt),
+        ),
+        (l10n.alertDetailDuration, formatDuration(_seconds(alert.triggeredAt, endedAt))),
       ];
     } else {
       final left = confirmationSecondsLeft;
       tiles = [
         if (alert.sourceType == AlertSourceType.fallDetected)
-          ('Ventana de cancelación', left != null ? 'Quedan $left s' : 'Vencida · ${FallConfirmationWindow.seconds} s')
+          (
+            l10n.alertDetailCancelWindow,
+            left != null
+                ? l10n.alertDetailSecondsLeft(left)
+                : l10n.alertDetailWindowExpired(FallConfirmationWindow.seconds),
+          )
         else
-          ('Detectada', formatClockTime(alert.triggeredAt)),
-        ('Desde la detección', formatCountdown(_seconds(alert.triggeredAt, now))),
+          (l10n.alertDetailDetected, formatClockTime(alert.triggeredAt)),
+        (l10n.alertDetailSinceDetection, formatCountdown(_seconds(alert.triggeredAt, now))),
       ];
     }
 

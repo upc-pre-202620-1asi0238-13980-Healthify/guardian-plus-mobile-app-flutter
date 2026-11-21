@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_settings.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 // A few sensible values inside the 15–300 s the platform accepts
 const _timeoutOptions = [30, 60, 90, 120, 180, 300];
@@ -17,10 +18,11 @@ class AckTimeoutSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     // A value set elsewhere (e.g. 45 s through the API) still shows as selected
-    final options = {..._timeoutOptions, selectedSeconds}
-        .where((seconds) => seconds >= AckTimeoutLimits.minSeconds && seconds <= AckTimeoutLimits.maxSeconds)
-        .toList()
-      ..sort();
+    final options =
+        {..._timeoutOptions, selectedSeconds}
+            .where((seconds) => seconds >= AckTimeoutLimits.minSeconds && seconds <= AckTimeoutLimits.maxSeconds)
+            .toList()
+          ..sort();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -28,10 +30,9 @@ class AckTimeoutSelector extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Tiempo de espera antes de escalar',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: enabled ? colors.onSurface : colors.onSurfaceVariant,
-            ),
+            context.l10n.alertSettingsAckTimeout,
+            style: Theme.of(context).textTheme.titleSmall
+                ?.copyWith(color: enabled ? colors.onSurface : colors.onSurfaceVariant),
           ),
           const SizedBox(height: 8),
           SingleChildScrollView(
