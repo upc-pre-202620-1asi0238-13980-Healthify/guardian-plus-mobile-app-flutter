@@ -43,12 +43,14 @@ void main() {
       expect(attempt.outcome, CallAttemptOutcome.unsupported);
     });
 
-    test('no answer within the timeout logs an unanswered call with the timeout seconds', () async {
+    test('no answer within the timeout logs an unanswered call with the timeout as reason', () async {
       repository.onStartCall = neverAnswers;
       final attempt = await useCase.execute('citizen-test', CallType.video);
 
       expect(attempt.outcome, CallAttemptOutcome.unanswered);
-      expect(repository.unansweredLogged, [(CallType.video, 0)]);
+      expect(repository.unansweredLogged, hasLength(1));
+      expect(repository.unansweredLogged.single.$1, CallType.video);
+      expect(repository.unansweredLogged.single.$2, isNotEmpty);
     });
 
     test('the production timeout is 30 seconds', () {
@@ -70,15 +72,16 @@ void main() {
       final save = SaveSafeZoneUseCase(repository: repository);
       const draft = SafeZoneDraft(name: ' Casa ', latitude: 1, longitude: 2, radiusMeters: 50);
 
-      final created = await save.execute('citizen-test', draft);
+      await save.execute('citizen-test', draft);
+      final created = repository.zones.single;
       expect(created.name, 'Casa');
 
-      final updated = await save.execute(
+      await save.execute(
         'citizen-test',
         const SafeZoneDraft(name: 'Casa 2', latitude: 1, longitude: 2, radiusMeters: 80),
         existingId: created.id,
       );
-      expect(updated.radiusMeters, 80);
+      expect(repository.zones.single.radiusMeters, 80);
 
       await SetSafeZoneActiveUseCase(repository: repository).execute(created.id, active: false);
       expect(repository.zones.single.isActive, isFalse);
