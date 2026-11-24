@@ -110,7 +110,8 @@ class SafeZonesViewModel extends ChangeNotifier {
   String _messageOf(Object error, String fallback) {
     if (error is ApiException) return error.message;
     if (error is ArgumentError) return error.message.toString();
-    return fallback;
+    debugPrint('[SafeZones] $fallback: $error');
+    return '$fallback: $error';
   }
 
   void _emit(SafeZonesState state) {

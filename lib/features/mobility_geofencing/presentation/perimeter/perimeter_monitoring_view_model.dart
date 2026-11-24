@@ -108,9 +108,10 @@ class PerimeterMonitoringViewModel extends ChangeNotifier {
       }
       _emit(next);
     } catch (error) {
+      debugPrint('[Perimeter] refresh failed: $error');
       _emit(_state.copyWith(
         isLoading: false,
-        errorMessage: () => error is ApiException ? error.message : 'No se pudo actualizar la ubicación',
+        errorMessage: () => error is ApiException ? error.message : 'No se pudo actualizar la ubicación: $error',
       ));
     } finally {
       _fetching = false;
