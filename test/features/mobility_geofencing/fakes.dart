@@ -90,7 +90,7 @@ class FakeCommunicationRepository implements CommunicationRepository {
   Future<CallSession> Function(CallType requested)? onStartCall;
   List<CallLogEntry> logs = [];
 
-  final List<(CallType, int)> unansweredLogged = [];
+  final List<(CallType, String)> unansweredLogged = [];
   final List<String> hapticReasons = [];
   int startCalls = 0;
 
@@ -107,15 +107,19 @@ class FakeCommunicationRepository implements CommunicationRepository {
   Future<CallSession> endCall(String callId) async => testSession(status: CallStatus.ended);
 
   @override
-  Future<void> logUnanswered(String fragileCitizenId, CallType attemptedType, int timeoutSeconds) async {
-    unansweredLogged.add((attemptedType, timeoutSeconds));
+  Future<List<CallLogEntry>> logUnanswered(String fragileCitizenId, CallType attemptedType, String reason) async {
+    unansweredLogged.add((attemptedType, reason));
+    return const [];
   }
 
   @override
   Future<List<CallLogEntry>> getCallLogs(String fragileCitizenId) async => logs;
 
   @override
-  Future<void> sendHapticAlert(String fragileCitizenId, String reason) async => hapticReasons.add(reason);
+  Future<String?> sendHapticAlert(String fragileCitizenId, String message) async {
+    hapticReasons.add(message);
+    return null;
+  }
 }
 
 class FakeSafeZoneRepository implements SafeZoneRepository {
@@ -128,7 +132,7 @@ class FakeSafeZoneRepository implements SafeZoneRepository {
   Future<List<SafeZone>> getSafeZones(String fragileCitizenId) async => [...zones];
 
   @override
-  Future<SafeZone> create(String fragileCitizenId, SafeZoneDraft draft) async {
+  Future<void> create(String fragileCitizenId, SafeZoneDraft draft) async {
     final zone = SafeZone(
       id: 'new-${zones.length}',
       fragileCitizenId: fragileCitizenId,
@@ -139,11 +143,10 @@ class FakeSafeZoneRepository implements SafeZoneRepository {
       isActive: true,
     );
     zones.add(zone);
-    return zone;
   }
 
   @override
-  Future<SafeZone> update(String safeZoneId, SafeZoneDraft draft) async {
+  Future<void> update(String safeZoneId, SafeZoneDraft draft) async {
     final index = zones.indexWhere((zone) => zone.id == safeZoneId);
     zones[index] = zones[index].copyWith(
       name: draft.name,
@@ -151,7 +154,6 @@ class FakeSafeZoneRepository implements SafeZoneRepository {
       longitude: draft.longitude,
       radiusMeters: draft.radiusMeters,
     );
-    return zones[index];
   }
 
   @override

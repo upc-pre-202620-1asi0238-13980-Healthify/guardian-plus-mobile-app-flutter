@@ -7,10 +7,12 @@ import 'package:guardian_plus_app/features/mobility_geofencing/presentation/call
 
 import 'fakes.dart';
 
+const _unansweredTimeout = Duration(milliseconds: 50);
+
 CallViewModel _viewModel(FakeCommunicationRepository repository, {CallType type = CallType.video}) {
   return CallViewModel(
     getDeviceCapabilities: GetDeviceCapabilitiesUseCase(repository: repository),
-    startCall: StartCallUseCase(repository: repository, unansweredTimeout: const Duration(milliseconds: 50)),
+    startCall: StartCallUseCase(repository: repository, unansweredTimeout: _unansweredTimeout),
     endCall: EndCallUseCase(repository: repository),
     getCallLogs: GetCallLogsUseCase(repository: repository),
     sendHapticAlert: SendHapticAlertUseCase(repository: repository),
@@ -88,7 +90,9 @@ void main() {
     final viewModel = _viewModel(repository);
 
     await tester.pumpWidget(MaterialApp(home: CallPage(viewModel: viewModel)));
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+    // Future.timeout uses a fake-async Timer inside testWidgets, so advance the virtual clock past the timeout
+    await tester.pump(_unansweredTimeout + const Duration(milliseconds: 10));
+    await tester.pump();
     await tester.pump();
 
     expect(viewModel.state.phase, CallPhase.unanswered);
