@@ -55,7 +55,7 @@ class SaveSafeZoneUseCase {
   const SaveSafeZoneUseCase({required this.repository});
 
   /// Creates the zone, or updates it when [existingId] is given.
-  Future<SafeZone> execute(String fragileCitizenId, SafeZoneDraft draft, {String? existingId}) {
+  Future<void> execute(String fragileCitizenId, SafeZoneDraft draft, {String? existingId}) {
     final problem = validateSafeZoneDraft(draft);
     if (problem != null) throw ArgumentError(problem);
     final trimmed = SafeZoneDraft(
