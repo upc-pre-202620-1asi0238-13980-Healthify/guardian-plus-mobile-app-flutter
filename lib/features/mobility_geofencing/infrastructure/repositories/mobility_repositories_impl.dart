@@ -16,7 +16,12 @@ Future<T?> _nullOnNotFound<T>(Future<T> Function() request) async {
   }
 }
 
-List<Map<String, dynamic>> _objects(dynamic json) => (json as List).cast<Map<String, dynamic>>();
+/// A JSON array of objects; a single object is read as a one-item list.
+List<Map<String, dynamic>> _objects(dynamic json) {
+  if (json is List) return json.cast<Map<String, dynamic>>();
+  if (json is Map<String, dynamic>) return [json];
+  throw FormatException('Unexpected response: expected a JSON array, got ${json.runtimeType}');
+}
 
 class LocationTrackingRepositoryImpl implements LocationTrackingRepository {
   final MobilityGeofencingApi api;
@@ -54,13 +59,15 @@ class SafeZoneRepositoryImpl implements SafeZoneRepository {
   }
 
   @override
-  Future<SafeZone> create(String fragileCitizenId, SafeZoneDraft draft) async {
-    return safeZoneFromJson(await api.createSafeZone(createSafeZoneToJson(fragileCitizenId, draft)));
+  Future<void> create(String fragileCitizenId, SafeZoneDraft draft) async {
+    // 201 answers with the new zone id as a plain string; the list is the source of truth
+    await api.createSafeZone(createSafeZoneToJson(fragileCitizenId, draft));
   }
 
   @override
-  Future<SafeZone> update(String safeZoneId, SafeZoneDraft draft) async {
-    return safeZoneFromJson(await api.updateSafeZone(safeZoneId, updateSafeZoneToJson(draft)));
+  Future<void> update(String safeZoneId, SafeZoneDraft draft) async {
+    // 200 answers without a body
+    await api.updateSafeZone(safeZoneId, updateSafeZoneToJson(draft));
   }
 
   @override
@@ -87,7 +94,7 @@ class CommunicationRepositoryImpl implements CommunicationRepository {
   @override
   Future<CallSession> startCall(String fragileCitizenId, CallType requestedType) async {
     return callSessionFromJson(
-      await api.startCall({'fragileCitizenId': fragileCitizenId, 'requestedCallType': requestedType.wire}),
+      await api.startCall(startCallToJson(fragileCitizenId, requestedType)),
     );
   }
 
@@ -95,12 +102,10 @@ class CommunicationRepositoryImpl implements CommunicationRepository {
   Future<CallSession> endCall(String callId) async => callSessionFromJson(await api.endCall(callId));
 
   @override
-  Future<void> logUnanswered(String fragileCitizenId, CallType attemptedType, int timeoutSeconds) async {
-    await api.logUnanswered({
-      'fragileCitizenId': fragileCitizenId,
-      'attemptedCallType': attemptedType.wire,
-      'timeoutSeconds': timeoutSeconds,
-    });
+  Future<List<CallLogEntry>> logUnanswered(String fragileCitizenId, CallType attemptedType, String reason) async {
+    // Answers with the updated call log list
+    final json = await api.logUnanswered(logUnansweredToJson(fragileCitizenId, attemptedType, reason));
+    return _objects(json).map(callLogFromJson).toList();
   }
 
   @override
@@ -111,7 +116,10 @@ class CommunicationRepositoryImpl implements CommunicationRepository {
   }
 
   @override
-  Future<void> sendHapticAlert(String fragileCitizenId, String reason) async {
-    await api.sendHapticAlert({'fragileCitizenId': fragileCitizenId, 'reason': reason});
+  Future<String?> sendHapticAlert(String fragileCitizenId, String message) async {
+    // Answers with a map of strings; its first value is the platform's confirmation text
+    final json = await api.sendHapticAlert(hapticAlertToJson(fragileCitizenId, message));
+    if (json is Map && json.isNotEmpty) return json.values.first?.toString();
+    return null;
   }
 }

@@ -225,7 +225,7 @@ class _StatusCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(headline, style: Theme.of(context).textTheme.titleMedium),
-            if (status != null && status.status.isNotEmpty) Text('Estado: ${status.status}'),
+            if (status != null && status.status.isNotEmpty) Text('Estado: ${_statusLabel(status.status)}'),
             if (location != null) Text('Última lectura: ${formatTime(location.timestamp)}'),
             if (location?.accuracy != null) Text('Precisión GPS: ±${location!.accuracy!.round()} m'),
           ],
@@ -233,4 +233,14 @@ class _StatusCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Reader-friendly text of the platform's `LocationStatusResource.status`.
+String _statusLabel(String wire) {
+  return switch (wire) {
+    'WITHIN_SAFE_ZONE' => 'Dentro de la zona segura',
+    'OUTSIDE_SAFE_ZONE' => 'Fuera de la zona segura',
+    'UNKNOWN' => 'Sin ubicación todavía',
+    _ => wire,
+  };
 }
