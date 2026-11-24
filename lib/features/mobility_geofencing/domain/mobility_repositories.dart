@@ -14,9 +14,9 @@ abstract class LocationTrackingRepository {
 abstract class SafeZoneRepository {
   Future<List<SafeZone>> getSafeZones(String fragileCitizenId);
 
-  Future<SafeZone> create(String fragileCitizenId, SafeZoneDraft draft);
+  Future<void> create(String fragileCitizenId, SafeZoneDraft draft);
 
-  Future<SafeZone> update(String safeZoneId, SafeZoneDraft draft);
+  Future<void> update(String safeZoneId, SafeZoneDraft draft);
 
   Future<void> delete(String safeZoneId);
 
@@ -31,9 +31,10 @@ abstract class CommunicationRepository {
 
   Future<CallSession> endCall(String callId);
 
-  Future<void> logUnanswered(String fragileCitizenId, CallType attemptedType, int timeoutSeconds);
+  Future<List<CallLogEntry>> logUnanswered(String fragileCitizenId, CallType attemptedType, String reason);
 
   Future<List<CallLogEntry>> getCallLogs(String fragileCitizenId);
 
-  Future<void> sendHapticAlert(String fragileCitizenId, String reason);
+  /// Returns the platform's confirmation text, when it sends one.
+  Future<String?> sendHapticAlert(String fragileCitizenId, String message);
 }

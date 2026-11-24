@@ -20,28 +20,30 @@ DateTime? _optionalDate(Object? value) => value is String ? DateTime.tryParse(va
 
 int? _optionalInt(Object? value) => value is num ? value.toInt() : null;
 
+/// Wire values of `LocationStatusResource.status` / `CurrentLocationResource.status`.
+const _withinSafeZone = 'WITHIN_SAFE_ZONE';
+
+/// Wire value of `SafeZoneResource.status` for the zone being monitored.
+const _activeZoneStatus = 'ACTIVE';
+
+/// `CurrentLocationResource` and the items of `LocationHistoryResource`.
 LocationReading locationReadingFromJson(Map<String, dynamic> json) {
   return LocationReading(
     latitude: _requiredDouble(json['latitude'], 'latitude'),
     longitude: _requiredDouble(json['longitude'], 'longitude'),
-    accuracy: _optionalDouble(json['accuracy']),
-    speed: _optionalDouble(json['speed']),
-    timestamp: _optionalDate(json['timestamp']) ?? (throw const FormatException('Missing field "timestamp"')),
-    insideSafeZone: json['insideSafeZone'] == true,
-    activeSafeZoneId: json['activeSafeZoneId']?.toString(),
-    activeSafeZoneName: json['activeSafeZoneName'] as String?,
+    accuracy: _optionalDouble(json['accuracyInMeters']),
+    timestamp: _optionalDate(json['recordedAt']) ?? (throw const FormatException('Missing field "recordedAt"')),
+    insideSafeZone: json['status'] == _withinSafeZone,
   );
 }
 
+/// `LocationStatusResource`.
 MobilityStatus mobilityStatusFromJson(Map<String, dynamic> json) {
-  return MobilityStatus(
-    isInsideSafeZone: json['isInsideSafeZone'] == true,
-    status: json['status']?.toString() ?? '',
-    lastUpdated: _optionalDate(json['lastUpdated']),
-    currentSafeZoneName: json['currentSafeZoneName'] as String?,
-  );
+  final status = json['status']?.toString() ?? '';
+  return MobilityStatus(isInsideSafeZone: status == _withinSafeZone, status: status);
 }
 
+/// `SafeZoneResource`.
 SafeZone safeZoneFromJson(Map<String, dynamic> json) {
   return SafeZone(
     id: _requiredString(json['id'], 'id'),
@@ -49,33 +51,46 @@ SafeZone safeZoneFromJson(Map<String, dynamic> json) {
     name: _requiredString(json['name'], 'name'),
     latitude: _requiredDouble(json['latitude'], 'latitude'),
     longitude: _requiredDouble(json['longitude'], 'longitude'),
-    radiusMeters: _requiredDouble(json['radiusMeters'], 'radiusMeters'),
-    isActive: json['isActive'] == true || json['active'] == true,
+    radiusMeters: _requiredDouble(json['radiusInMeters'], 'radiusInMeters'),
+    isActive: json['status']?.toString().toUpperCase() == _activeZoneStatus,
   );
 }
 
+/// `CreateSafeZoneResource`.
 Map<String, dynamic> createSafeZoneToJson(String fragileCitizenId, SafeZoneDraft draft) {
   return {'fragileCitizenId': fragileCitizenId, ...updateSafeZoneToJson(draft)};
 }
 
+/// `UpdateSafeZoneResource`.
 Map<String, dynamic> updateSafeZoneToJson(SafeZoneDraft draft) {
   return {
     'name': draft.name,
-    'latitude': draft.latitude,
-    'longitude': draft.longitude,
-    'radiusMeters': draft.radiusMeters,
+    'centerLatitude': draft.latitude,
+    'centerLongitude': draft.longitude,
+    'radiusInMeters': draft.radiusMeters,
   };
 }
 
+/// `DeviceCapabilitiesResource`. The platform sends no summary, so it is derived from the hardware flags: video
+/// needs camera, screen, microphone and speaker; voice needs microphone and speaker; otherwise telemetry only.
 DeviceCapabilities deviceCapabilitiesFromJson(Map<String, dynamic> json) {
+  final hasCamera = json['hasCamera'] == true;
+  final hasScreen = json['hasScreen'] == true;
+  final hasMicrophone = json['hasMicrophone'] == true;
+  final hasSpeaker = json['hasSpeaker'] == true;
+  final capability = hasCamera && hasScreen && hasMicrophone && hasSpeaker
+      ? CommunicationCapability.videoAndAudio
+      : hasMicrophone && hasSpeaker
+          ? CommunicationCapability.audioOnly
+          : CommunicationCapability.telemetryOnly;
   return DeviceCapabilities(
     fragileCitizenId: _requiredString(json['fragileCitizenId'], 'fragileCitizenId'),
     wristbandModel: json['wristbandModel'] as String?,
-    capability: CommunicationCapability.fromWire(json['capability'] as String?),
-    hasCamera: json['hasCamera'] == true,
-    hasScreen: json['hasScreen'] == true,
-    hasMicrophone: json['hasMicrophone'] == true,
-    hasSpeaker: json['hasSpeaker'] == true,
+    capability: capability,
+    hasCamera: hasCamera,
+    hasScreen: hasScreen,
+    hasMicrophone: hasMicrophone,
+    hasSpeaker: hasSpeaker,
     supportsHapticAlerts: json['supportsHapticAlerts'] == true,
     supportsTelemetry: json['supportsTelemetry'] == true,
     citizenPhone: _blankToNull(json['citizenPhone']),
@@ -88,21 +103,20 @@ String? _blankToNull(Object? value) {
   return text == null || text.isEmpty ? null : text;
 }
 
+/// `CallSessionResource`.
 CallSession callSessionFromJson(Map<String, dynamic> json) {
   return CallSession(
     callId: _requiredString(json['callId'], 'callId'),
     fragileCitizenId: _requiredString(json['fragileCitizenId'], 'fragileCitizenId'),
-    callType: CallType.fromWire(json['callType'] as String?),
+    callType: CallType.fromWire(json['activeType'] as String?),
     status: CallStatus.fromWire(json['status'] as String?),
-    degradedToVoice: json['degradedToVoice'] == true,
-    degradationReason: json['degradationReason'] as String?,
+    degradedToVoice: json['downgraded'] == true,
+    degradationReason: _blankToNull(json['reasonMessage']),
     startedAt: _optionalDate(json['startedAt']),
-    durationSeconds: _optionalInt(json['durationSeconds']),
-    citizenPhone: _blankToNull(json['citizenPhone']),
-    caregiverPhone: _blankToNull(json['caregiverPhone']),
   );
 }
 
+/// `CallLogEntryResource`.
 CallLogEntry callLogFromJson(Map<String, dynamic> json) {
   return CallLogEntry(
     id: _requiredString(json['id'], 'id'),
@@ -110,7 +124,22 @@ CallLogEntry callLogFromJson(Map<String, dynamic> json) {
     callType: CallType.fromWire(json['callType'] as String?),
     status: CallStatus.fromWire(json['status'] as String?),
     durationSeconds: _optionalInt(json['durationSeconds']),
-    timestamp: _optionalDate(json['timestamp']),
-    notes: json['notes'] as String?,
+    timestamp: _optionalDate(json['occurredAt']),
+    notes: _blankToNull(json['reason']),
   );
+}
+
+/// `StartCallRequestResource`.
+Map<String, dynamic> startCallToJson(String fragileCitizenId, CallType requestedType) {
+  return {'fragileCitizenId': fragileCitizenId, 'requestedType': requestedType.wire};
+}
+
+/// `RegisterCallLogRequestResource`.
+Map<String, dynamic> logUnansweredToJson(String fragileCitizenId, CallType attemptedType, String reason) {
+  return {'fragileCitizenId': fragileCitizenId, 'attemptedType': attemptedType.wire, 'reason': reason};
+}
+
+/// `HapticAlertRequestResource`.
+Map<String, dynamic> hapticAlertToJson(String fragileCitizenId, String message) {
+  return {'fragileCitizenId': fragileCitizenId, 'message': message};
 }
