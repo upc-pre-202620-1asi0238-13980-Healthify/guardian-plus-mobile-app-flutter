@@ -61,7 +61,7 @@ class StartCallUseCase {
   }
 
   Future<void> _logUnanswered(String fragileCitizenId, CallType type) {
-    return repository.logUnanswered(fragileCitizenId, type, unansweredTimeout.inSeconds);
+    return repository.logUnanswered(fragileCitizenId, type, 'Sin respuesta tras ${unansweredTimeout.inSeconds} s');
   }
 }
 
