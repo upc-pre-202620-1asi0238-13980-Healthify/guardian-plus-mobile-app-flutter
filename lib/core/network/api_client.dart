@@ -126,13 +126,18 @@ class ApiClient {
 
     if (text.isEmpty) {
       // Deleting or toggling a resource may legitimately answer without a body
-      if (response.statusCode == 204 || method == 'DELETE' || method == 'PATCH') {
+      if (response.statusCode == 204 || method == 'DELETE' || method == 'PATCH' || method == 'PUT') {
         return null;
       }
       throw const ApiException('El servidor no devolvió datos');
     }
 
-    return jsonDecode(text);
+    try {
+      return jsonDecode(text);
+    } on FormatException {
+      // Some endpoints answer with a bare string (e.g. the id of a created resource)
+      return text;
+    }
   }
 
   bool _isInvalidToken(http.Response response, _ApiError error) {

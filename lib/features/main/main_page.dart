@@ -13,14 +13,15 @@ import 'package:guardian_plus_app/features/health_monitoring/presentation/home/h
 import 'package:guardian_plus_app/features/health_monitoring/presentation/live_vitals/live_vitals_view_model.dart';
 import 'package:guardian_plus_app/features/health_monitoring/presentation/vital_history/vital_history_view_model.dart';
 import 'package:guardian_plus_app/features/main/guardian_bottom_bar.dart';
-import 'package:guardian_plus_app/features/main/placeholder_page.dart';
 import 'package:guardian_plus_app/features/main/top_level_destination.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/perimeter/perimeter_monitoring_page.dart';
+import 'package:guardian_plus_app/features/mobility_geofencing/presentation/perimeter/perimeter_monitoring_view_model.dart';
 import 'package:guardian_plus_app/features/profile/presentation/navigation/profile_navigation.dart';
 
 /// App shell behind the sign-in: one tab per bounded context, starting on "Inicio". The pages follow the
 /// order of [TopLevelDestination].
 class MainPage extends StatefulWidget {
-  const new({super.key});
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -61,8 +62,7 @@ class _MainPageState extends State<MainPage> {
       alertHistoryViewModel: getIt<AlertHistoryViewModel>(),
     ),
     RoutinesPage(viewModel: getIt<RoutinesViewModel>()),
-    // Mobility & Geofencing is not built in this app yet
-    PlaceholderPage(title: TopLevelDestination.location.label),
+    PerimeterMonitoringPage(viewModel: getIt<PerimeterMonitoringViewModel>()),
   ];
 
   @override
