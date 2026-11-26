@@ -1363,6 +1363,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We sent you a new code.'**
   String get otpNewCodeSent;
+
+  /// No description provided for @subscriptionCatalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Available plans'**
+  String get subscriptionCatalogTitle;
+
+  /// No description provided for @subscriptionCatalogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans available.'**
+  String get subscriptionCatalogEmpty;
+
+  /// No description provided for @subscriptionSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get subscriptionSelect;
+
+  /// No description provided for @subscriptionSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Current plan'**
+  String get subscriptionSelected;
+
+  /// No description provided for @subscriptionResumePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume payment'**
+  String get subscriptionResumePayment;
+
+  /// No description provided for @subscriptionRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew subscription'**
+  String get subscriptionRenew;
+
+  /// No description provided for @subscriptionRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh status'**
+  String get subscriptionRefresh;
+
+  /// No description provided for @subscriptionFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get subscriptionFree;
+
+  /// No description provided for @subscriptionMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'per month'**
+  String get subscriptionMonthly;
+
+  /// No description provided for @subscriptionAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'per year'**
+  String get subscriptionAnnual;
+
+  /// No description provided for @subscriptionConfirmSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm plan'**
+  String get subscriptionConfirmSelection;
+
+  /// No description provided for @subscriptionConfirmRenewal.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm renewal'**
+  String get subscriptionConfirmRenewal;
+
+  /// No description provided for @subscriptionConfirmPaidBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the amount before continuing to Stripe.'**
+  String get subscriptionConfirmPaidBody;
+
+  /// No description provided for @subscriptionConfirmFreeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm that you want to select this free plan.'**
+  String get subscriptionConfirmFreeBody;
+
+  /// No description provided for @subscriptionRenewalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will make a manual payment to extend your subscription.'**
+  String get subscriptionRenewalBody;
+
+  /// No description provided for @subscriptionPaymentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment cancelled. You can try again.'**
+  String get subscriptionPaymentCancelled;
+
+  /// No description provided for @subscriptionAwaitingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'We are confirming your payment. Please do not make another payment until confirmation is complete.'**
+  String get subscriptionAwaitingConfirmation;
+
+  /// No description provided for @subscriptionUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has been updated successfully.'**
+  String get subscriptionUpdated;
+
+  /// No description provided for @subscriptionOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to complete the operation. Refresh your subscription status and try again.'**
+  String get subscriptionOperationFailed;
+
+  /// No description provided for @subscriptionStripeNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments are currently unavailable.'**
+  String get subscriptionStripeNotConfigured;
+
+  /// No description provided for @subscriptionStateChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription changed. Review its updated status.'**
+  String get subscriptionStateChanged;
+
+  /// No description provided for @subscriptionPaidChangeUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching directly to this plan is unavailable.'**
+  String get subscriptionPaidChangeUnavailable;
+
+  /// No description provided for @subscriptionPendingNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a pending subscription. Complete the payment for the same plan.'**
+  String get subscriptionPendingNotice;
+
+  /// No description provided for @subscriptionScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation scheduled'**
+  String get subscriptionScheduled;
+
+  /// No description provided for @subscriptionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get subscriptionContinue;
+
+  /// No description provided for @subscriptionBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get subscriptionBack;
+
+  /// No description provided for @subscriptionBenefitReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic reminders'**
+  String get subscriptionBenefitReminders;
+
+  /// No description provided for @subscriptionBenefitEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency alerts'**
+  String get subscriptionBenefitEmergency;
+
+  /// No description provided for @subscriptionBenefitFall.
+  ///
+  /// In en, this message translates to:
+  /// **'Fall detection'**
+  String get subscriptionBenefitFall;
+
+  /// No description provided for @subscriptionBenefitGeofence.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe zones'**
+  String get subscriptionBenefitGeofence;
+
+  /// No description provided for @subscriptionBenefitHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health monitoring'**
+  String get subscriptionBenefitHealth;
+
+  /// No description provided for @subscriptionBenefitLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time location'**
+  String get subscriptionBenefitLocation;
+
+  /// No description provided for @subscriptionBenefitLocationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Location history'**
+  String get subscriptionBenefitLocationHistory;
+
+  /// No description provided for @subscriptionBenefitSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep monitoring'**
+  String get subscriptionBenefitSleep;
+
+  /// No description provided for @subscriptionBenefitTreatment.
+  ///
+  /// In en, this message translates to:
+  /// **'Treatment adherence'**
+  String get subscriptionBenefitTreatment;
+
+  /// No description provided for @subscriptionBenefitVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital signs history'**
+  String get subscriptionBenefitVitals;
 }
 
 class _AppLocalizationsDelegate

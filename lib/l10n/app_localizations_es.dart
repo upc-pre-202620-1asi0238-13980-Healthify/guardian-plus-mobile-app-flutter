@@ -684,4 +684,123 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get otpNewCodeSent => 'Te enviamos un nuevo código.';
+
+  @override
+  String get subscriptionCatalogTitle => 'Planes disponibles';
+
+  @override
+  String get subscriptionCatalogEmpty => 'No hay planes disponibles.';
+
+  @override
+  String get subscriptionSelect => 'Contratar plan';
+
+  @override
+  String get subscriptionSelected => 'Plan actual';
+
+  @override
+  String get subscriptionResumePayment => 'Continuar pago';
+
+  @override
+  String get subscriptionRenew => 'Renovar suscripción';
+
+  @override
+  String get subscriptionRefresh => 'Actualizar estado';
+
+  @override
+  String get subscriptionFree => 'Gratis';
+
+  @override
+  String get subscriptionMonthly => 'por mes';
+
+  @override
+  String get subscriptionAnnual => 'por año';
+
+  @override
+  String get subscriptionConfirmSelection => 'Confirmar plan';
+
+  @override
+  String get subscriptionConfirmRenewal => 'Confirmar renovación';
+
+  @override
+  String get subscriptionConfirmPaidBody =>
+      'Revisa el importe antes de continuar con Stripe.';
+
+  @override
+  String get subscriptionConfirmFreeBody =>
+      'Confirma que deseas seleccionar este plan gratuito.';
+
+  @override
+  String get subscriptionRenewalBody =>
+      'Realizarás un pago manual para extender tu suscripción.';
+
+  @override
+  String get subscriptionPaymentCancelled =>
+      'Pago cancelado. Puedes volver a intentarlo.';
+
+  @override
+  String get subscriptionAwaitingConfirmation =>
+      'Estamos confirmando tu pago. No realices otro pago hasta que finalice la confirmación.';
+
+  @override
+  String get subscriptionUpdated =>
+      'Tu suscripción se ha actualizado correctamente.';
+
+  @override
+  String get subscriptionOperationFailed =>
+      'No se pudo completar la operación. Actualiza el estado e inténtalo nuevamente.';
+
+  @override
+  String get subscriptionStripeNotConfigured =>
+      'Los pagos no están disponibles en este momento.';
+
+  @override
+  String get subscriptionStateChanged =>
+      'Tu suscripción cambió. Revisa el estado actualizado.';
+
+  @override
+  String get subscriptionPaidChangeUnavailable =>
+      'El cambio directo a este plan no está disponible.';
+
+  @override
+  String get subscriptionPendingNotice =>
+      'Tienes una suscripción pendiente. Completa el pago del mismo plan.';
+
+  @override
+  String get subscriptionScheduled => 'Cancelación programada';
+
+  @override
+  String get subscriptionContinue => 'Continuar';
+
+  @override
+  String get subscriptionBack => 'Volver';
+
+  @override
+  String get subscriptionBenefitReminders => 'Recordatorios básicos';
+
+  @override
+  String get subscriptionBenefitEmergency => 'Alertas de emergencia';
+
+  @override
+  String get subscriptionBenefitFall => 'Detección de caídas';
+
+  @override
+  String get subscriptionBenefitGeofence => 'Zonas seguras';
+
+  @override
+  String get subscriptionBenefitHealth => 'Monitoreo de salud';
+
+  @override
+  String get subscriptionBenefitLocation => 'Ubicación en tiempo real';
+
+  @override
+  String get subscriptionBenefitLocationHistory => 'Historial de ubicación';
+
+  @override
+  String get subscriptionBenefitSleep => 'Monitoreo del sueño';
+
+  @override
+  String get subscriptionBenefitTreatment => 'Adherencia al tratamiento';
+
+  @override
+  String get subscriptionBenefitVitals => 'Historial de signos vitales';
 }
