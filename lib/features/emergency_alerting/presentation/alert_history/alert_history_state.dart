@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 
 /// Figures of the last 7 days shown above the list.
 class HistorySummary {
@@ -19,7 +20,7 @@ class AlertHistoryState {
   const new({
     this.isLoading = false,
     this.isLoadingMore = false,
-    this.errorMessage,
+    this.error,
     this.alerts = const [],
     this.severityFilter,
     this.page = 0,
@@ -31,7 +32,7 @@ class AlertHistoryState {
 
   final bool isLoading;
   final bool isLoadingMore;
-  final String? errorMessage;
+  final ScreenError? error;
   final List<Alert> alerts;
   // null shows every severity
   final Severity? severityFilter;
@@ -59,7 +60,7 @@ class AlertHistoryState {
   AlertHistoryState copyWith({
     bool? isLoading,
     bool? isLoadingMore,
-    ValueGetter<String?>? errorMessage,
+    ValueGetter<ScreenError?>? error,
     List<Alert>? alerts,
     ValueGetter<Severity?>? severityFilter,
     int? page,
@@ -70,7 +71,7 @@ class AlertHistoryState {
     return AlertHistoryState(
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      error: error != null ? error() : this.error,
       alerts: alerts ?? this.alerts,
       severityFilter: severityFilter != null ? severityFilter() : this.severityFilter,
       page: page ?? this.page,

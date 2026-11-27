@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/phone_number.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_view_model.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 // Same limits as the platform's AddEmergencyContactResource
 const _maxNameLength = 100;
@@ -52,6 +53,7 @@ class _AddContactSheetState extends State<AddContactSheet> {
     final colors = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final careRecipientFirstName = widget.viewModel.state.careRecipientFirstName;
+    final l10n = context.l10n;
 
     return Padding(
       // Keeps the form above the keyboard
@@ -67,49 +69,47 @@ class _AddContactSheetState extends State<AddContactSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Nuevo contacto de emergencia', style: text.titleLarge?.copyWith(color: colors.onSurface)),
+                Text(l10n.addContactTitle, style: text.titleLarge?.copyWith(color: colors.onSurface)),
                 const SizedBox(height: 4),
                 Text(
-                  'Se agregará al final de la lista de $careRecipientFirstName.',
+                  l10n.addContactSubtitle(careRecipientFirstName),
                   style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _name,
-                  decoration: const InputDecoration(labelText: 'Nombre completo'),
+                  decoration: InputDecoration(labelText: l10n.addContactName),
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   inputFormatters: [LengthLimitingTextInputFormatter(_maxNameLength)],
-                  validator: (value) => (value ?? '').trim().isEmpty
-                      ? 'Escribe el nombre (máximo $_maxNameLength caracteres)'
-                      : null,
+                  validator: (value) => (value ?? '').trim().isEmpty ? l10n.addContactNameError(_maxNameLength) : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _relationship,
-                  decoration: const InputDecoration(labelText: 'Parentesco', hintText: 'Ej. Hija, vecino, cuidadora'),
+                  decoration: InputDecoration(
+                    labelText: l10n.addContactRelationship,
+                    hintText: l10n.addContactRelationshipHint,
+                  ),
                   textCapitalization: TextCapitalization.sentences,
                   textInputAction: TextInputAction.next,
                   inputFormatters: [LengthLimitingTextInputFormatter(_maxRelationshipLength)],
-                  validator: (value) => (value ?? '').trim().isEmpty
-                      ? 'Escribe el parentesco (máximo $_maxRelationshipLength caracteres)'
-                      : null,
+                  validator: (value) =>
+                      (value ?? '').trim().isEmpty ? l10n.addContactRelationshipError(_maxRelationshipLength) : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _phone,
-                  decoration: const InputDecoration(labelText: 'Teléfono con código de país'),
+                  decoration: InputDecoration(labelText: l10n.addContactPhone),
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.done,
                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[+0-9]'))],
-                  validator: (value) => PhoneNumber.isValid((value ?? '').trim())
-                      ? null
-                      : 'Usa el formato internacional, por ejemplo +51987654321',
+                  validator: (value) => PhoneNumber.isValid((value ?? '').trim()) ? null : l10n.addContactPhoneError,
                   onFieldSubmitted: (_) => _save(),
                 ),
-                if (state.addErrorMessage != null) ...[
+                if (state.addError != null) ...[
                   const SizedBox(height: 12),
-                  Text(state.addErrorMessage!, style: text.bodySmall?.copyWith(color: colors.error)),
+                  Text(state.addError!.message(l10n), style: text.bodySmall?.copyWith(color: colors.error)),
                 ],
                 const SizedBox(height: 16),
                 FilledButton.icon(
@@ -117,7 +117,7 @@ class _AddContactSheetState extends State<AddContactSheet> {
                   icon: state.isAdding
                       ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.person_add_alt_1, size: 18),
-                  label: const Text('Guardar contacto'),
+                  label: Text(l10n.addContactSave),
                 ),
               ],
             );

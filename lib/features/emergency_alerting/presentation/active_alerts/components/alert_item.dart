@@ -5,6 +5,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/activ
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_colors.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/severity_badge.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Row of the "Otras alertas activas" list (component AlertaItem of the prototype).
 class AlertItem extends StatelessWidget {
@@ -27,11 +28,12 @@ class AlertItem extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final alert = item.alert;
     final severityColors = alert.severity.colors(scheme);
-    final elapsed = relativeTime(alert.triggeredAt, now);
+    final l10n = context.l10n;
+    final elapsed = relativeTime(l10n, alert.triggeredAt, now);
     final (meta, metaColor) = switch (alert.status) {
-      _ when alert.status.isAwaitingAcknowledgement => ('$elapsed · Sin reconocer', scheme.tertiary),
-      AlertStatus.pendingConfirmation => ('$elapsed · Confirmando', scheme.onSurfaceVariant),
-      _ => ('$elapsed · Reconocida', scheme.secondary),
+      _ when alert.status.isAwaitingAcknowledgement => (l10n.alertsMetaUnacknowledged(elapsed), scheme.tertiary),
+      AlertStatus.pendingConfirmation => (l10n.alertsMetaConfirming(elapsed), scheme.onSurfaceVariant),
+      _ => (l10n.alertsMetaAcknowledged(elapsed), scheme.secondary),
     };
 
     return Material(
@@ -61,7 +63,7 @@ class AlertItem extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            alert.sourceType.title(careRecipientFirstName),
+                            alert.sourceType.title(l10n, careRecipientFirstName),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: text.titleMedium?.copyWith(color: scheme.onSurface),
@@ -89,7 +91,7 @@ class AlertItem extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant, semanticLabel: 'Ver detalle de la alerta'),
+              Icon(Icons.chevron_right, color: scheme.onSurfaceVariant, semanticLabel: l10n.alertsViewDetail),
             ],
           ),
         ),

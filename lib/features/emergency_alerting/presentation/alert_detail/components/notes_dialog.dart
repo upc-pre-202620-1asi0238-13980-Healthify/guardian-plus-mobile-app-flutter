@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 const _maxNotesLength = 2000;
 
@@ -41,9 +42,9 @@ class _NotesDialogState extends State<NotesDialog> {
             maxLines: 5,
             inputFormatters: [LengthLimitingTextInputFormatter(_maxNotesLength)],
             textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              labelText: 'Notas (opcional)',
-              hintText: 'Ej. Caída sin lesiones, ya está acostada.',
+            decoration: InputDecoration(
+              labelText: context.l10n.notesLabel,
+              hintText: context.l10n.notesHint,
               alignLabelWithHint: true,
             ),
           ),
@@ -52,7 +53,7 @@ class _NotesDialogState extends State<NotesDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancelar', style: TextStyle(color: scheme.onSurfaceVariant)),
+          child: Text(context.l10n.commonCancel, style: TextStyle(color: scheme.onSurfaceVariant)),
         ),
         TextButton(onPressed: () => Navigator.pop(context, _notes.text.trim()), child: Text(widget.confirmLabel)),
       ],

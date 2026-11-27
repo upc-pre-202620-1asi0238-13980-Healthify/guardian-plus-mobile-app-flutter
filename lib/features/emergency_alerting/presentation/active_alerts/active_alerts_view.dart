@@ -4,6 +4,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/activ
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/components/critical_alert_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/components/escalation_notice.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// "Activas" tab of the Alerts screen. The screen around it owns the view model.
 class ActiveAlertsView extends StatelessWidget {
@@ -29,8 +30,8 @@ class ActiveAlertsView extends StatelessWidget {
         final hasAlerts = state.activeCount > 0;
 
         if (state.isLoading && !hasAlerts) return const LoadingView();
-        if (state.errorMessage != null && !hasAlerts) {
-          return ErrorRetryView(message: state.errorMessage!, onRetry: viewModel.loadAlerts);
+        if (state.error != null && !hasAlerts) {
+          return ErrorRetryView(message: state.error!.message(context.l10n), onRetry: viewModel.loadAlerts);
         }
 
         return RefreshIndicator(
@@ -58,7 +59,7 @@ class ActiveAlertsView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 12),
                         child: Text(
-                          state.featuredAlert != null ? 'Otras alertas activas' : 'Alertas activas',
+                          state.featuredAlert != null ? context.l10n.alertsOtherActive : context.l10n.alertsActive,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
@@ -106,10 +107,14 @@ class _AllGood extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Text('$careRecipientFirstName está bien', textAlign: TextAlign.center, style: text.titleLarge),
+        Text(
+          context.l10n.alertsAllGoodTitle(careRecipientFirstName),
+          textAlign: TextAlign.center,
+          style: text.titleLarge,
+        ),
         const SizedBox(height: 4),
         Text(
-          'No hay alertas activas. Te avisaremos al instante si algo cambia.',
+          context.l10n.alertsAllGoodMessage,
           textAlign: TextAlign.center,
           style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
         ),

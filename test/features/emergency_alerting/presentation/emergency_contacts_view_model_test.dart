@@ -53,7 +53,7 @@ void main() {
     await pumpEventQueue();
 
     expect(viewModel.state.isLoading, isFalse);
-    expect(viewModel.state.errorMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
+    expect(viewModel.state.error?.platformMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
   });
 
   test('moving a contact up sends the new chain and makes it the primary one', () async {
@@ -75,7 +75,7 @@ void main() {
     await viewModel.move('b', -1);
 
     expect(viewModel.state.contacts.map((contact) => contact.id), ['a', 'b']);
-    expect(viewModel.state.actionErrorMessage, 'El orden no es válido');
+    expect(viewModel.state.actionError?.platformMessage, 'El orden no es válido');
   });
 
   test('moving the primary contact up does nothing', () async {
@@ -121,9 +121,9 @@ void main() {
     final saved = await viewModel.addContact(displayName: 'Ana', relationship: 'Hija', phoneNumber: '+51987654323');
 
     expect(saved, isFalse);
-    expect(viewModel.state.addErrorMessage, 'El teléfono ya está registrado');
+    expect(viewModel.state.addError?.platformMessage, 'El teléfono ya está registrado');
     viewModel.onAddSheetClosed();
-    expect(viewModel.state.addErrorMessage, isNull);
+    expect(viewModel.state.addError, isNull);
   });
 
   test('a request that ends after the screen closed does not touch the disposed view model', () async {

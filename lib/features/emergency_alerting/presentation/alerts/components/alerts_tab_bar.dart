@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 enum AlertsTab { active, history }
 
@@ -34,7 +35,7 @@ class AlertsTabBar extends StatelessWidget {
                     height: 44,
                     child: Center(
                       child: Text(
-                        tab == AlertsTab.active ? 'Activas' : 'Historial',
+                        tab == AlertsTab.active ? context.l10n.alertsTabActive : context.l10n.alertsTabHistory,
                         style: Theme.of(context).textTheme.titleSmall
                             ?.copyWith(color: tab == selected ? scheme.primary : scheme.onSurfaceVariant),
                       ),

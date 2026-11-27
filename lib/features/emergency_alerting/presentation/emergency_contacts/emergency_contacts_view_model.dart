@@ -39,7 +39,7 @@ class EmergencyContactsViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   Future<void> loadContacts() async {
-    _emit(_state.copyWith(isLoading: true, errorMessage: () => null));
+    _emit(_state.copyWith(isLoading: true, error: () => null));
 
     try {
       final settings = await getAlertSettings.execute(_careContext.careRecipientProfileId);
@@ -52,10 +52,7 @@ class EmergencyContactsViewModel extends ChangeNotifier {
       final contacts = await getEmergencyContacts.execute(_careContext.careRecipientProfileId);
       _emitContacts(_state.copyWith(isLoading: false, contacts: contacts.activeInOrder()));
     } catch (e) {
-      _emit(_state.copyWith(
-        isLoading: false,
-        errorMessage: () => errorMessageOf(e, 'No se pudieron cargar los contactos'),
-      ));
+      _emit(_state.copyWith(isLoading: false, error: () => ScreenError.of(e, FailedTask.loadContacts)));
     }
   }
 
@@ -79,11 +76,13 @@ class EmergencyContactsViewModel extends ChangeNotifier {
       );
       _emitContacts(_state.copyWith(isSaving: false, contacts: saved.activeInOrder()));
     } catch (e) {
-      _emit(_state.copyWith(
-        isSaving: false,
-        contacts: previous,
-        actionErrorMessage: () => errorMessageOf(e, 'No se pudo cambiar el orden'),
-      ));
+      _emit(
+        _state.copyWith(
+          isSaving: false,
+          contacts: previous,
+          actionError: () => ScreenError.of(e, FailedTask.reorderContacts),
+        ),
+      );
     }
   }
 
@@ -94,10 +93,7 @@ class EmergencyContactsViewModel extends ChangeNotifier {
       await removeEmergencyContact.execute(contact.id);
       await _reloadAfterChange();
     } catch (e) {
-      _emit(_state.copyWith(
-        isSaving: false,
-        actionErrorMessage: () => errorMessageOf(e, 'No se pudo eliminar el contacto'),
-      ));
+      _emit(_state.copyWith(isSaving: false, actionError: () => ScreenError.of(e, FailedTask.removeContact)));
     }
   }
 
@@ -108,7 +104,7 @@ class EmergencyContactsViewModel extends ChangeNotifier {
     required String phoneNumber,
   }) async {
     if (_state.isAdding) return false;
-    _emit(_state.copyWith(isAdding: true, addErrorMessage: () => null));
+    _emit(_state.copyWith(isAdding: true, addError: () => null));
     try {
       await addEmergencyContact.execute(
         careRecipientProfileId: _careContext.careRecipientProfileId,
@@ -120,20 +116,17 @@ class EmergencyContactsViewModel extends ChangeNotifier {
       await _reloadAfterChange();
       return true;
     } catch (e) {
-      _emit(_state.copyWith(
-        isAdding: false,
-        addErrorMessage: () => errorMessageOf(e, 'No se pudo agregar el contacto'),
-      ));
+      _emit(_state.copyWith(isAdding: false, addError: () => ScreenError.of(e, FailedTask.addContact)));
       return false;
     }
   }
 
   void onAddSheetClosed() {
-    _emit(_state.copyWith(addErrorMessage: () => null));
+    _emit(_state.copyWith(addError: () => null));
   }
 
   void onActionErrorShown() {
-    _emit(_state.copyWith(actionErrorMessage: () => null));
+    _emit(_state.copyWith(actionError: () => null));
   }
 
   // Adding or removing changes the priorities of the others, so the list is read again

@@ -7,12 +7,14 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/close_
 import 'package:guardian_plus_app/features/emergency_alerting/application/complete_alert_response_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_active_alerts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_by_id_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_context_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_history_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_settings_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_emergency_contacts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_incident_by_alert_id_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_pending_alerts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/stabilize_incident_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_source_type.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_status.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_status.dart';
@@ -29,6 +31,7 @@ import '../fakes.dart';
 void main() {
   late FakeAlertRepository alerts;
   late FakeIncidentRepository incidents;
+  late FakeAlertContextRepository alertContext;
   late FakeEmergencyContactRepository contacts;
   late FakeAlertSettingsRepository settings;
   late CareContextStore store;
@@ -37,6 +40,7 @@ void main() {
   setUp(() {
     alerts = FakeAlertRepository();
     incidents = FakeIncidentRepository();
+    alertContext = FakeAlertContextRepository();
     contacts = FakeEmergencyContactRepository([contact('a', priorityOrder: 1, phoneNumber: '+51987000111')]);
     settings = FakeAlertSettingsRepository();
     store = careContextStore();
@@ -110,7 +114,7 @@ void main() {
 
       await viewModel.acknowledge('fall');
 
-      expect(viewModel.state.actionErrorMessage, 'Otro miembro ya reconoció la alerta');
+      expect(viewModel.state.actionError?.platformMessage, 'Otro miembro ya reconoció la alerta');
       expect(viewModel.state.acknowledgingAlertId, isNull);
       expect(viewModel.state.featuredAlert?.alert.id, 'fall');
     });
@@ -120,7 +124,7 @@ void main() {
       final viewModel = create();
       await pumpEventQueue();
 
-      expect(viewModel.state.errorMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
+      expect(viewModel.state.error?.platformMessage, 'No se pudo conectar con el servidor. Revisa tu conexión.');
       expect(viewModel.state.isLoading, isFalse);
     });
   });
@@ -201,6 +205,7 @@ void main() {
         alertId: alertId,
         getAlertById: GetAlertByIdUseCase(repository: alerts),
         getIncidentByAlertId: GetIncidentByAlertIdUseCase(repository: incidents),
+        getAlertContext: GetAlertContextUseCase(repository: alertContext),
         getEmergencyContacts: GetEmergencyContactsUseCase(repository: contacts),
         getAlertSettings: GetAlertSettingsUseCase(repository: settings),
         acknowledgeAlert: AcknowledgeAlertUseCase(repository: alerts),
@@ -268,7 +273,7 @@ void main() {
 
       await viewModel.acknowledge();
 
-      expect(viewModel.state.actionErrorMessage, 'La alerta ya fue reconocida');
+      expect(viewModel.state.actionError?.platformMessage, 'La alerta ya fue reconocida');
       expect(viewModel.state.runningAction, isNull);
     });
 
@@ -287,6 +292,25 @@ void main() {
       await first;
 
       expect(alerts.calls, ['acknowledge fall by maria']);
+    });
+
+    test('shows the vital signs and location of the alert, and keeps them when a later read fails', () async {
+      alerts = FakeAlertRepository(active: [alert('sos', source: AlertSourceType.sosTriggered)]);
+      alertContext = FakeAlertContextRepository(
+        AlertContext(heartRateBpm: 112, oxygenSaturation: 95, locationName: 'Av. Larco 345 · Miraflores'),
+      );
+      final viewModel = create('sos');
+      await pumpEventQueue();
+
+      expect(alertContext.requestedAlertIds, ['sos']);
+      expect(viewModel.state.context.heartRateBpm, 112);
+      expect(viewModel.state.context.locationName, 'Av. Larco 345 · Miraflores');
+
+      alertContext.failure = Exception('Health Monitoring is down');
+      await viewModel.acknowledge();
+
+      expect(viewModel.state.context.oxygenSaturation, 95);
+      expect(viewModel.state.error, isNull);
     });
   });
 }

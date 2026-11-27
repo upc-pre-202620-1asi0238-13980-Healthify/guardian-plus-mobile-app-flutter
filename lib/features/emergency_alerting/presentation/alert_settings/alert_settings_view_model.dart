@@ -44,7 +44,7 @@ class AlertSettingsViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   Future<void> loadSettings() async {
-    _emit(_state.copyWith(isLoading: true, errorMessage: () => null));
+    _emit(_state.copyWith(isLoading: true, error: () => null));
 
     try {
       final channels = await getAlertChannelSettings.execute(_careContext.userAccountId);
@@ -58,10 +58,7 @@ class AlertSettingsViewModel extends ChangeNotifier {
       final settings = await getAlertSettings.execute(_careContext.careRecipientProfileId);
       _emit(_state.copyWith(isLoading: false, settings: settings));
     } catch (e) {
-      _emit(_state.copyWith(
-        isLoading: false,
-        errorMessage: () => errorMessageOf(e, 'No se pudo cargar la configuración'),
-      ));
+      _emit(_state.copyWith(isLoading: false, error: () => ScreenError.of(e, FailedTask.loadSettings)));
     }
   }
 
@@ -101,7 +98,7 @@ class AlertSettingsViewModel extends ChangeNotifier {
     if (_state.savingChannel != null) return;
     // Same rule as the platform, explained before sending a request that would be rejected
     if (!enabled && !_state.canDisable(channel)) {
-      _emit(_state.copyWith(actionErrorMessage: () => 'Debe quedar al menos un canal activo para recibir las alertas'));
+      _emit(_state.copyWith(actionError: () => const ScreenError(FailedTask.keepOneChannel)));
       return;
     }
 
@@ -115,15 +112,12 @@ class AlertSettingsViewModel extends ChangeNotifier {
       final others = _state.configuredChannels.where((setting) => setting.channel != saved.channel);
       _emit(_state.copyWith(configuredChannels: [...others, saved], savingChannel: () => null));
     } catch (e) {
-      _emit(_state.copyWith(
-        savingChannel: () => null,
-        actionErrorMessage: () => errorMessageOf(e, 'No se pudo cambiar el canal'),
-      ));
+      _emit(_state.copyWith(savingChannel: () => null, actionError: () => ScreenError.of(e, FailedTask.changeChannel)));
     }
   }
 
   void onActionErrorShown() {
-    _emit(_state.copyWith(actionErrorMessage: () => null));
+    _emit(_state.copyWith(actionError: () => null));
   }
 
   /// The switch moves at once and goes back if the platform rejects the change.
@@ -141,11 +135,13 @@ class AlertSettingsViewModel extends ChangeNotifier {
   }
 
   void _revertSettings(AlertSettings previous, Object error) {
-    _emit(_state.copyWith(
-      settings: previous,
-      isSavingSettings: false,
-      actionErrorMessage: () => errorMessageOf(error, 'No se pudo guardar la configuración'),
-    ));
+    _emit(
+      _state.copyWith(
+        settings: previous,
+        isSavingSettings: false,
+        actionError: () => ScreenError.of(error, FailedTask.saveSettings),
+      ),
+    );
   }
 
   void _emit(AlertSettingsState state) {

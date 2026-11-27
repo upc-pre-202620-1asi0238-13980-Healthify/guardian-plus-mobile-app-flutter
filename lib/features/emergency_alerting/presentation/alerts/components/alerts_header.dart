@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_plus_app/core/theme.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Top bar of the Alerts section: avatar of the signed-in member, title, active alert count and settings.
 class AlertsHeader extends StatelessWidget {
@@ -46,7 +47,7 @@ class AlertsHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(careRecipientName, style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-                        Text('Alertas', style: text.titleLarge),
+                        Text(context.l10n.alertsTitle, style: text.titleLarge),
                       ],
                     ),
                   ),
@@ -58,7 +59,7 @@ class AlertsHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(GuardianRadius.large),
                       ),
                       child: Text(
-                        activeCount == 1 ? '1 activa' : '$activeCount activas',
+                        context.l10n.alertsActiveCount(activeCount),
                         style: text.labelMedium?.copyWith(color: scheme.onErrorContainer),
                       ),
                     ),
@@ -66,7 +67,7 @@ class AlertsHeader extends StatelessWidget {
                   // "Configurar" of the report: emergency contacts and alert settings
                   IconButton.outlined(
                     onPressed: onSettings,
-                    tooltip: 'Configurar alertas',
+                    tooltip: context.l10n.alertsSettingsTooltip,
                     icon: const Icon(Icons.settings_outlined, size: 20),
                     style: IconButton.styleFrom(
                       side: BorderSide(color: scheme.outline),

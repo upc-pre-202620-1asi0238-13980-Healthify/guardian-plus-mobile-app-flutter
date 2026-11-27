@@ -10,6 +10,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/comple
 import 'package:guardian_plus_app/features/emergency_alerting/application/configure_alert_channel_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_active_alerts_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_by_id_use_case.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_context_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_channel_settings_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_history_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/get_alert_settings_use_case.dart';
@@ -22,16 +23,21 @@ import 'package:guardian_plus_app/features/emergency_alerting/application/set_si
 import 'package:guardian_plus_app/features/emergency_alerting/application/stabilize_incident_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/application/update_alert_settings_use_case.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_channel_setting_repository.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_context_repository.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_repository.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_settings_repository.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/emergency_contact_repository.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/incident_repository.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/location/geocoder_place_name_resolver.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/location/place_name_resolver.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/alert_api.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/alert_channel_setting_api.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/alert_settings_api.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/emergency_contact_api.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/incident_api.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/remote/location_tracking_api.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/repositories/alert_channel_setting_repository_impl.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/repositories/alert_context_repository_impl.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/repositories/alert_repository_impl.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/repositories/alert_settings_repository_impl.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/infrastructure/repositories/emergency_contact_repository_impl.dart';
@@ -41,6 +47,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_history/alert_history_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_view_model.dart';
+import 'package:guardian_plus_app/features/health_monitoring/application/get_live_vital_signs_use_case.dart';
 
 /// Registers Emergency & Alerting. It expects the core ones (ApiClient, CareContextStore) to be there,
 /// so core/service_locator.dart calls it after _setupCore().
@@ -172,6 +179,24 @@ void setupEmergencyAlerting(GetIt getIt) {
     () => CloseIncidentUseCase(repository: getIt<IncidentRepository>()),
   );
 
+  // Context of an alert, read from Health Monitoring and Mobility. GetLiveVitalSignsUseCase is registered by
+  // Health Monitoring after this file runs; lazy singletons only look it up on first use.
+  getIt.registerLazySingleton<LocationTrackingApi>(() => LocationTrackingApi(client: getIt<ApiClient>()));
+
+  getIt.registerLazySingleton<PlaceNameResolver>(() => GeocoderPlaceNameResolver());
+
+  getIt.registerLazySingleton<AlertContextRepository>(
+    () => AlertContextRepositoryImpl(
+      getLiveVitalSigns: getIt<GetLiveVitalSignsUseCase>(),
+      locationTrackingApi: getIt<LocationTrackingApi>(),
+      placeNameResolver: getIt<PlaceNameResolver>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<GetAlertContextUseCase>(
+    () => GetAlertContextUseCase(repository: getIt<AlertContextRepository>()),
+  );
+
   getIt.registerFactory<ActiveAlertsViewModel>(
     () => ActiveAlertsViewModel(
       getActiveAlerts: getIt<GetActiveAlertsUseCase>(),
@@ -199,6 +224,7 @@ void setupEmergencyAlerting(GetIt getIt) {
       alertId: alertId,
       getAlertById: getIt<GetAlertByIdUseCase>(),
       getIncidentByAlertId: getIt<GetIncidentByAlertIdUseCase>(),
+      getAlertContext: getIt<GetAlertContextUseCase>(),
       getEmergencyContacts: getIt<GetEmergencyContactsUseCase>(),
       getAlertSettings: getIt<GetAlertSettingsUseCase>(),
       acknowledgeAlert: getIt<AcknowledgeAlertUseCase>(),

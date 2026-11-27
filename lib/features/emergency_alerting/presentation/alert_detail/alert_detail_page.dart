@@ -11,18 +11,23 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/escalation_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/incident_summary_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/incident_timeline.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/location_card.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/notes_dialog.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_detail/components/vitals_row.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_colors.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/detail_top_bar.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/dialer.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/status_chip.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 class AlertDetailPage extends StatefulWidget {
   final AlertDetailViewModel viewModel;
+  // Opens Mobility's map of the person under care; without it the location card has no shortcut
+  final VoidCallback? onViewMap;
 
-  const new({super.key, required this.viewModel});
+  const new({super.key, required this.viewModel, this.onViewMap});
 
   @override
   State<AlertDetailPage> createState() => _AlertDetailPageState();
@@ -47,9 +52,9 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
 
   // A rejected command (e.g. someone else already acknowledged) is reported once
   void _showActionError() {
-    final message = _viewModel.state.actionErrorMessage;
-    if (message == null || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    final error = _viewModel.state.actionError;
+    if (error == null || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
     _viewModel.onActionErrorShown();
   }
 
@@ -57,11 +62,9 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
     final notes = await showDialog<String>(
       context: context,
       builder: (context) => NotesDialog(
-        title: 'Marcar como estabilizado',
-        message:
-            '${_viewModel.state.careRecipientFirstName} ya no está en peligro. El incidente seguirá abierto hasta '
-            'que lo cierres.',
-        confirmLabel: 'Marcar estabilizado',
+        title: context.l10n.alertDetailStabilizeTitle,
+        message: context.l10n.alertDetailStabilizeMessage(_viewModel.state.careRecipientFirstName),
+        confirmLabel: context.l10n.alertDetailMarkStabilized,
       ),
     );
     if (notes != null) _viewModel.stabilize(notes);
@@ -70,10 +73,10 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
   Future<void> _confirmClose() async {
     final notes = await showDialog<String>(
       context: context,
-      builder: (context) => const NotesDialog(
-        title: 'Cerrar incidente',
-        message: 'La alerta quedará resuelta y pasará al historial.',
-        confirmLabel: 'Cerrar incidente',
+      builder: (context) => NotesDialog(
+        title: context.l10n.alertDetailCloseIncident,
+        message: context.l10n.alertDetailCloseMessage,
+        confirmLabel: context.l10n.alertDetailCloseIncident,
       ),
     );
     if (notes != null) _viewModel.close(notes);
@@ -88,14 +91,16 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
         final alert = state.alert;
         return Scaffold(
           appBar: DetailTopBar(
-            title: alert?.sourceType == AlertSourceType.sosTriggered ? 'Alerta SOS' : 'Detalle de alerta',
+            title: alert?.sourceType == AlertSourceType.sosTriggered
+                ? context.l10n.alertDetailSosTitle
+                : context.l10n.alertDetailTitle,
             subtitle: state.careRecipientName,
             onBackPressed: Navigator.canPop(context) ? () => Navigator.pop(context) : null,
             trailing: _statusChip(context, state),
           ),
           body: switch (alert) {
-            null when state.errorMessage != null => ErrorRetryView(
-              message: state.errorMessage!,
+            null when state.error != null => ErrorRetryView(
+              message: state.error!.message(context.l10n),
               onRetry: _viewModel.load,
             ),
             null => const LoadingView(),
@@ -109,6 +114,7 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
               onClose: _confirmClose,
               onCall: () => callCareRecipient(context, getIt<CareContextStore>().require()),
               onCallEmergency: () => dial(context, emergencyServicesNumber),
+              onViewMap: widget.onViewMap,
             ),
           },
         );
@@ -123,11 +129,15 @@ class _AlertDetailPageState extends State<AlertDetailPage> {
     final alert = state.alert;
     if (incident != null) {
       final colors = incident.status.colors(scheme);
-      return StatusChip(text: incident.status.label, container: colors.container, content: colors.content);
+      return StatusChip(
+        text: incident.status.label(context.l10n),
+        container: colors.container,
+        content: colors.content,
+      );
     }
     if (alert != null) {
       final colors = alert.status.colors(scheme);
-      return StatusChip(text: alert.status.label, container: colors.container, content: colors.content);
+      return StatusChip(text: alert.status.label(context.l10n), container: colors.container, content: colors.content);
     }
     return null;
   }
@@ -143,6 +153,7 @@ class _DetailBody extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onCall;
   final VoidCallback onCallEmergency;
+  final VoidCallback? onViewMap;
 
   const new({
     required this.state,
@@ -154,12 +165,16 @@ class _DetailBody extends StatelessWidget {
     required this.onClose,
     required this.onCall,
     required this.onCallEmergency,
+    required this.onViewMap,
   });
 
   @override
   Widget build(BuildContext context) {
     final incident = state.incident;
     final calm = state.isCalm;
+    final alertContext = state.context;
+    final locationName = alertContext.locationName;
+    final locationUpdatedAt = alertContext.locationUpdatedAt;
     final showContacts =
         state.escalationContacts.isNotEmpty &&
         alert.status != AlertStatus.pendingConfirmation &&
@@ -202,6 +217,17 @@ class _DetailBody extends StatelessWidget {
         sourceType: alert.sourceType,
         careRecipientFirstName: state.careRecipientFirstName,
       ),
+      // What is happening now matters while the emergency lasts; a calm alert drops it
+      if (!calm && alertContext.hasVitals)
+        VitalsRow(heartRateBpm: alertContext.heartRateBpm, oxygenSaturation: alertContext.oxygenSaturation),
+      if (!calm && locationName != null)
+        LocationCard(
+          locationName: locationName,
+          updatedAgo: locationUpdatedAt == null
+              ? null
+              : relativeTime(context.l10n, locationUpdatedAt, state.now).toLowerCase(),
+          onViewMap: onViewMap,
+        ),
       AlertDetailActions(
         actions: actions,
         runningAction: state.runningAction,

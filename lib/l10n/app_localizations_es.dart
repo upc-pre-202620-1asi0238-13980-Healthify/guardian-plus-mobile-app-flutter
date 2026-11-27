@@ -684,4 +684,741 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get otpNewCodeSent => 'Te enviamos un nuevo código.';
+
+  @override
+  String get alertSeverityCritical => 'Crítica';
+
+  @override
+  String get alertSeverityHigh => 'Alta';
+
+  @override
+  String get alertSeverityMedium => 'Media';
+
+  @override
+  String get alertStatusPendingConfirmation => 'Confirmando';
+
+  @override
+  String get alertStatusTriggered => 'Nueva';
+
+  @override
+  String get alertStatusEscalated => 'Escalada';
+
+  @override
+  String get alertStatusAcknowledged => 'Reconocida';
+
+  @override
+  String get alertStatusDismissed => 'Descartada';
+
+  @override
+  String get alertStatusResolved => 'Resuelta';
+
+  @override
+  String get incidentStatusInAttention => 'En atención';
+
+  @override
+  String get incidentStatusStabilized => 'Estabilizado';
+
+  @override
+  String get incidentStatusClosed => 'Cerrado';
+
+  @override
+  String get alertSourceFall => 'Caída';
+
+  @override
+  String get alertSourceSos => 'SOS';
+
+  @override
+  String get alertSourceVitalSigns => 'Signos vitales';
+
+  @override
+  String get alertSourceSafeZone => 'Zona segura';
+
+  @override
+  String get alertSourceInactivity => 'Inactividad';
+
+  @override
+  String get alertSourceReminder => 'Recordatorio';
+
+  @override
+  String get alertSourceMedication => 'Medicación';
+
+  @override
+  String get alertTitleFall => 'Posible caída detectada';
+
+  @override
+  String get alertTitleVitalSign => 'Signo vital fuera de rango';
+
+  @override
+  String get alertTitleSafeZone => 'Salida de zona segura';
+
+  @override
+  String get alertTitleInactivity => 'Inactividad prolongada';
+
+  @override
+  String get alertTitleReminder => 'Recordatorio sin confirmar';
+
+  @override
+  String get alertTitleMedication => 'Medicamento por agotarse';
+
+  @override
+  String get alertTimeNow => 'Ahora';
+
+  @override
+  String alertTitleSos(String name) {
+    return '$name presionó el botón SOS';
+  }
+
+  @override
+  String alertTimeSecondsAgo(int seconds) {
+    return 'Hace $seconds s';
+  }
+
+  @override
+  String alertTimeMinutesAgo(int minutes) {
+    return 'Hace $minutes min';
+  }
+
+  @override
+  String alertTimeHoursAgo(int hours) {
+    return 'Hace $hours h';
+  }
+
+  @override
+  String alertTimeDaysAgo(int days) {
+    return 'Hace $days d';
+  }
+
+  @override
+  String alertCallFailed(String phoneNumber) {
+    return 'No se pudo abrir el teléfono para llamar al $phoneNumber';
+  }
+
+  @override
+  String get alertCallNeedsContact =>
+      'Agrega un contacto de emergencia para poder llamar';
+
+  @override
+  String get alertsTitle => 'Alertas';
+
+  @override
+  String alertsActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count activas',
+      one: '1 activa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertsSettingsTooltip => 'Configurar alertas';
+
+  @override
+  String get alertsTabActive => 'Activas';
+
+  @override
+  String get alertsTabHistory => 'Historial';
+
+  @override
+  String get alertsOtherActive => 'Otras alertas activas';
+
+  @override
+  String get alertsActive => 'Alertas activas';
+
+  @override
+  String alertsAllGoodTitle(String name) {
+    return '$name está bien';
+  }
+
+  @override
+  String get alertsAllGoodMessage =>
+      'No hay alertas activas. Te avisaremos al instante si algo cambia.';
+
+  @override
+  String alertsMetaUnacknowledged(String elapsed) {
+    return '$elapsed · Sin reconocer';
+  }
+
+  @override
+  String alertsMetaConfirming(String elapsed) {
+    return '$elapsed · Confirmando';
+  }
+
+  @override
+  String alertsMetaAcknowledged(String elapsed) {
+    return '$elapsed · Reconocida';
+  }
+
+  @override
+  String get alertsViewDetail => 'Ver detalle de la alerta';
+
+  @override
+  String get alertsAcknowledge => 'Reconocer';
+
+  @override
+  String alertsCall(String name) {
+    return 'Llamar a $name';
+  }
+
+  @override
+  String alertsWaitingConfirmation(String name) {
+    return 'Esperando que $name confirme que está bien';
+  }
+
+  @override
+  String alertsFallNoResponse(String name) {
+    return '$name no respondió en 20 s';
+  }
+
+  @override
+  String get alertsSosHeld => 'Pulsación sostenida en la pulsera';
+
+  @override
+  String get alertsSentToEveryone => 'Enviada a todo el círculo de cuidado';
+
+  @override
+  String get alertsEscalatingNow =>
+      'Sin reconocer · enviando a los siguientes contactos…';
+
+  @override
+  String get alertsEscalatesToSecondary =>
+      'Sin reconocer · se enviará a tus contactos secundarios en';
+
+  @override
+  String get alertsEscalatesToEveryone =>
+      'Sin reconocer · se enviará a todo el círculo de cuidado en';
+
+  @override
+  String alertsEscalationNotice(int seconds) {
+    return 'Si nadie reconoce una alerta crítica en $seconds s, se enviará automáticamente a tus contactos secundarios.';
+  }
+
+  @override
+  String get alertsManageContacts => 'Gestionar contactos de emergencia';
+
+  @override
+  String get alertDetailTopPriority => 'Máxima prioridad';
+
+  @override
+  String get alertDetailSosHeld =>
+      'Pulsación sostenida de 3 s en la pulsera · Se envió su ubicación a tus contactos';
+
+  @override
+  String alertDetailDismissedBy(String name) {
+    return 'Falsa alarma descartada por $name';
+  }
+
+  @override
+  String get alertDetailIncidentClosed => 'Incidente cerrado';
+
+  @override
+  String get alertDetailIncidentStabilized => 'Incidente estabilizado';
+
+  @override
+  String alertDetailFallNoResponse(String name) {
+    return '$name no respondió tras una caída';
+  }
+
+  @override
+  String get alertDetailImpactDetected => 'Impacto detectado por la pulsera';
+
+  @override
+  String get alertDetailDetected => 'Detectada';
+
+  @override
+  String get alertDetailStabilizedAt => 'Estabilizada';
+
+  @override
+  String get alertDetailClosedAt => 'Cerrada';
+
+  @override
+  String get alertDetailDuration => 'Duración';
+
+  @override
+  String get alertDetailCancelWindow => 'Ventana de cancelación';
+
+  @override
+  String alertDetailSecondsLeft(int seconds) {
+    return 'Quedan $seconds s';
+  }
+
+  @override
+  String alertDetailWindowExpired(int seconds) {
+    return 'Vencida · $seconds s';
+  }
+
+  @override
+  String get alertDetailSinceDetection => 'Desde la detección';
+
+  @override
+  String get alertDetailEscalationWatching =>
+      'Cuando alguien la reconozca o vaya en camino, los demás lo verán aquí.';
+
+  @override
+  String get alertDetailEscalationToSecondary =>
+      'Si no reconoces la alerta, se enviará a tus contactos secundarios.';
+
+  @override
+  String get alertDetailEscalationToEveryone =>
+      'Si nadie la reconoce, se enviará a todo el círculo de cuidado.';
+
+  @override
+  String get alertDetailAutoEscalation => 'Escalamiento automático';
+
+  @override
+  String get alertDetailSentToContacts => 'Aviso enviado a tus contactos';
+
+  @override
+  String get contactStatusWaiting => 'En espera';
+
+  @override
+  String get contactStatusSending => 'Enviando';
+
+  @override
+  String get contactStatusSent => 'Notificada';
+
+  @override
+  String get contactStatusDelivered => 'Entregada';
+
+  @override
+  String get contactStatusFailed => 'Falló';
+
+  @override
+  String get contactStatusAcknowledged => 'Reconoció';
+
+  @override
+  String get contactStatusOnTheWay => 'En camino';
+
+  @override
+  String get contactStatusArrived => 'Llegó';
+
+  @override
+  String get contactStatusNotNeeded => 'No fue necesario';
+
+  @override
+  String get contactPrimary => 'Primario';
+
+  @override
+  String get contactSecondary => 'Secundario';
+
+  @override
+  String get alertDetailTimelineTitle => 'Seguimiento del incidente';
+
+  @override
+  String get alertDetailSomeMember => 'Un miembro del círculo';
+
+  @override
+  String get timelineFallDetected => 'Caída detectada por la pulsera';
+
+  @override
+  String timelineNotCancelled(String name, int seconds) {
+    return '$name no canceló la alerta en $seconds s';
+  }
+
+  @override
+  String timelineDismissed(String name) {
+    return '$name confirmó desde la pulsera que está bien';
+  }
+
+  @override
+  String timelineSentTo(String names) {
+    return 'Alerta enviada a $names';
+  }
+
+  @override
+  String timelineAcknowledged(String names) {
+    return '$names reconoció la alerta';
+  }
+
+  @override
+  String timelineOnTheWay(String names) {
+    return '$names va en camino';
+  }
+
+  @override
+  String timelineArrived(String names, String name) {
+    return '$names llegó con $name';
+  }
+
+  @override
+  String get timelineNextEscalation =>
+      'Envío a los siguientes contactos (pendiente)';
+
+  @override
+  String get alertDetailAcknowledge => 'Reconocer alerta';
+
+  @override
+  String get alertDetailArrived => 'Llegué';
+
+  @override
+  String get alertDetailCloseIncident => 'Cerrar incidente';
+
+  @override
+  String get alertDetailOnMyWay => 'Voy en camino';
+
+  @override
+  String get alertDetailMarkStabilized => 'Marcar estabilizado';
+
+  @override
+  String get alertDetailCallEmergency => 'Llamar a emergencias (SAMU 106)';
+
+  @override
+  String get notesLabel => 'Notas (opcional)';
+
+  @override
+  String get notesHint => 'Ej. Caída sin lesiones, ya está acostada.';
+
+  @override
+  String get summaryTitle => 'Resumen del incidente';
+
+  @override
+  String get summaryType => 'Tipo';
+
+  @override
+  String get summaryStart => 'Inicio';
+
+  @override
+  String get summaryAcknowledgedBy => 'Reconocida por';
+
+  @override
+  String summaryAcknowledgedIn(String name, String duration) {
+    return '$name · en $duration';
+  }
+
+  @override
+  String get summaryNotes => 'Notas';
+
+  @override
+  String get vitalsHeartRate => 'Frecuencia cardíaca';
+
+  @override
+  String get vitalsOxygen => 'Saturación O₂';
+
+  @override
+  String get vitalsUnitBpm => 'lpm';
+
+  @override
+  String get readingHigh => 'Alta';
+
+  @override
+  String get readingLow => 'Baja';
+
+  @override
+  String get readingNormal => 'Normal';
+
+  @override
+  String locationUpdated(String ago) {
+    return 'Ubicación actualizada $ago';
+  }
+
+  @override
+  String get locationViewMap => 'Ver en mapa';
+
+  @override
+  String get alertDetailStabilizeTitle => 'Marcar como estabilizado';
+
+  @override
+  String alertDetailStabilizeMessage(String name) {
+    return '$name ya no está en peligro. El incidente seguirá abierto hasta que lo cierres.';
+  }
+
+  @override
+  String get alertDetailCloseMessage =>
+      'La alerta quedará resuelta y pasará al historial.';
+
+  @override
+  String get alertDetailSosTitle => 'Alerta SOS';
+
+  @override
+  String get alertDetailTitle => 'Detalle de alerta';
+
+  @override
+  String get historyEmptyTitle => 'Sin alertas en el historial';
+
+  @override
+  String get historyEmptyMessage =>
+      'Cuando ocurra una alerta, quedará registrada aquí con todo su seguimiento.';
+
+  @override
+  String historyEmptyFiltered(String severity) {
+    return 'No hay alertas de severidad $severity.';
+  }
+
+  @override
+  String historyWeekday(String value) {
+    String _temp0 = intl.Intl.selectLogic(value, {
+      '1': 'lunes',
+      '2': 'martes',
+      '3': 'miércoles',
+      '4': 'jueves',
+      '5': 'viernes',
+      '6': 'sábado',
+      '7': 'domingo',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String historyMonth(String value) {
+    String _temp0 = intl.Intl.selectLogic(value, {
+      '1': 'ene.',
+      '2': 'feb.',
+      '3': 'mar.',
+      '4': 'abr.',
+      '5': 'may.',
+      '6': 'jun.',
+      '7': 'jul.',
+      '8': 'ago.',
+      '9': 'sept.',
+      '10': 'oct.',
+      '11': 'nov.',
+      '12': 'dic.',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get historyToday => 'Hoy';
+
+  @override
+  String get historyYesterday => 'Ayer';
+
+  @override
+  String historyDay(String weekday, int day, String month) {
+    return '$weekday $day $month';
+  }
+
+  @override
+  String historyAcknowledgedIn(String duration) {
+    return 'Reconocida en $duration';
+  }
+
+  @override
+  String historyWaitingConfirmation(String name) {
+    return 'Esperando que $name confirme';
+  }
+
+  @override
+  String get historyUnacknowledged => 'Sin reconocer';
+
+  @override
+  String get historySummaryAlerts => 'Alertas · 7 días';
+
+  @override
+  String get historySummaryResponse => 'Respuesta media';
+
+  @override
+  String get historySummaryEscalated => 'Escaladas';
+
+  @override
+  String get historyFilterAll => 'Todas';
+
+  @override
+  String get historyFilterCritical => 'Críticas';
+
+  @override
+  String get historyFilterHigh => 'Altas';
+
+  @override
+  String get historyFilterMedium => 'Medias';
+
+  @override
+  String get alertSettingsTitle => 'Configuración de alertas';
+
+  @override
+  String get alertSettingsSoundSection => 'Sonido de las alertas';
+
+  @override
+  String get alertSettingsSilentTitle => 'Silenciar alertas no críticas';
+
+  @override
+  String alertSettingsSilentDetail(String name) {
+    return 'Las alertas de $name que no son críticas llegan sin sonido a los celulares del círculo de cuidado. Las caídas y los SOS siempre suenan.';
+  }
+
+  @override
+  String get alertSettingsEscalationSection => 'Escalamiento';
+
+  @override
+  String get alertSettingsEscalationTitle =>
+      'Avisar a los siguientes contactos';
+
+  @override
+  String get alertSettingsEscalationDetail =>
+      'Si el contacto principal no reconoce una alerta crítica o alta, se envía a los demás.';
+
+  @override
+  String get alertSettingsBroadcastTitle => 'Avisar a todos ante caídas y SOS';
+
+  @override
+  String get alertSettingsBroadcastDetail =>
+      'Las alertas críticas llegan a todo el círculo de cuidado al mismo tiempo.';
+
+  @override
+  String get alertSettingsChannelPush => 'Notificación push';
+
+  @override
+  String get alertSettingsChannelSms => 'Mensaje de texto (SMS)';
+
+  @override
+  String get alertSettingsChannelInApp => 'Dentro de la app';
+
+  @override
+  String get alertSettingsChannelsSection => 'Cómo te avisamos a ti';
+
+  @override
+  String get alertSettingsChannelsNote =>
+      'Las alertas críticas siempre se respaldan por SMS. Debe quedar al menos un canal activo.';
+
+  @override
+  String get alertSettingsAckTimeout => 'Tiempo de espera antes de escalar';
+
+  @override
+  String get contactsSummaryNone => 'Ningún contacto todavía';
+
+  @override
+  String contactsSummaryOne(String name) {
+    return '1 contacto · $name';
+  }
+
+  @override
+  String contactsSummaryMany(int count, String name) {
+    return '$count contactos · $name es el principal';
+  }
+
+  @override
+  String get emergencyContactsTitle => 'Contactos de emergencia';
+
+  @override
+  String contactsIntroEmpty(String name) {
+    return '$name todavía no tiene contactos de emergencia. Agrega al menos uno para que las alertas lleguen a alguien.';
+  }
+
+  @override
+  String contactsIntro(String name, int seconds) {
+    return 'Reciben las alertas de $name en este orden. Si el primero no responde en $seconds s, se avisa a los siguientes.';
+  }
+
+  @override
+  String get contactsKeepOne =>
+      'Debe quedar al menos un contacto: es quien recibe las alertas primero.';
+
+  @override
+  String get contactsAdd => 'Agregar contacto';
+
+  @override
+  String get addContactTitle => 'Nuevo contacto de emergencia';
+
+  @override
+  String addContactSubtitle(String name) {
+    return 'Se agregará al final de la lista de $name.';
+  }
+
+  @override
+  String get addContactName => 'Nombre completo';
+
+  @override
+  String addContactNameError(int max) {
+    return 'Escribe el nombre (máximo $max caracteres)';
+  }
+
+  @override
+  String get addContactRelationship => 'Parentesco';
+
+  @override
+  String get addContactRelationshipHint => 'Ej. Hija, vecino, cuidadora';
+
+  @override
+  String addContactRelationshipError(int max) {
+    return 'Escribe el parentesco (máximo $max caracteres)';
+  }
+
+  @override
+  String get addContactPhone => 'Teléfono con código de país';
+
+  @override
+  String get addContactPhoneError =>
+      'Usa el formato internacional, por ejemplo +51987654321';
+
+  @override
+  String get addContactSave => 'Guardar contacto';
+
+  @override
+  String get contactPrimaryChip => 'Principal';
+
+  @override
+  String contactSecondaryChip(int position) {
+    return 'Secundario $position';
+  }
+
+  @override
+  String contactMoveUp(String name) {
+    return 'Subir a $name';
+  }
+
+  @override
+  String contactMoveDown(String name) {
+    return 'Bajar a $name';
+  }
+
+  @override
+  String contactRemoveTooltip(String name) {
+    return 'Eliminar a $name';
+  }
+
+  @override
+  String removeContactTitle(String name) {
+    return '¿Eliminar a $name?';
+  }
+
+  @override
+  String removeContactMessage(String name) {
+    return 'Dejará de recibir las alertas de $name. El resto de la lista sube un lugar.';
+  }
+
+  @override
+  String get removeContactConfirm => 'Eliminar';
+
+  @override
+  String get errorLoadAlerts => 'No se pudieron cargar las alertas';
+
+  @override
+  String get errorLoadAlert => 'No se pudo cargar la alerta';
+
+  @override
+  String get errorLoadHistory => 'No se pudo cargar el historial';
+
+  @override
+  String get errorLoadSettings => 'No se pudo cargar la configuración';
+
+  @override
+  String get errorLoadContacts => 'No se pudieron cargar los contactos';
+
+  @override
+  String get errorAcknowledge => 'No se pudo reconocer la alerta';
+
+  @override
+  String get errorRunAction => 'No se pudo completar la acción';
+
+  @override
+  String get errorChangeChannel => 'No se pudo cambiar el canal';
+
+  @override
+  String get errorKeepOneChannel =>
+      'Debe quedar al menos un canal activo para recibir las alertas';
+
+  @override
+  String get errorSaveSettings => 'No se pudo guardar la configuración';
+
+  @override
+  String get errorReorderContacts => 'No se pudo cambiar el orden';
+
+  @override
+  String get errorRemoveContact => 'No se pudo eliminar el contacto';
+
+  @override
+  String get errorAddContact => 'No se pudo agregar el contacto';
 }

@@ -3,6 +3,7 @@ import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/severity.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_colors.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// "Crítica", "Alta" or "Media" on its traffic-light color.
 class SeverityBadge extends StatelessWidget {
@@ -16,7 +17,10 @@ class SeverityBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(color: colors.container, borderRadius: BorderRadius.circular(GuardianRadius.subtle)),
-      child: Text(severity.label, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: colors.content)),
+      child: Text(
+        severity.label(context.l10n),
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: colors.content),
+      ),
     );
   }
 }

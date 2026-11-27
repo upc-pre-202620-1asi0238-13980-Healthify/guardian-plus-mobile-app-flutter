@@ -3,6 +3,7 @@ import 'package:guardian_plus_app/core/text/initials.dart';
 import 'package:guardian_plus_app/core/theme.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/emergency_contact.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/status_chip.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// One contact of the escalation chain with its place in it. Arrows reorder the chain (US16) and the trash
 /// button removes the contact; both are disabled while a change is being saved.
@@ -33,6 +34,7 @@ class ContactCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final isPrimary = position == 0;
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.only(left: 16, top: 12, bottom: 12, right: 4),
@@ -57,7 +59,7 @@ class ContactCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StatusChip(
-                  text: isPrimary ? 'Principal' : 'Secundario $position',
+                  text: isPrimary ? l10n.contactPrimaryChip : l10n.contactSecondaryChip(position),
                   container: isPrimary ? colors.primaryContainer : colors.surfaceContainerHighest,
                   content: isPrimary ? colors.onPrimaryContainer : colors.onSurfaceVariant,
                 ),
@@ -72,13 +74,13 @@ class ContactCard extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: enabled && !isPrimary ? onMoveUp : null,
-                tooltip: 'Subir a ${contact.displayName}',
+                tooltip: l10n.contactMoveUp(contact.displayName),
                 color: colors.primary,
                 icon: const Icon(Icons.keyboard_arrow_up),
               ),
               IconButton(
                 onPressed: enabled && !isLast ? onMoveDown : null,
-                tooltip: 'Bajar a ${contact.displayName}',
+                tooltip: l10n.contactMoveDown(contact.displayName),
                 color: colors.primary,
                 icon: const Icon(Icons.keyboard_arrow_down),
               ),
@@ -86,7 +88,7 @@ class ContactCard extends StatelessWidget {
           ),
           IconButton(
             onPressed: enabled && canRemove ? onRemove : null,
-            tooltip: 'Eliminar a ${contact.displayName}',
+            tooltip: l10n.contactRemoveTooltip(contact.displayName),
             color: colors.error,
             icon: const Icon(Icons.delete_outline),
           ),

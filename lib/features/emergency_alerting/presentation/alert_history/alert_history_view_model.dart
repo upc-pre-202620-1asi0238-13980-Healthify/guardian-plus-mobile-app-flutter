@@ -30,7 +30,7 @@ class AlertHistoryViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   Future<void> loadHistory() async {
-    _emit(_state.copyWith(isLoading: true, errorMessage: () => null));
+    _emit(_state.copyWith(isLoading: true, error: () => null));
     await Future.wait([_loadFirstPage(), _loadSummary()]);
   }
 
@@ -45,7 +45,7 @@ class AlertHistoryViewModel extends ChangeNotifier {
         alerts: const [],
         isLoading: true,
         isLoadingMore: false,
-        errorMessage: () => null,
+        error: () => null,
       ),
     );
     await _loadFirstPage();
@@ -94,7 +94,7 @@ class AlertHistoryViewModel extends ChangeNotifier {
       _emit(
         _state.copyWith(
           isLoading: false,
-          errorMessage: () => null,
+          error: () => null,
           alerts: page.alerts,
           page: page.page,
           isLastPage: page.isLast,
@@ -103,7 +103,7 @@ class AlertHistoryViewModel extends ChangeNotifier {
       );
     } catch (e) {
       if (_state.severityFilter != severity) return;
-      _emit(_state.copyWith(isLoading: false, errorMessage: () => errorMessageOf(e, 'No se pudo cargar el historial')));
+      _emit(_state.copyWith(isLoading: false, error: () => ScreenError.of(e, FailedTask.loadHistory)));
     }
   }
 

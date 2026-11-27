@@ -1,21 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/domain/emergency_contact.dart';
+import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/screen_states.dart';
 
 class EmergencyContactsState {
   const new({
     this.isLoading = false,
-    this.errorMessage,
+    this.error,
     this.contacts = const [],
     this.ackTimeoutSec = 60,
     this.careRecipientName = '',
     this.isSaving = false,
     this.isAdding = false,
-    this.addErrorMessage,
-    this.actionErrorMessage,
+    this.addError,
+    this.actionError,
   });
 
   final bool isLoading;
-  final String? errorMessage;
+  final ScreenError? error;
   // Active contacts in escalation order: the first one is the primary contact
   final List<EmergencyContact> contacts;
   final int ackTimeoutSec;
@@ -24,8 +25,8 @@ class EmergencyContactsState {
   final bool isSaving;
   final bool isAdding;
   // Shown inside the new-contact sheet, which covers the screen's snack bars
-  final String? addErrorMessage;
-  final String? actionErrorMessage;
+  final ScreenError? addError;
+  final ScreenError? actionError;
 
   String get careRecipientFirstName => careRecipientName.split(' ').first;
 
@@ -35,24 +36,24 @@ class EmergencyContactsState {
   // Nullable fields take a function, so copyWith can also set them back to null
   EmergencyContactsState copyWith({
     bool? isLoading,
-    ValueGetter<String?>? errorMessage,
+    ValueGetter<ScreenError?>? error,
     List<EmergencyContact>? contacts,
     int? ackTimeoutSec,
     bool? isSaving,
     bool? isAdding,
-    ValueGetter<String?>? addErrorMessage,
-    ValueGetter<String?>? actionErrorMessage,
+    ValueGetter<ScreenError?>? addError,
+    ValueGetter<ScreenError?>? actionError,
   }) {
     return EmergencyContactsState(
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      error: error != null ? error() : this.error,
       contacts: contacts ?? this.contacts,
       ackTimeoutSec: ackTimeoutSec ?? this.ackTimeoutSec,
       careRecipientName: careRecipientName,
       isSaving: isSaving ?? this.isSaving,
       isAdding: isAdding ?? this.isAdding,
-      addErrorMessage: addErrorMessage != null ? addErrorMessage() : this.addErrorMessage,
-      actionErrorMessage: actionErrorMessage != null ? actionErrorMessage() : this.actionErrorMessage,
+      addError: addError != null ? addError() : this.addError,
+      actionError: actionError != null ? actionError() : this.actionError,
     );
   }
 }

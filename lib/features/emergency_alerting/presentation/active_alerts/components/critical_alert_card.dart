@@ -6,6 +6,8 @@ import 'package:guardian_plus_app/features/emergency_alerting/domain/alert_statu
 import 'package:guardian_plus_app/features/emergency_alerting/domain/recipient_level.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/active_alerts/active_alerts_state.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/common/alert_labels.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Red card of the most urgent critical alert, with the escalation countdown and the two quick actions.
 class CriticalAlertCard extends StatelessWidget {
@@ -34,8 +36,10 @@ class CriticalAlertCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final alert = item.alert;
     final onCard = scheme.onError;
+    final subtitle = _subtitle(l10n);
 
     return Material(
       color: scheme.error,
@@ -62,11 +66,11 @@ class CriticalAlertCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(GuardianRadius.subtle),
                       ),
                       child: Text(
-                        '${alert.severity.label} · ${alert.sourceType.tag}'.toUpperCase(),
+                        '${alert.severity.label(l10n)} · ${alert.sourceType.tag(l10n)}'.toUpperCase(),
                         style: text.labelSmall?.copyWith(color: onCard),
                       ),
                     ),
-                    Text(relativeTime(alert.triggeredAt, now), style: dataLabelStyle.copyWith(color: onCard)),
+                    Text(relativeTime(l10n, alert.triggeredAt, now), style: dataLabelStyle.copyWith(color: onCard)),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -83,12 +87,12 @@ class CriticalAlertCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            alert.sourceType.title(careRecipientFirstName),
+                            alert.sourceType.title(l10n, careRecipientFirstName),
                             style: text.titleLarge?.copyWith(color: onCard),
                           ),
-                          if (_subtitle != null)
+                          if (subtitle != null)
                             Text(
-                              _subtitle!,
+                              subtitle,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: text.bodyMedium?.copyWith(color: onCard.withAlpha(217)),
@@ -120,7 +124,7 @@ class CriticalAlertCard extends StatelessWidget {
                                   child: CircularProgressIndicator(strokeWidth: 2, color: scheme.error),
                                 )
                               : const Icon(Icons.check, size: 18),
-                          label: const Text('Reconocer'),
+                          label: Text(l10n.alertsAcknowledge),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -135,7 +139,11 @@ class CriticalAlertCard extends StatelessWidget {
                           side: BorderSide(color: onCard.withAlpha(153)),
                         ),
                         icon: const Icon(Icons.phone_outlined, size: 18),
-                        label: Text('Llamar a $careRecipientFirstName', maxLines: 1, overflow: TextOverflow.ellipsis),
+                        label: Text(
+                          l10n.alertsCall(careRecipientFirstName),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],
@@ -148,14 +156,14 @@ class CriticalAlertCard extends StatelessWidget {
     );
   }
 
-  String? get _subtitle {
+  String? _subtitle(AppLocalizations l10n) {
     final alert = item.alert;
     if (alert.status == AlertStatus.pendingConfirmation) {
-      return 'Esperando que $careRecipientFirstName confirme que está bien';
+      return l10n.alertsWaitingConfirmation(careRecipientFirstName);
     }
     return switch (alert.sourceType) {
-      AlertSourceType.fallDetected => '$careRecipientFirstName no respondió en 20 s',
-      AlertSourceType.sosTriggered => 'Pulsación sostenida en la pulsera',
+      AlertSourceType.fallDetected => l10n.alertsFallNoResponse(careRecipientFirstName),
+      AlertSourceType.sosTriggered => l10n.alertsSosHeld,
       _ => null,
     };
   }
@@ -171,17 +179,18 @@ class _EscalationStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final left = secondsLeft;
     final String message;
     if (left == null) {
       if (alert.currentRecipientLevel != RecipientLevel.broadcast) return const SizedBox.shrink();
-      message = 'Enviada a todo el círculo de cuidado';
+      message = l10n.alertsSentToEveryone;
     } else if (left == 0) {
-      message = 'Sin reconocer · enviando a los siguientes contactos…';
+      message = l10n.alertsEscalatingNow;
     } else if (alert.currentRecipientLevel == RecipientLevel.primary) {
-      message = 'Sin reconocer · se enviará a tus contactos secundarios en';
+      message = l10n.alertsEscalatesToSecondary;
     } else {
-      message = 'Sin reconocer · se enviará a todo el círculo de cuidado en';
+      message = l10n.alertsEscalatesToEveryone;
     }
 
     return Container(

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-// The interface is in Spanish, so dates are too, whatever the phone's language
-const _weekdays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
-const _months = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sept.', 'oct.', 'nov.', 'dic.'];
+import 'package:guardian_plus_app/l10n/l10n.dart';
 
 /// Section title of the history: "HOY", "AYER" or the date ("SÁBADO 26 SEPT.").
 class DayHeader extends StatelessWidget {
@@ -13,11 +10,13 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final yesterday = DateTime(today.year, today.month, today.day - 1);
+    // Names come from the app's language, not the phone's, like the rest of the interface
     final label = switch (day) {
-      _ when day == today => 'Hoy',
-      _ when day == yesterday => 'Ayer',
-      _ => '${_weekdays[day.weekday - 1]} ${day.day} ${_months[day.month - 1]}',
+      _ when day == today => l10n.historyToday,
+      _ when day == yesterday => l10n.historyYesterday,
+      _ => l10n.historyDay(l10n.historyWeekday('${day.weekday}'), day.day, l10n.historyMonth('${day.month}')),
     };
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 2),

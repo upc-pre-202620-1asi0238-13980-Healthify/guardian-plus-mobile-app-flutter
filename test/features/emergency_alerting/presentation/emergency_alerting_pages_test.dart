@@ -14,6 +14,7 @@ import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/alert_settings/alert_settings_view_model.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_page.dart';
 import 'package:guardian_plus_app/features/emergency_alerting/presentation/emergency_contacts/emergency_contacts_view_model.dart';
+import 'package:guardian_plus_app/l10n/app_localizations.dart';
 
 import '../fakes.dart';
 
@@ -29,7 +30,13 @@ void main() {
     settings = FakeAlertSettingsRepository();
   });
 
-  Widget app(Widget page) => MaterialApp(theme: GuardianTheme.light(), home: page);
+  Widget app(Widget page) => MaterialApp(
+    theme: GuardianTheme.light(),
+    locale: const Locale('es'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: page,
+  );
 
   EmergencyContactsViewModel contactsViewModel() {
     return EmergencyContactsViewModel(
